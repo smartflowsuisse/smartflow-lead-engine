@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
+import { OutreachDraftPanel } from "@/components/leads/OutreachDraftPanel";
 import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
 import { cn, formatDateTime, scoreColor, statusColor } from "@/lib/utils";
 import { getScoreLabel, getRecommendedAction } from "@/lib/scoring";
@@ -148,6 +149,11 @@ export default async function LeadDetailPage({ params }: PageProps) {
               {getRecommendedAction(lead.lead_score, lead.status)}
             </p>
           </div>
+
+          <OutreachDraftPanel
+            leadId={lead.id}
+            hasAnalysis={Boolean(lead.analysis)}
+          />
 
           {lead.notes && (
             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
