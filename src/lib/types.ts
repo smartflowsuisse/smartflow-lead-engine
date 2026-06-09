@@ -21,6 +21,8 @@ export interface Lead {
   lead_score: number;
   status: LeadStatus;
   notes: string | null;
+  contacted_at: string | null;
+  contacted_language: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -134,4 +136,17 @@ export interface UpdateLeadTaskInput {
   title?: string;
   due_date?: string;
   completed?: boolean;
+}
+
+export type LeadActivityType =
+  | "analysis_completed"
+  | "outreach_generated"
+  | "contacted";
+
+export interface LeadActivity {
+  id: number;
+  lead_id: number;
+  activity_type: LeadActivityType;
+  details: Record<string, unknown>;
+  created_at: string;
 }

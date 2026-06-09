@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Loader2, Mail, Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Copy, Loader2, Mail, Check, UserCheck } from "lucide-react";
 import {
   OUTREACH_LANGUAGES,
   type OutreachLanguage,
@@ -10,6 +11,8 @@ import {
 interface OutreachDraftPanelProps {
   leadId: number;
   hasAnalysis: boolean;
+  contactedAt?: string | null;
+  contactedLanguage?: string | null;
 }
 
 interface OutreachDraft {
@@ -22,9 +25,16 @@ interface OutreachDraft {
 export function OutreachDraftPanel({
   leadId,
   hasAnalysis,
+  contactedAt,
+  contactedLanguage,
 }: OutreachDraftPanelProps) {
-  const [language, setLanguage] = useState<OutreachLanguage>("fr");
+  const router = useRouter();
+  const [language, setLanguage] = useState<OutreachLanguage>(
+    (contactedLanguage as OutreachLanguage) || "fr"
+  );
   const [loading, setLoading] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState<OutreachDraft | null>(null);
   const [copiedField, setCopiedField] = useState<"subject" | "message" | null>(
@@ -49,10 +59,37 @@ export function OutreachDraftPanel({
       }
 
       setDraft(data as OutreachDraft);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const markAsContacted = async () => {
+    setContactLoading(true);
+    setError(null);
+    setContactSuccess(false);
+
+    try {
+      const res = await fetch(`/api/leads/${leadId}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to mark lead as contacted");
+      }
+
+      setContactSuccess(true);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setContactLoading(false);
     }
   };
 
@@ -71,19 +108,34 @@ export function OutreachDraftPanel({
             Local template — not sent, no external APIs
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void generateDraft()}
-          disabled={loading}
-          className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Mail className="h-4 w-4" />
-          )}
-          Generate Outreach Message
-        </button>
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void markAsContacted()}
+            disabled={contactLoading}
+            className="inline-flex items-center gap-2 rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50 disabled:opacity-60"
+          >
+            {contactLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserCheck className="h-4 w-4" />
+            )}
+            Mark as Contacted
+          </button>
+          <button
+            type="button"
+            onClick={() => void generateDraft()}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Mail className="h-4 w-4" />
+            )}
+            Generate Outreach Message
+          </button>
+        </div>
       </div>
 
       <fieldset className="mb-4">
@@ -113,6 +165,22 @@ export function OutreachDraftPanel({
           ))}
         </div>
       </fieldset>
+
+      {contactSuccess && (
+        <p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          Lead marked as contacted.
+        </p>
+      )}
+
+      {contactedAt && (
+        <p className="mb-4 text-sm text-slate-600">
+          Last contacted{" "}
+          {new Date(contactedAt).toLocaleString("de-CH")}
+          {contactedLanguage
+            ? ` · ${OUTREACH_LANGUAGES.find((item) => item.code === contactedLanguage)?.label ?? contactedLanguage}`
+            : ""}
+        </p>
+      )}
 
       {!hasAnalysis && !draft && (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">

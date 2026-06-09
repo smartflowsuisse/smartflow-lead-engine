@@ -20,6 +20,8 @@ import {
   normalizeCompany,
   normalizeWebsite,
 } from "./discovery/dedup";
+import { createLeadActivity } from "./activities";
+import { parseOutreachLanguage } from "./outreach/languages";
 
 const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Contacted",
@@ -41,6 +43,8 @@ function rowToLead(row: Record<string, unknown>): Lead {
     lead_score: row.lead_score as number,
     status: row.status as LeadStatus,
     notes: (row.notes as string) ?? null,
+    contacted_at: (row.contacted_at as string) ?? null,
+    contacted_language: (row.contacted_language as string) ?? null,
     created_at: row.created_at as string,
     updated_at: row.updated_at as string,
   };
@@ -277,7 +281,37 @@ export function saveLeadAnalysis(
   const row = db
     .prepare("SELECT * FROM lead_analyses WHERE lead_id = ?")
     .get(leadId);
-  return rowToAnalysis(row as Record<string, unknown>);
+  const saved = rowToAnalysis(row as Record<string, unknown>);
+
+  createLeadActivity(leadId, "analysis_completed", {
+    leadScore: analysis.leadScore,
+  });
+
+  return saved;
+}
+
+export function markLeadAsContacted(
+  leadId: number,
+  languageInput: string
+): Lead | null {
+  const db = getDb();
+  const existing = getLeadById(leadId);
+  if (!existing) return null;
+
+  const language = parseOutreachLanguage(languageInput);
+
+  db.prepare(
+    `UPDATE leads SET
+      status = 'Contacted',
+      contacted_at = datetime('now'),
+      contacted_language = @language,
+      updated_at = datetime('now')
+     WHERE id = @id`
+  ).run({ id: leadId, language });
+
+  createLeadActivity(leadId, "contacted", { language });
+
+  return getLeadById(leadId);
 }
 
 export function getDashboardStats(): DashboardStats {

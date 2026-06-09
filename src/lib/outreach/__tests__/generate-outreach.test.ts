@@ -17,6 +17,8 @@ const baseLead: Lead = {
   lead_score: 76,
   status: "Analyzed",
   notes: null,
+  contacted_at: null,
+  contacted_language: null,
   created_at: "2026-06-09T08:00:00Z",
   updated_at: "2026-06-09T08:00:00Z",
 };

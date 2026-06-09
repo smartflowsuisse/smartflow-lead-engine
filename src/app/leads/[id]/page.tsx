@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
 import { getTasksByLeadId } from "@/lib/tasks";
+import { getActivitiesByLeadId } from "@/lib/activities";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
 import { OutreachDraftPanel } from "@/components/leads/OutreachDraftPanel";
 import { LeadNotesPanel } from "@/components/leads/LeadNotesPanel";
 import { LeadTasksPanel } from "@/components/leads/LeadTasksPanel";
+import { LeadActivityHistory } from "@/components/leads/LeadActivityHistory";
 import { LeadContactSection } from "@/components/leads/LeadContactSection";
 import {
   LeadCompanySection,
@@ -26,6 +28,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
   if (!lead) notFound();
 
   const tasks = getTasksByLeadId(leadId);
+  const activities = getActivitiesByLeadId(leadId);
 
   return (
     <div className="p-8">
@@ -49,9 +52,12 @@ export default async function LeadDetailPage({ params }: PageProps) {
             updatedAt={lead.updated_at}
           />
           <LeadTasksPanel leadId={lead.id} initialTasks={tasks} />
+          <LeadActivityHistory activities={activities} />
           <OutreachDraftPanel
             leadId={lead.id}
             hasAnalysis={Boolean(lead.analysis)}
+            contactedAt={lead.contacted_at}
+            contactedLanguage={lead.contacted_language}
           />
         </div>
 

@@ -4,6 +4,7 @@ import {
   generateOutreachDraft,
 } from "@/lib/outreach/generate-outreach";
 import { parseOutreachLanguage } from "@/lib/outreach/languages";
+import { createLeadActivity } from "@/lib/activities";
 import { getLeadById } from "@/lib/leads";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -26,6 +27,11 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const input = buildOutreachInput(lead, lead.analysis);
     const draft = generateOutreachDraft(input, language);
+
+    createLeadActivity(leadId, "outreach_generated", {
+      language: draft.language,
+      subject: draft.subject,
+    });
 
     return NextResponse.json(draft);
   } catch (error) {

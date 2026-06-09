@@ -63,7 +63,36 @@ function initSchema(database: Database.Database) {
 
     CREATE INDEX IF NOT EXISTS idx_lead_tasks_lead ON lead_tasks(lead_id);
     CREATE INDEX IF NOT EXISTS idx_lead_tasks_due ON lead_tasks(due_date);
+
+    CREATE TABLE IF NOT EXISTS lead_activities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      lead_id INTEGER NOT NULL,
+      activity_type TEXT NOT NULL,
+      details TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_activities_lead ON lead_activities(lead_id);
+    CREATE INDEX IF NOT EXISTS idx_lead_activities_created ON lead_activities(created_at);
   `);
+
+  runMigrations(database);
+}
+
+function runMigrations(database: Database.Database) {
+  const columns = database
+    .prepare("PRAGMA table_info(leads)")
+    .all() as Array<{ name: string }>;
+  const columnNames = new Set(columns.map((column) => column.name));
+
+  if (!columnNames.has("contacted_at")) {
+    database.exec("ALTER TABLE leads ADD COLUMN contacted_at TEXT");
+  }
+
+  if (!columnNames.has("contacted_language")) {
+    database.exec("ALTER TABLE leads ADD COLUMN contacted_language TEXT");
+  }
 }
 
 export function getDb(): Database.Database {
