@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
-import { getAllLeads, createLead } from "@/lib/leads";
-import type { LeadStatus } from "@/lib/types";
+import { createLead, searchLeads } from "@/lib/leads";
+import { LEAD_STATUSES, type LeadStatus } from "@/lib/types";
+
+function parseStatus(value: string | null): LeadStatus | undefined {
+  if (!value) return undefined;
+  return LEAD_STATUSES.includes(value as LeadStatus)
+    ? (value as LeadStatus)
+    : undefined;
+}
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status") as LeadStatus | null;
-    const leads = getAllLeads(status ?? undefined);
+    const q = searchParams.get("q")?.trim() || undefined;
+    const status = parseStatus(searchParams.get("status"));
+    const leads = searchLeads({ q, status });
     return NextResponse.json(leads);
   } catch (error) {
     console.error("GET /api/leads error:", error);

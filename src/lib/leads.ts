@@ -4,11 +4,19 @@ import type {
   DashboardStats,
   Lead,
   LeadAnalysis,
+  LeadSearchFilters,
   LeadStatus,
   LeadWithAnalysis,
   UpdateLeadInput,
 } from "./types";
 import { LEAD_STATUSES } from "./types";
+
+const POST_CONTACT_STATUSES: LeadStatus[] = [
+  "Contacted",
+  "Follow Up",
+  "Proposal Sent",
+  "Client",
+];
 
 function rowToLead(row: Record<string, unknown>): Lead {
   return {
@@ -44,18 +52,41 @@ function rowToAnalysis(row: Record<string, unknown>): LeadAnalysis {
   };
 }
 
-export function getAllLeads(status?: LeadStatus): Lead[] {
+export function searchLeads(filters: LeadSearchFilters = {}): Lead[] {
   const db = getDb();
-  if (status) {
-    const rows = db
-      .prepare("SELECT * FROM leads WHERE status = ? ORDER BY lead_score DESC, created_at DESC")
-      .all(status);
-    return rows.map((row) => rowToLead(row as Record<string, unknown>));
+  const conditions: string[] = [];
+  const params: Record<string, string> = {};
+
+  if (filters.status) {
+    conditions.push("status = @status");
+    params.status = filters.status;
   }
+
+  if (filters.q) {
+    conditions.push(`(
+      company LIKE @q OR
+      city LIKE @q OR
+      industry LIKE @q OR
+      email LIKE @q OR
+      website LIKE @q OR
+      phone LIKE @q OR
+      notes LIKE @q
+    )`);
+    params.q = `%${filters.q}%`;
+  }
+
+  const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const rows = db
-    .prepare("SELECT * FROM leads ORDER BY lead_score DESC, created_at DESC")
-    .all();
+    .prepare(
+      `SELECT * FROM leads ${where} ORDER BY lead_score DESC, created_at DESC`
+    )
+    .all(params);
+
   return rows.map((row) => rowToLead(row as Record<string, unknown>));
+}
+
+export function getAllLeads(status?: LeadStatus): Lead[] {
+  return searchLeads(status ? { status } : {});
 }
 
 export function getLeadById(id: number): LeadWithAnalysis | null {
@@ -187,9 +218,19 @@ export function saveLeadAnalysis(
     rawAnalysis: JSON.stringify(analysis.rawAnalysis),
   });
 
-  db.prepare(
-    `UPDATE leads SET lead_score = @leadScore, status = 'Analyzed', updated_at = datetime('now') WHERE id = @leadId`
-  ).run({ leadId, leadScore: analysis.leadScore });
+  const existing = getLeadById(leadId);
+  const preserveStatus =
+    existing && POST_CONTACT_STATUSES.includes(existing.status);
+
+  if (preserveStatus) {
+    db.prepare(
+      `UPDATE leads SET lead_score = @leadScore, updated_at = datetime('now') WHERE id = @leadId`
+    ).run({ leadId, leadScore: analysis.leadScore });
+  } else {
+    db.prepare(
+      `UPDATE leads SET lead_score = @leadScore, status = 'Analyzed', updated_at = datetime('now') WHERE id = @leadId`
+    ).run({ leadId, leadScore: analysis.leadScore });
+  }
 
   const row = db
     .prepare("SELECT * FROM lead_analyses WHERE lead_id = ?")

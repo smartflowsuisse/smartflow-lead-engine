@@ -98,6 +98,11 @@ export interface LeadAnalysisContext {
   website?: string;
 }
 
+export interface LeadSearchFilters {
+  q?: string;
+  status?: LeadStatus;
+}
+
 export interface LeadWithAnalysis extends Lead {
   analysis?: LeadAnalysis | null;
 }

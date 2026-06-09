@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
+import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
 import { cn, formatDateTime, scoreColor, statusColor } from "@/lib/utils";
 import { getScoreLabel, getRecommendedAction } from "@/lib/scoring";
 
@@ -63,13 +64,16 @@ export default async function LeadDetailPage({ params }: PageProps) {
             Added {formatDateTime(lead.created_at)}
           </p>
         </div>
-        <Link
-          href={`/leads/${lead.id}/edit`}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          <Pencil className="h-4 w-4" />
-          Edit Lead
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/leads/${lead.id}/edit`}
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            <Pencil className="h-4 w-4" />
+            Edit Lead
+          </Link>
+          <DeleteLeadButton leadId={lead.id} companyName={lead.company} />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
