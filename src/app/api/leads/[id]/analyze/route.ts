@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { analyzeWebsite } from "@/lib/ai-analysis";
 import { WebsiteAnalysisUnavailableError } from "@/lib/analysis/unavailable";
+import { buildAnalysisUnavailablePayload } from "@/lib/analysis/unavailable-display";
 import { getLeadById, saveLeadAnalysis } from "@/lib/leads";
 import { calculateLeadScore } from "@/lib/scoring";
 
@@ -55,12 +56,14 @@ export async function POST(_request: Request, { params }: RouteParams) {
     });
   } catch (error) {
     if (error instanceof WebsiteAnalysisUnavailableError) {
-      return NextResponse.json({ error: error.message }, { status: 422 });
+      return NextResponse.json(buildAnalysisUnavailablePayload(), {
+        status: 422,
+      });
     }
 
     console.error("POST /api/leads/[id]/analyze error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Analysis failed" },
+      { error: "Analysis could not be completed" },
       { status: 500 }
     );
   }

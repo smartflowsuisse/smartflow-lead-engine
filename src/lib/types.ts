@@ -114,3 +114,24 @@ export interface LeadSearchFilters {
 export interface LeadWithAnalysis extends Lead {
   analysis?: LeadAnalysis | null;
 }
+
+export interface LeadTask {
+  id: number;
+  lead_id: number;
+  title: string;
+  due_date: string;
+  completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateLeadTaskInput {
+  title: string;
+  due_date: string;
+}
+
+export interface UpdateLeadTaskInput {
+  title?: string;
+  due_date?: string;
+  completed?: boolean;
+}

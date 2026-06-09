@@ -16,6 +16,14 @@ import {
 } from "lucide-react";
 import type { LeadAnalysis } from "@/lib/types";
 import { getAnalysisEngine } from "@/lib/ai/display";
+import {
+  ANALYSIS_UNAVAILABLE_ACTION,
+  ANALYSIS_UNAVAILABLE_MESSAGE,
+  ANALYSIS_UNAVAILABLE_REASON,
+  type AnalysisUnavailablePayload,
+  isAnalysisUnavailablePayload,
+  isLegacyUnavailableError,
+} from "@/lib/analysis/unavailable-display";
 import { cn, scoreColor } from "@/lib/utils";
 import { getScoreLabel, formatAnalysisScore } from "@/lib/scoring";
 import { isKnownScore } from "@/lib/analysis/score-values";
@@ -66,6 +74,33 @@ function ScoreBar({
   );
 }
 
+function AnalysisUnavailableFallback({
+  payload,
+}: {
+  payload: AnalysisUnavailablePayload;
+}) {
+  return (
+    <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
+      <div>
+        <h3 className="font-semibold text-slate-900">{payload.message}</h3>
+        <p className="mt-2 text-sm text-slate-600">
+          Reason: {payload.reason}
+        </p>
+      </div>
+
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <p className="text-sm text-slate-500">Lead Score</p>
+        <p className="mt-1 text-lg font-semibold text-slate-900">Not scored</p>
+      </div>
+
+      <div className="rounded-lg border border-brand-200 bg-brand-50/50 p-4">
+        <p className="text-sm font-medium text-slate-900">Recommended action</p>
+        <p className="mt-1 text-sm text-slate-700">{payload.recommendedAction}</p>
+      </div>
+    </div>
+  );
+}
+
 export function AnalysisPanel({
   leadId,
   website,
@@ -75,21 +110,46 @@ export function AnalysisPanel({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [unavailable, setUnavailable] = useState<AnalysisUnavailablePayload | null>(
+    null
+  );
 
   const runAnalysis = async () => {
     if (!website) return;
     setLoading(true);
     setError(null);
+    setUnavailable(null);
 
     try {
       const res = await fetch(`/api/leads/${leadId}/analyze`, { method: "POST" });
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Analysis failed");
+        if (isAnalysisUnavailablePayload(data)) {
+          setUnavailable(data);
+          return;
+        }
+
+        const message =
+          typeof data.error === "string" ? data.error : "Analysis could not be completed";
+
+        if (isLegacyUnavailableError(message)) {
+          setUnavailable({
+            unavailable: true,
+            message: ANALYSIS_UNAVAILABLE_MESSAGE,
+            reason: ANALYSIS_UNAVAILABLE_REASON,
+            recommendedAction: ANALYSIS_UNAVAILABLE_ACTION,
+          });
+          return;
+        }
+
+        throw new Error("Analysis could not be completed");
       }
+
+      setUnavailable(null);
       router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Analysis failed");
+    } catch {
+      setError("Analysis could not be completed. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -166,6 +226,10 @@ export function AnalysisPanel({
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
+      )}
+
+      {unavailable && !analysis && (
+        <AnalysisUnavailableFallback payload={unavailable} />
       )}
 
       {analysis && (

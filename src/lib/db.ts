@@ -49,6 +49,20 @@ function initSchema(database: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
     CREATE INDEX IF NOT EXISTS idx_leads_score ON leads(lead_score);
     CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at);
+
+    CREATE TABLE IF NOT EXISTS lead_tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      lead_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      due_date TEXT NOT NULL,
+      completed INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_tasks_lead ON lead_tasks(lead_id);
+    CREATE INDEX IF NOT EXISTS idx_lead_tasks_due ON lead_tasks(due_date);
   `);
 }
 
