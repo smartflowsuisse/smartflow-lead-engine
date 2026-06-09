@@ -46,7 +46,10 @@ const baseAnalysis: LeadAnalysis = {
 
 describe("generateOutreachDraft", () => {
   it("includes company, city, industry, and website", () => {
-    const draft = generateOutreachDraft(buildOutreachInput(baseLead, baseAnalysis));
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "en"
+    );
     assert.match(draft.body, /TechHandel AG/);
     assert.match(draft.body, /Lausanne/);
     assert.match(draft.body, /Retail & E-commerce/);
@@ -54,13 +57,17 @@ describe("generateOutreachDraft", () => {
   });
 
   it("includes lead score and analysis content for high-priority leads", () => {
-    const draft = generateOutreachDraft(buildOutreachInput(baseLead, baseAnalysis));
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "en"
+    );
     assert.match(draft.body, /76\/100/);
     assert.match(draft.body, /High Priority/);
-    assert.match(draft.body, /no contact form detected/);
     assert.match(draft.body, /Add HTTPS\/SSL certificate/);
     assert.match(draft.body, /Smart contact form with CRM integration/);
     assert.match(draft.subject, /TechHandel AG/);
+    assert.match(draft.body, /Andrii Moroz/);
+    assert.match(draft.body, /info@smartflowsuisse.com/);
   });
 
   it("uses softer messaging for low-priority leads", () => {
@@ -71,17 +78,53 @@ describe("generateOutreachDraft", () => {
       industry: "Gastro",
       lead_score: 6,
     };
-    const draft = generateOutreachDraft(buildOutreachInput(lowLead, baseAnalysis));
+    const draft = generateOutreachDraft(
+      buildOutreachInput(lowLead, baseAnalysis),
+      "en"
+    );
     assert.match(draft.body, /6\/100/);
     assert.match(draft.body, /Not Qualified/);
-    assert.match(draft.body, /practical digital improvements/);
+    assert.match(draft.subject, /digital improvements/i);
   });
 
-  it("works without analysis data", () => {
+  it("works without analysis data for not-scored leads", () => {
     const draft = generateOutreachDraft(
-      buildOutreachInput({ ...baseLead, lead_score: 0 }, null)
+      buildOutreachInput({ ...baseLead, lead_score: 0 }, null),
+      "en"
     );
-    assert.match(draft.body, /No website analysis available yet/);
-    assert.match(draft.body, /not yet calculated/);
+    assert.match(draft.body, /not yet available/i);
+    assert.match(draft.body, /not yet calculated/i);
+    assert.match(draft.body, /Andrii Moroz/);
+    assert.match(draft.body, /info@smartflowsuisse.com/);
+  });
+
+  it("generates French draft with Bonjour greeting", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "fr"
+    );
+    assert.equal(draft.language, "fr");
+    assert.match(draft.body, /^Bonjour,/);
+    assert.match(draft.body, /SmartFlow Suisse aide les entreprises suisses/);
+  });
+
+  it("generates German draft with Guten Tag greeting", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "de"
+    );
+    assert.equal(draft.language, "de");
+    assert.match(draft.body, /^Guten Tag,/);
+    assert.match(draft.body, /SmartFlow Suisse unterstützt Schweizer Unternehmen/);
+  });
+
+  it("generates English draft with Hello greeting", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "en"
+    );
+    assert.equal(draft.language, "en");
+    assert.match(draft.body, /^Hello,/);
+    assert.match(draft.body, /15-minute call/i);
   });
 });

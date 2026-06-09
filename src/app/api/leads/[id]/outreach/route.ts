@@ -3,11 +3,12 @@ import {
   buildOutreachInput,
   generateOutreachDraft,
 } from "@/lib/outreach/generate-outreach";
+import { parseOutreachLanguage } from "@/lib/outreach/languages";
 import { getLeadById } from "@/lib/leads";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
-export async function POST(_request: Request, { params }: RouteParams) {
+export async function POST(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
     const leadId = parseInt(id, 10);
@@ -20,8 +21,11 @@ export async function POST(_request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Lead not found" }, { status: 404 });
     }
 
+    const body = await request.json().catch(() => ({}));
+    const language = parseOutreachLanguage(body.language);
+
     const input = buildOutreachInput(lead, lead.analysis);
-    const draft = generateOutreachDraft(input);
+    const draft = generateOutreachDraft(input, language);
 
     return NextResponse.json(draft);
   } catch (error) {
