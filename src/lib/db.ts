@@ -1,0 +1,71 @@
+import Database from "better-sqlite3";
+import fs from "fs";
+import path from "path";
+
+const DATA_DIR = path.join(process.cwd(), "data");
+const DB_PATH = path.join(DATA_DIR, "leads.db");
+
+let db: Database.Database | null = null;
+
+function ensureDataDir() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+}
+
+function initSchema(database: Database.Database) {
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS leads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company TEXT NOT NULL,
+      website TEXT,
+      email TEXT,
+      phone TEXT,
+      city TEXT,
+      industry TEXT,
+      lead_score INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'New Lead',
+      notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS lead_analyses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      lead_id INTEGER NOT NULL UNIQUE,
+      website_quality INTEGER NOT NULL DEFAULT 0,
+      mobile_friendliness INTEGER NOT NULL DEFAULT 0,
+      speed_score INTEGER NOT NULL DEFAULT 0,
+      seo_score INTEGER NOT NULL DEFAULT 0,
+      has_contact_form INTEGER NOT NULL DEFAULT 0,
+      trust_score INTEGER NOT NULL DEFAULT 0,
+      quick_wins TEXT NOT NULL DEFAULT '[]',
+      automation_opportunities TEXT NOT NULL DEFAULT '[]',
+      raw_analysis TEXT NOT NULL DEFAULT '{}',
+      analyzed_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+    CREATE INDEX IF NOT EXISTS idx_leads_score ON leads(lead_score);
+    CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at);
+  `);
+}
+
+export function getDb(): Database.Database {
+  if (!db) {
+    ensureDataDir();
+    db = new Database(DB_PATH);
+    db.pragma("journal_mode = WAL");
+    db.pragma("foreign_keys = ON");
+    initSchema(db);
+  }
+  return db;
+}
+
+export function closeDb() {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}

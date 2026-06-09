@@ -1,0 +1,261 @@
+import { getDb } from "./db";
+import type {
+  CreateLeadInput,
+  DashboardStats,
+  Lead,
+  LeadAnalysis,
+  LeadStatus,
+  LeadWithAnalysis,
+  UpdateLeadInput,
+} from "./types";
+import { LEAD_STATUSES } from "./types";
+
+function rowToLead(row: Record<string, unknown>): Lead {
+  return {
+    id: row.id as number,
+    company: row.company as string,
+    website: (row.website as string) ?? null,
+    email: (row.email as string) ?? null,
+    phone: (row.phone as string) ?? null,
+    city: (row.city as string) ?? null,
+    industry: (row.industry as string) ?? null,
+    lead_score: row.lead_score as number,
+    status: row.status as LeadStatus,
+    notes: (row.notes as string) ?? null,
+    created_at: row.created_at as string,
+    updated_at: row.updated_at as string,
+  };
+}
+
+function rowToAnalysis(row: Record<string, unknown>): LeadAnalysis {
+  return {
+    id: row.id as number,
+    lead_id: row.lead_id as number,
+    website_quality: row.website_quality as number,
+    mobile_friendliness: row.mobile_friendliness as number,
+    speed_score: row.speed_score as number,
+    seo_score: row.seo_score as number,
+    has_contact_form: Boolean(row.has_contact_form),
+    trust_score: row.trust_score as number,
+    quick_wins: row.quick_wins as string,
+    automation_opportunities: row.automation_opportunities as string,
+    raw_analysis: row.raw_analysis as string,
+    analyzed_at: row.analyzed_at as string,
+  };
+}
+
+export function getAllLeads(status?: LeadStatus): Lead[] {
+  const db = getDb();
+  if (status) {
+    const rows = db
+      .prepare("SELECT * FROM leads WHERE status = ? ORDER BY lead_score DESC, created_at DESC")
+      .all(status);
+    return rows.map((row) => rowToLead(row as Record<string, unknown>));
+  }
+  const rows = db
+    .prepare("SELECT * FROM leads ORDER BY lead_score DESC, created_at DESC")
+    .all();
+  return rows.map((row) => rowToLead(row as Record<string, unknown>));
+}
+
+export function getLeadById(id: number): LeadWithAnalysis | null {
+  const db = getDb();
+  const row = db.prepare("SELECT * FROM leads WHERE id = ?").get(id);
+  if (!row) return null;
+
+  const lead = rowToLead(row as Record<string, unknown>);
+  const analysisRow = db
+    .prepare("SELECT * FROM lead_analyses WHERE lead_id = ?")
+    .get(id);
+
+  return {
+    ...lead,
+    analysis: analysisRow
+      ? rowToAnalysis(analysisRow as Record<string, unknown>)
+      : null,
+  };
+}
+
+export function createLead(input: CreateLeadInput): Lead {
+  const db = getDb();
+  const result = db
+    .prepare(
+      `INSERT INTO leads (company, website, email, phone, city, industry, status, notes)
+       VALUES (@company, @website, @email, @phone, @city, @industry, @status, @notes)`
+    )
+    .run({
+      company: input.company,
+      website: input.website ?? null,
+      email: input.email ?? null,
+      phone: input.phone ?? null,
+      city: input.city ?? null,
+      industry: input.industry ?? null,
+      status: input.status ?? "New Lead",
+      notes: input.notes ?? null,
+    });
+
+  const lead = getLeadById(result.lastInsertRowid as number);
+  return lead!;
+}
+
+export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
+  const db = getDb();
+  const existing = getLeadById(id);
+  if (!existing) return null;
+
+  db.prepare(
+    `UPDATE leads SET
+      company = @company,
+      website = @website,
+      email = @email,
+      phone = @phone,
+      city = @city,
+      industry = @industry,
+      lead_score = @lead_score,
+      status = @status,
+      notes = @notes,
+      updated_at = datetime('now')
+     WHERE id = @id`
+  ).run({
+    id,
+    company: input.company ?? existing.company,
+    website: input.website !== undefined ? input.website : existing.website,
+    email: input.email !== undefined ? input.email : existing.email,
+    phone: input.phone !== undefined ? input.phone : existing.phone,
+    city: input.city !== undefined ? input.city : existing.city,
+    industry: input.industry !== undefined ? input.industry : existing.industry,
+    lead_score: input.lead_score ?? existing.lead_score,
+    status: input.status ?? existing.status,
+    notes: input.notes !== undefined ? input.notes : existing.notes,
+  });
+
+  return getLeadById(id);
+}
+
+export function deleteLead(id: number): boolean {
+  const db = getDb();
+  const result = db.prepare("DELETE FROM leads WHERE id = ?").run(id);
+  return result.changes > 0;
+}
+
+export function saveLeadAnalysis(
+  leadId: number,
+  analysis: {
+    websiteQuality: number;
+    mobileFriendliness: number;
+    speedScore: number;
+    seoScore: number;
+    hasContactForm: boolean;
+    trustScore: number;
+    quickWins: string[];
+    automationOpportunities: string[];
+    rawAnalysis: Record<string, unknown>;
+    leadScore: number;
+  }
+): LeadAnalysis {
+  const db = getDb();
+
+  db.prepare(
+    `INSERT INTO lead_analyses (
+      lead_id, website_quality, mobile_friendliness, speed_score, seo_score,
+      has_contact_form, trust_score, quick_wins, automation_opportunities, raw_analysis
+    ) VALUES (
+      @leadId, @websiteQuality, @mobileFriendliness, @speedScore, @seoScore,
+      @hasContactForm, @trustScore, @quickWins, @automationOpportunities, @rawAnalysis
+    )
+    ON CONFLICT(lead_id) DO UPDATE SET
+      website_quality = excluded.website_quality,
+      mobile_friendliness = excluded.mobile_friendliness,
+      speed_score = excluded.speed_score,
+      seo_score = excluded.seo_score,
+      has_contact_form = excluded.has_contact_form,
+      trust_score = excluded.trust_score,
+      quick_wins = excluded.quick_wins,
+      automation_opportunities = excluded.automation_opportunities,
+      raw_analysis = excluded.raw_analysis,
+      analyzed_at = datetime('now')`
+  ).run({
+    leadId,
+    websiteQuality: analysis.websiteQuality,
+    mobileFriendliness: analysis.mobileFriendliness,
+    speedScore: analysis.speedScore,
+    seoScore: analysis.seoScore,
+    hasContactForm: analysis.hasContactForm ? 1 : 0,
+    trustScore: analysis.trustScore,
+    quickWins: JSON.stringify(analysis.quickWins),
+    automationOpportunities: JSON.stringify(analysis.automationOpportunities),
+    rawAnalysis: JSON.stringify(analysis.rawAnalysis),
+  });
+
+  db.prepare(
+    `UPDATE leads SET lead_score = @leadScore, status = 'Analyzed', updated_at = datetime('now') WHERE id = @leadId`
+  ).run({ leadId, leadScore: analysis.leadScore });
+
+  const row = db
+    .prepare("SELECT * FROM lead_analyses WHERE lead_id = ?")
+    .get(leadId);
+  return rowToAnalysis(row as Record<string, unknown>);
+}
+
+export function getDashboardStats(): DashboardStats {
+  const db = getDb();
+
+  const totalLeads = (
+    db.prepare("SELECT COUNT(*) as count FROM leads").get() as { count: number }
+  ).count;
+
+  const byStatus = {} as Record<LeadStatus, number>;
+  for (const status of LEAD_STATUSES) {
+    byStatus[status] = (
+      db
+        .prepare("SELECT COUNT(*) as count FROM leads WHERE status = ?")
+        .get(status) as { count: number }
+    ).count;
+  }
+
+  const avgRow = db
+    .prepare("SELECT AVG(lead_score) as avg FROM leads WHERE lead_score > 0")
+    .get() as { avg: number | null };
+
+  const analyzedCount = (
+    db.prepare("SELECT COUNT(*) as count FROM lead_analyses").get() as {
+      count: number;
+    }
+  ).count;
+
+  const clientCount = byStatus["Client"];
+  const conversionRate =
+    totalLeads > 0 ? Math.round((clientCount / totalLeads) * 100) : 0;
+
+  const highPriorityLeads = (
+    db
+      .prepare(
+        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 60 AND status NOT IN ('Client', 'Proposal Sent')"
+      )
+      .get() as { count: number }
+  ).count;
+
+  const recentRows = db
+    .prepare("SELECT * FROM leads ORDER BY created_at DESC LIMIT 5")
+    .all();
+
+  return {
+    totalLeads,
+    byStatus,
+    averageScore: Math.round(avgRow.avg ?? 0),
+    analyzedCount,
+    conversionRate,
+    highPriorityLeads,
+    recentLeads: recentRows.map((row) =>
+      rowToLead(row as Record<string, unknown>)
+    ),
+  };
+}
+
+export function getLeadsByPipeline(): Record<LeadStatus, Lead[]> {
+  const pipeline = {} as Record<LeadStatus, Lead[]>;
+  for (const status of LEAD_STATUSES) {
+    pipeline[status] = getAllLeads(status);
+  }
+  return pipeline;
+}

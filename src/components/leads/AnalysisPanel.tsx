@@ -1,0 +1,200 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Sparkles,
+  Loader2,
+  Smartphone,
+  Gauge,
+  Search,
+  Shield,
+  FormInput,
+  Monitor,
+  Lightbulb,
+  Bot,
+} from "lucide-react";
+import type { LeadAnalysis } from "@/lib/types";
+import { cn, scoreColor } from "@/lib/utils";
+import { getScoreLabel } from "@/lib/scoring";
+
+interface AnalysisPanelProps {
+  leadId: number;
+  website: string | null;
+  leadScore: number;
+  analysis: LeadAnalysis | null | undefined;
+}
+
+function ScoreBar({ label, score, icon }: { label: string; score: number; icon: React.ReactNode }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between text-sm">
+        <span className="flex items-center gap-1.5 text-slate-600">
+          {icon}
+          {label}
+        </span>
+        <span className="font-semibold text-slate-900">{score}/100</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+        <div
+          className={cn(
+            "h-full rounded-full transition-all",
+            score >= 70 ? "bg-emerald-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"
+          )}
+          style={{ width: `${score}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export function AnalysisPanel({
+  leadId,
+  website,
+  leadScore,
+  analysis,
+}: AnalysisPanelProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const runAnalysis = async () => {
+    if (!website) return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/leads/${leadId}/analyze`, { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Analysis failed");
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Analysis failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const quickWins: string[] = analysis
+    ? JSON.parse(analysis.quick_wins)
+    : [];
+  const automationOps: string[] = analysis
+    ? JSON.parse(analysis.automation_opportunities)
+    : [];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900">AI Website Analysis</h2>
+          <p className="text-sm text-slate-500">
+            Analyze website quality, SEO, and SmartFlow opportunities
+          </p>
+        </div>
+        <button
+          onClick={runAnalysis}
+          disabled={loading || !website}
+          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4" />
+          )}
+          {analysis ? "Re-analyze" : "Run Analysis"}
+        </button>
+      </div>
+
+      {!website && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Add a website URL to enable AI analysis.
+        </div>
+      )}
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {analysis && (
+        <>
+          <div className="rounded-xl border border-slate-200 bg-white p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Lead Score</p>
+                <p className="text-4xl font-bold text-slate-900">{leadScore}</p>
+                <p className="text-sm font-medium text-slate-600">
+                  {getScoreLabel(leadScore)}
+                </p>
+              </div>
+              <div
+                className={cn(
+                  "rounded-xl border px-4 py-3 text-center",
+                  scoreColor(leadScore)
+                )}
+              >
+                <p className="text-2xl font-bold">{leadScore}</p>
+                <p className="text-xs">/ 100</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
+            <h3 className="font-semibold text-slate-900">Analysis Breakdown</h3>
+            <ScoreBar label="Website Quality" score={analysis.website_quality} icon={<Monitor className="h-3.5 w-3.5" />} />
+            <ScoreBar label="Mobile Friendliness" score={analysis.mobile_friendliness} icon={<Smartphone className="h-3.5 w-3.5" />} />
+            <ScoreBar label="Page Speed" score={analysis.speed_score} icon={<Gauge className="h-3.5 w-3.5" />} />
+            <ScoreBar label="SEO Basics" score={analysis.seo_score} icon={<Search className="h-3.5 w-3.5" />} />
+            <ScoreBar label="Trust Elements" score={analysis.trust_score} icon={<Shield className="h-3.5 w-3.5" />} />
+            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm">
+              <FormInput className="h-4 w-4 text-slate-500" />
+              <span className="text-slate-600">Contact Form:</span>
+              <span className={analysis.has_contact_form ? "font-medium text-emerald-600" : "font-medium text-red-600"}>
+                {analysis.has_contact_form ? "Detected" : "Not found"}
+              </span>
+            </div>
+          </div>
+
+          {quickWins.length > 0 && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-amber-600" />
+                <h3 className="font-semibold text-slate-900">Quick Wins</h3>
+              </div>
+              <ul className="space-y-2">
+                {quickWins.map((win, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-slate-700">
+                    <span className="font-bold text-amber-600">{i + 1}.</span>
+                    {win}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {automationOps.length > 0 && (
+            <div className="rounded-xl border border-brand-200 bg-brand-50/50 p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <Bot className="h-5 w-5 text-brand-600" />
+                <h3 className="font-semibold text-slate-900">
+                  SmartFlow Automation Opportunities
+                </h3>
+              </div>
+              <ul className="space-y-2">
+                {automationOps.map((op, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-slate-700">
+                    <span className="font-bold text-brand-600">{i + 1}.</span>
+                    {op}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
