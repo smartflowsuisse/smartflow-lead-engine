@@ -149,4 +149,98 @@ export const MOCK_SWISS_COMPANIES: DiscoveryCandidate[] = [
   { company: "Électro Chablais Monthey", website: "https://electro-chablais.ch", city: "Monthey", industry: "Electricien" },
   { company: "Plombier Valais Central", website: "https://plombier-valais-central.ch", city: "Sion", industry: "Plombier" },
   { company: "Chauffage Martigny Valais", website: "https://chauffage-martigny-valais.ch", city: "Martigny", industry: "Chauffage" },
+
+  // ── Phase 3 — Swiss trades expansion (Construction trades) ──────────
+  // Monthey
+  { company: "Chablais Construction SA", website: "https://chablais-construction.ch", city: "Monthey", industry: "Construction" },
+  { company: "Toiture Monthey Express", website: "https://toiture-monthey.ch", city: "Monthey", industry: "Roofing" },
+  { company: "Monthey Electrical Services", website: "https://monthey-electrical.ch", city: "Monthey", industry: "Electrical" },
+  { company: "Plumbing Chablais", website: "https://plumbing-chablais.ch", city: "Monthey", industry: "Plumbing" },
+  { company: "HVAC Monthey Pro", website: "https://hvac-monthey.ch", city: "Monthey", industry: "HVAC" },
+  { company: "Rénovation Plus Monthey", website: "https://renovation-plus-monthey.ch", city: "Monthey", industry: "Renovation" },
+  { company: "Peinture Valaisan", website: "https://peinture-valaisan.ch", city: "Monthey", industry: "Painting" },
+  { company: "Jardins du Chablais", website: "https://jardins-chablais.ch", city: "Monthey", industry: "Landscaping" },
+
+  // Sion
+  { company: "Entreprise Générale Sion", website: "https://entreprise-generale-sion.ch", city: "Sion", industry: "Construction" },
+  { company: "Couverture Valais Sion", website: "https://couverture-valais-sion.ch", city: "Sion", industry: "Roofing" },
+  { company: "Sion Electrical AG", website: "https://sion-electrical.ch", city: "Sion", industry: "Electrical" },
+  { company: "Plomberie Centrale Sion", website: "https://plomberie-centrale-sion.ch", city: "Sion", industry: "Plumbing" },
+  { company: "Climatisation Sion", website: "https://climatisation-sion.ch", city: "Sion", industry: "HVAC" },
+  { company: "Rénovation Sion & Région", website: "https://renovation-sion.ch", city: "Sion", industry: "Renovation" },
+  { company: "Peinture Sion SA", website: "https://peinture-sion.ch", city: "Sion", industry: "Painting" },
+
+  // Martigny
+  { company: "Martigny Bâtiment SA", website: "https://martigny-batiment.ch", city: "Martigny", industry: "Construction" },
+  { company: "Toitures Martigny", website: "https://toitures-martigny.ch", city: "Martigny", industry: "Roofing" },
+  { company: "Martigny Electrical Sàrl", website: "https://martigny-electrical.ch", city: "Martigny", industry: "Electrical" },
+  { company: "Plumbing Martigny Rhône", website: "https://plumbing-martigny.ch", city: "Martigny", industry: "Plumbing" },
+  { company: "HVAC Martigny Solutions", website: "https://hvac-martigny.ch", city: "Martigny", industry: "HVAC" },
+  { company: "Rénovation Martigny Pro", website: "https://renovation-martigny-pro.ch", city: "Martigny", industry: "Renovation" },
+  { company: "Paysagiste du Rhône", website: "https://paysagiste-rhone.ch", city: "Martigny", industry: "Landscaping" },
+
+  // Lausanne
+  { company: "Lausanne Construction Group", website: "https://lausanne-construction.ch", city: "Lausanne", industry: "Construction" },
+  { company: "Toiture Lausanne SA", website: "https://toiture-lausanne.ch", city: "Lausanne", industry: "Roofing" },
+  { company: "Electrical Lausanne Ouest", website: "https://electrical-lausanne.ch", city: "Lausanne", industry: "Electrical" },
+  { company: "Plumbing Lausanne Lac", website: "https://plumbing-lausanne.ch", city: "Lausanne", industry: "Plumbing" },
+  { company: "HVAC Lausanne Énergie", website: "https://hvac-lausanne.ch", city: "Lausanne", industry: "HVAC" },
+  { company: "Rénovation Lausanne Centre", website: "https://renovation-lausanne.ch", city: "Lausanne", industry: "Renovation" },
+  { company: "Peinture Lausanne & Co", website: "https://peinture-lausanne.ch", city: "Lausanne", industry: "Painting" },
+  { company: "Landscaping Lausanne Jardins", website: "https://landscaping-lausanne.ch", city: "Lausanne", industry: "Landscaping" },
+
+  // Genève
+  { company: "Genève Construction SA", website: "https://geneve-construction.ch", city: "Genève", industry: "Construction" },
+  { company: "Couverture Genève Plus", website: "https://couverture-geneve.ch", city: "Genève", industry: "Roofing" },
+  { company: "Genève Electrical Services", website: "https://geneve-electrical.ch", city: "Genève", industry: "Electrical" },
+  { company: "Plumbing Genève Rive", website: "https://plumbing-geneve.ch", city: "Genève", industry: "Plumbing" },
+  { company: "HVAC Genève Climat", website: "https://hvac-geneve.ch", city: "Genève", industry: "HVAC" },
+  { company: "Rénovation Genève Prestige", website: "https://renovation-geneve.ch", city: "Genève", industry: "Renovation" },
+  { company: "Peinture Genève Artisans", website: "https://peinture-geneve.ch", city: "Genève", industry: "Painting" },
+
+  // Fribourg
+  { company: "Fribourg Construction AG", website: "https://fribourg-construction.ch", city: "Fribourg", industry: "Construction" },
+  { company: "Toiture Fribourg SA", website: "https://toiture-fribourg.ch", city: "Fribourg", industry: "Roofing" },
+  { company: "Electrical Fribourg Nord", website: "https://electrical-fribourg.ch", city: "Fribourg", industry: "Electrical" },
+  { company: "Plumbing Fribourg Centre", website: "https://plumbing-fribourg.ch", city: "Fribourg", industry: "Plumbing" },
+  { company: "HVAC Fribourg Thermo", website: "https://hvac-fribourg.ch", city: "Fribourg", industry: "HVAC" },
+  { company: "Rénovation Fribourg Bâtiment", website: "https://renovation-fribourg.ch", city: "Fribourg", industry: "Renovation" },
+  { company: "Landscaping Fribourg Vert", website: "https://landscaping-fribourg.ch", city: "Fribourg", industry: "Landscaping" },
+
+  // Neuchâtel
+  { company: "Neuchâtel Construction SA", website: "https://neuchatel-construction.ch", city: "Neuchâtel", industry: "Construction" },
+  { company: "Couverture Neuchâtel Lac", website: "https://couverture-neuchatel.ch", city: "Neuchâtel", industry: "Roofing" },
+  { company: "Electrical Neuchâtel SA", website: "https://electrical-neuchatel.ch", city: "Neuchâtel", industry: "Electrical" },
+  { company: "Plumbing Neuchâtel Express", website: "https://plumbing-neuchatel.ch", city: "Neuchâtel", industry: "Plumbing" },
+  { company: "HVAC Neuchâtel Confort", website: "https://hvac-neuchatel.ch", city: "Neuchâtel", industry: "HVAC" },
+  { company: "Peinture Neuchâtel Pro", website: "https://peinture-neuchatel.ch", city: "Neuchâtel", industry: "Painting" },
+
+  // Vevey
+  { company: "Vevey Construction Riviera", website: "https://vevey-construction.ch", city: "Vevey", industry: "Construction" },
+  { company: "Toiture Vevey Lac", website: "https://toiture-vevey.ch", city: "Vevey", industry: "Roofing" },
+  { company: "Electrical Vevey SA", website: "https://electrical-vevey.ch", city: "Vevey", industry: "Electrical" },
+  { company: "Plumbing Vevey Riviera", website: "https://plumbing-vevey.ch", city: "Vevey", industry: "Plumbing" },
+  { company: "HVAC Vevey Solutions", website: "https://hvac-vevey.ch", city: "Vevey", industry: "HVAC" },
+  { company: "Rénovation Vevey Lac", website: "https://renovation-vevey.ch", city: "Vevey", industry: "Renovation" },
+  { company: "Jardins Vevey Paysage", website: "https://jardins-vevey.ch", city: "Vevey", industry: "Landscaping" },
+
+  // Nyon
+  { company: "Nyon Construction SA", website: "https://nyon-construction.ch", city: "Nyon", industry: "Construction" },
+  { company: "Toiture Nyon & La Côte", website: "https://toiture-nyon.ch", city: "Nyon", industry: "Roofing" },
+  { company: "Electrical Nyon Lac", website: "https://electrical-nyon.ch", city: "Nyon", industry: "Electrical" },
+  { company: "Plumbing Nyon Express", website: "https://plumbing-nyon.ch", city: "Nyon", industry: "Plumbing" },
+  { company: "HVAC Nyon Énergie", website: "https://hvac-nyon.ch", city: "Nyon", industry: "HVAC" },
+  { company: "Rénovation Nyon Bâtiment", website: "https://renovation-nyon.ch", city: "Nyon", industry: "Renovation" },
+  { company: "Peinture Nyon Artisans", website: "https://peinture-nyon.ch", city: "Nyon", industry: "Painting" },
+  { company: "Landscaping Nyon Jardins", website: "https://landscaping-nyon.ch", city: "Nyon", industry: "Landscaping" },
+
+  // Yverdon
+  { company: "Yverdon Construction AG", website: "https://yverdon-construction.ch", city: "Yverdon", industry: "Construction" },
+  { company: "Couverture Yverdon SA", website: "https://couverture-yverdon.ch", city: "Yverdon", industry: "Roofing" },
+  { company: "Electrical Yverdon Nord", website: "https://electrical-yverdon.ch", city: "Yverdon", industry: "Electrical" },
+  { company: "Plumbing Yverdon Centre", website: "https://plumbing-yverdon.ch", city: "Yverdon", industry: "Plumbing" },
+  { company: "HVAC Yverdon Climat", website: "https://hvac-yverdon.ch", city: "Yverdon", industry: "HVAC" },
+  { company: "Rénovation Yverdon Pro", website: "https://renovation-yverdon.ch", city: "Yverdon", industry: "Renovation" },
+  { company: "Peinture Yverdon & Co", website: "https://peinture-yverdon.ch", city: "Yverdon", industry: "Painting" },
+  { company: "Paysagiste Yverdon Vert", website: "https://paysagiste-yverdon.ch", city: "Yverdon", industry: "Landscaping" },
 ];
