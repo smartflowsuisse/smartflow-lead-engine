@@ -72,6 +72,8 @@ export interface DashboardStats {
   recentLeads: Lead[];
 }
 
+export type AnalysisEngine = "heuristic" | "heuristic+llm";
+
 export interface WebsiteAnalysisResult {
   websiteQuality: number;
   mobileFriendliness: number;
@@ -81,7 +83,19 @@ export interface WebsiteAnalysisResult {
   trustScore: number;
   quickWins: string[];
   automationOpportunities: string[];
-  details: Record<string, unknown>;
+  details: Record<string, unknown> & {
+    analysisEngine?: AnalysisEngine;
+    summary?: string;
+    salesAngle?: string;
+    aiSkippedReason?: string;
+  };
+}
+
+export interface LeadAnalysisContext {
+  company?: string;
+  city?: string | null;
+  industry?: string | null;
+  website?: string;
 }
 
 export interface LeadWithAnalysis extends Lead {

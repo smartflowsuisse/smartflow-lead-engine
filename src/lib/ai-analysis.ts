@@ -1,5 +1,6 @@
-import type { WebsiteAnalysisResult } from "./types";
-import { normalizeWebsite } from "./utils";
+import { enrichAnalysisWithAi } from "./ai/enrich-analysis";
+import type { LeadAnalysisContext, WebsiteAnalysisResult } from "./types";
+import { normalizeWebsite } from "./website";
 
 interface HtmlSignals {
   hasViewport: boolean;
@@ -239,6 +240,26 @@ function simulateAnalysis(website: string, industry?: string | null): WebsiteAna
   return buildAnalysisResult(signals, industry, { mode: "simulated", url });
 }
 
+function stripHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractPageExcerpt(html: string, maxChars = 8000): string {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim();
+  const metaDescription = html
+    .match(/<meta[^>]+name=["']description["'][^>]*content=["']([^"']+)["']/i)?.[1]
+    ?.trim();
+  const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]?.trim();
+  const bodyText = stripHtml(html).slice(0, Math.max(0, maxChars - 500));
+
+  return [title, metaDescription, h1, bodyText].filter(Boolean).join("\n\n").slice(0, maxChars);
+}
+
 function buildAnalysisResult(
   signals: HtmlSignals,
   industry: string | null | undefined,
@@ -301,14 +322,40 @@ function generateAiSummary(
   ].join(" ");
 }
 
+async function finalizeAnalysis(
+  result: WebsiteAnalysisResult,
+  context: LeadAnalysisContext,
+  signals: HtmlSignals,
+  pageExcerpt?: string
+): Promise<WebsiteAnalysisResult> {
+  return enrichAnalysisWithAi(
+    result,
+    {
+      company: context.company,
+      city: context.city,
+      industry: context.industry ?? null,
+      website: context.website,
+    },
+    signals as unknown as Record<string, unknown>,
+    pageExcerpt
+  );
+}
+
 export async function analyzeWebsite(
   website: string,
-  industry?: string | null
+  industry?: string | null,
+  context: LeadAnalysisContext = {}
 ): Promise<WebsiteAnalysisResult> {
   const url = normalizeWebsite(website);
   if (!url) {
     throw new Error("Website URL is required for analysis");
   }
+
+  const leadContext: LeadAnalysisContext = {
+    ...context,
+    website: url,
+    industry: context.industry ?? industry ?? null,
+  };
 
   const start = Date.now();
 
@@ -330,20 +377,36 @@ export async function analyzeWebsite(
     const loadTimeMs = Date.now() - start;
 
     if (!response.ok) {
-      return simulateAnalysis(url, industry);
+      const simulated = simulateAnalysis(url, industry);
+      return finalizeAnalysis(
+        simulated,
+        leadContext,
+        (simulated.details.signals as HtmlSignals) ?? ({} as HtmlSignals)
+      );
     }
 
     const html = await response.text();
     const finalUrl = response.url || url;
     const signals = extractSignals(html, finalUrl, loadTimeMs);
-
-    return buildAnalysisResult(signals, industry, {
+    const heuristic = buildAnalysisResult(signals, industry, {
       mode: "live",
       url: finalUrl,
       statusCode: response.status,
       loadTimeMs,
     });
+
+    return finalizeAnalysis(
+      heuristic,
+      leadContext,
+      signals,
+      extractPageExcerpt(html)
+    );
   } catch {
-    return simulateAnalysis(url, industry);
+    const simulated = simulateAnalysis(url, industry);
+    return finalizeAnalysis(
+      simulated,
+      leadContext,
+      (simulated.details.signals as HtmlSignals) ?? ({} as HtmlSignals)
+    );
   }
 }

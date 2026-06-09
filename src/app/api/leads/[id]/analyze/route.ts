@@ -25,7 +25,11 @@ export async function POST(_request: Request, { params }: RouteParams) {
       );
     }
 
-    const analysis = await analyzeWebsite(lead.website, lead.industry);
+    const analysis = await analyzeWebsite(lead.website, lead.industry, {
+      company: lead.company,
+      city: lead.city,
+      industry: lead.industry,
+    });
     const leadScore = calculateLeadScore(analysis);
 
     const savedAnalysis = saveLeadAnalysis(leadId, {

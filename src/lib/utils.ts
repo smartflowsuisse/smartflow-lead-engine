@@ -41,11 +41,4 @@ export function statusColor(status: string): string {
   return colors[status] ?? "bg-gray-100 text-gray-700 border-gray-200";
 }
 
-export function normalizeWebsite(url: string): string {
-  const trimmed = url.trim();
-  if (!trimmed) return "";
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-    return trimmed;
-  }
-  return `https://${trimmed}`;
-}
+export { normalizeWebsite } from "./website";

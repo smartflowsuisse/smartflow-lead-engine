@@ -15,6 +15,7 @@ import {
   Bot,
 } from "lucide-react";
 import type { LeadAnalysis } from "@/lib/types";
+import { getAnalysisEngine } from "@/lib/ai/display";
 import { cn, scoreColor } from "@/lib/utils";
 import { getScoreLabel } from "@/lib/scoring";
 
@@ -77,18 +78,49 @@ export function AnalysisPanel({
     }
   };
 
+  function safeJsonParse<T>(value: string, fallback: T): T {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return fallback;
+    }
+  }
+
   const quickWins: string[] = analysis
-    ? JSON.parse(analysis.quick_wins)
+    ? safeJsonParse(analysis.quick_wins, [])
     : [];
   const automationOps: string[] = analysis
-    ? JSON.parse(analysis.automation_opportunities)
+    ? safeJsonParse(analysis.automation_opportunities, [])
     : [];
+
+  const rawDetails = analysis
+    ? safeJsonParse<Record<string, unknown> | null>(analysis.raw_analysis, null)
+    : null;
+  const analysisEngine = getAnalysisEngine(rawDetails ?? undefined);
+  const executiveSummary =
+    typeof rawDetails?.summary === "string" ? rawDetails.summary : null;
+  const salesAngle =
+    typeof rawDetails?.salesAngle === "string" ? rawDetails.salesAngle : null;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">AI Website Analysis</h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">AI Website Analysis</h2>
+            {analysis && (
+              <span
+                className={cn(
+                  "rounded-full border px-2 py-0.5 text-xs font-medium",
+                  analysisEngine === "heuristic+llm"
+                    ? "border-brand-200 bg-brand-50 text-brand-700"
+                    : "border-slate-200 bg-slate-50 text-slate-600"
+                )}
+              >
+                {analysisEngine === "heuristic+llm" ? "AI-assisted" : "Heuristic"}
+              </span>
+            )}
+          </div>
           <p className="text-sm text-slate-500">
             Analyze website quality, SEO, and SmartFlow opportunities
           </p>
@@ -121,6 +153,18 @@ export function AnalysisPanel({
 
       {analysis && (
         <>
+          {executiveSummary && (
+            <div className="rounded-xl border border-brand-200 bg-brand-50/40 p-5">
+              <h3 className="font-semibold text-slate-900">Executive Summary</h3>
+              <p className="mt-2 text-sm text-slate-700">{executiveSummary}</p>
+              {salesAngle && salesAngle !== executiveSummary && (
+                <p className="mt-2 text-sm font-medium text-brand-700">
+                  Sales angle: {salesAngle}
+                </p>
+              )}
+            </div>
+          )}
+
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <div className="flex items-center justify-between">
               <div>

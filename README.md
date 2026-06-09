@@ -97,6 +97,21 @@ npm start
 | GET | `/api/stats` | Dashboard statistics |
 | GET | `/api/pipeline` | Pipeline grouped by status |
 
+## AI Website Analysis (v1)
+
+AI enrichment is **disabled by default**. The app always runs the heuristic analyzer; when enabled with a provider API key, an LLM can refine quick wins, automation opportunities, and the executive summary.
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+AI_ANALYSIS_ENABLED=false   # set true to enable LLM enrichment
+AI_PROVIDER=openai          # openai | anthropic
+AI_MODEL=gpt-4o-mini
+# OPENAI_API_KEY=sk-...
+```
+
+Numeric scores always come from the heuristic engine in v1. Without an API key, analysis behavior is unchanged.
+
 ## Lead Scoring
 
 Scores range from **0 to 100** based on:
