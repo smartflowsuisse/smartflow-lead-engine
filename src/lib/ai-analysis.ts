@@ -1,4 +1,9 @@
 import { enrichAnalysisWithAi } from "./ai/enrich-analysis";
+import { WebsiteAnalysisUnavailableError } from "./analysis/unavailable";
+import {
+  calculateLeadScore,
+  calculateWebsiteQualityScore,
+} from "./scoring";
 import type { LeadAnalysisContext, WebsiteAnalysisResult } from "./types";
 import { normalizeWebsite } from "./website";
 
@@ -15,7 +20,6 @@ interface HtmlSignals {
   hasPrivacyPolicy: boolean;
   hasImprint: boolean;
   hasTestimonials: boolean;
-  hasSslBadge: boolean;
   scriptCount: number;
   imageCount: number;
   imagesWithoutAlt: number;
@@ -52,7 +56,6 @@ function extractSignals(html: string, url: string, loadTimeMs: number): HtmlSign
 
   const hasTestimonials =
     /(testimonial|review|kundenstimme|avis client|referenz)/i.test(html);
-  const hasSslBadge = /(ssl|secure|sicher|https)/i.test(html);
 
   const scriptMatches = html.match(/<script/gi) ?? [];
   const imageMatches = html.match(/<img/gi) ?? [];
@@ -72,7 +75,6 @@ function extractSignals(html: string, url: string, loadTimeMs: number): HtmlSign
     hasPrivacyPolicy,
     hasImprint,
     hasTestimonials,
-    hasSslBadge,
     scriptCount: scriptMatches.length,
     imageCount: imageMatches.length,
     imagesWithoutAlt,
@@ -83,56 +85,54 @@ function extractSignals(html: string, url: string, loadTimeMs: number): HtmlSign
 }
 
 function scoreWebsiteQuality(signals: HtmlSignals): number {
-  let score = 50;
+  let score = 20;
   if (signals.hasTitle) score += 10;
   if (signals.hasH1) score += 8;
-  if (signals.hasMetaDescription) score += 8;
+  if (signals.hasMetaDescription) score += 6;
   if (signals.hasHttps) score += 10;
-  if (signals.hasContactForm) score += 8;
-  if (signals.hasPhoneLink || signals.hasEmailLink) score += 6;
+  if (signals.hasContactForm) score += 6;
+  if (signals.hasPhoneLink || signals.hasEmailLink) score += 5;
   if (signals.scriptCount > 20) score -= 10;
   if (signals.inlineStyleCount > 30) score -= 8;
-  return Math.max(0, Math.min(100, score));
+  return Math.max(0, Math.min(80, score));
 }
 
 function scoreMobileFriendliness(signals: HtmlSignals): number {
-  let score = 30;
-  if (signals.hasViewport) score += 40;
-  if (signals.inlineStyleCount < 20) score += 15;
-  if (signals.scriptCount < 15) score += 15;
-  return Math.max(0, Math.min(100, score));
+  if (!signals.hasViewport) {
+    return Math.max(0, Math.min(35, 15 + (signals.scriptCount < 20 ? 5 : 0)));
+  }
+
+  let score = 25;
+  score += 30;
+  if (signals.inlineStyleCount < 20) score += 10;
+  if (signals.scriptCount < 15) score += 10;
+  return Math.max(0, Math.min(70, score));
 }
 
-function scoreSpeed(signals: HtmlSignals): number {
-  let score = 80;
-  if (signals.loadTimeMs > 3000) score -= 30;
-  else if (signals.loadTimeMs > 1500) score -= 15;
-  if (signals.htmlSize > 500_000) score -= 20;
-  else if (signals.htmlSize > 200_000) score -= 10;
-  if (signals.scriptCount > 25) score -= 15;
-  if (signals.imageCount > 30) score -= 10;
-  return Math.max(0, Math.min(100, score));
+function scoreSpeed(): number | null {
+  // HTML fetch time is not a reliable page-speed metric.
+  return null;
 }
 
 function scoreSeo(signals: HtmlSignals): number {
-  let score = 20;
-  if (signals.hasTitle) score += 20;
-  if (signals.hasMetaDescription) score += 20;
-  if (signals.hasH1) score += 15;
-  if (signals.hasHttps) score += 15;
-  if (signals.imagesWithoutAlt === 0 && signals.imageCount > 0) score += 10;
-  else if (signals.imagesWithoutAlt < signals.imageCount / 2) score += 5;
-  return Math.max(0, Math.min(100, score));
+  let score = 10;
+  if (signals.hasTitle) score += 15;
+  if (signals.hasMetaDescription) score += 15;
+  if (signals.hasH1) score += 12;
+  if (signals.hasHttps) score += 12;
+  if (signals.imagesWithoutAlt === 0 && signals.imageCount > 0) score += 8;
+  else if (signals.imagesWithoutAlt < signals.imageCount / 2) score += 4;
+  return Math.max(0, Math.min(75, score));
 }
 
 function scoreTrust(signals: HtmlSignals): number {
-  let score = 20;
-  if (signals.hasPrivacyPolicy) score += 20;
-  if (signals.hasImprint) score += 20;
-  if (signals.hasTestimonials) score += 15;
-  if (signals.hasSocialLinks) score += 10;
-  if (signals.hasSslBadge || signals.hasHttps) score += 15;
-  return Math.max(0, Math.min(100, score));
+  let score = 10;
+  if (signals.hasPrivacyPolicy) score += 18;
+  if (signals.hasImprint) score += 18;
+  if (signals.hasTestimonials) score += 12;
+  if (signals.hasSocialLinks) score += 8;
+  if (signals.hasHttps) score += 10;
+  return Math.max(0, Math.min(75, score));
 }
 
 function identifyQuickWins(signals: HtmlSignals): string[] {
@@ -153,8 +153,11 @@ function identifyQuickWins(signals: HtmlSignals): string[] {
     wins.push("Add privacy policy page (required in Switzerland/EU)");
   if (!signals.hasImprint)
     wins.push("Add Impressum/legal notice (required for Swiss businesses)");
-  if (signals.loadTimeMs > 2000)
-    wins.push("Optimize page load speed — target under 2 seconds");
+  if (signals.loadTimeMs > 2000) {
+    wins.push(
+      "Page HTML took over 2 seconds to load — full performance audit recommended"
+    );
+  }
   return wins;
 }
 
@@ -211,35 +214,6 @@ function identifyAutomationOpportunities(
   return [...new Set(opportunities)].slice(0, 6);
 }
 
-function simulateAnalysis(website: string, industry?: string | null): WebsiteAnalysisResult {
-  const url = normalizeWebsite(website);
-  const hash = url.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-
-  const signals: HtmlSignals = {
-    hasViewport: hash % 3 !== 0,
-    hasTitle: true,
-    hasMetaDescription: hash % 4 !== 0,
-    hasH1: hash % 5 !== 0,
-    hasHttps: url.startsWith("https://"),
-    hasContactForm: hash % 2 === 0,
-    hasPhoneLink: hash % 3 === 0,
-    hasEmailLink: hash % 4 === 0,
-    hasSocialLinks: hash % 2 !== 0,
-    hasPrivacyPolicy: hash % 6 !== 0,
-    hasImprint: hash % 7 !== 0,
-    hasTestimonials: hash % 8 === 0,
-    hasSslBadge: url.startsWith("https://"),
-    scriptCount: 5 + (hash % 20),
-    imageCount: 3 + (hash % 15),
-    imagesWithoutAlt: hash % 5,
-    inlineStyleCount: hash % 25,
-    htmlSize: 50_000 + (hash % 200_000),
-    loadTimeMs: 800 + (hash % 3000),
-  };
-
-  return buildAnalysisResult(signals, industry, { mode: "simulated", url });
-}
-
 function stripHtml(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
@@ -267,7 +241,7 @@ function buildAnalysisResult(
 ): WebsiteAnalysisResult {
   const websiteQuality = scoreWebsiteQuality(signals);
   const mobileFriendliness = scoreMobileFriendliness(signals);
-  const speedScore = scoreSpeed(signals);
+  const speedScore = scoreSpeed();
   const seoScore = scoreSeo(signals);
   const trustScore = scoreTrust(signals);
   const quickWins = identifyQuickWins(signals);
@@ -276,7 +250,7 @@ function buildAnalysisResult(
     industry
   );
 
-  return {
+  const result: WebsiteAnalysisResult = {
     websiteQuality,
     mobileFriendliness,
     speedScore,
@@ -288,7 +262,18 @@ function buildAnalysisResult(
     details: {
       ...meta,
       signals,
+      speedUnavailableReason:
+        "Real page speed requires browser metrics — not measured in this analysis",
       summary: generateAiSummary(signals, quickWins, automationOpportunities),
+    },
+  };
+
+  return {
+    ...result,
+    details: {
+      ...result.details,
+      websiteQualityScore: calculateWebsiteQualityScore(result),
+      opportunityScore: calculateLeadScore(result),
     },
   };
 }
@@ -302,7 +287,9 @@ function generateAiSummary(
   if (!signals.hasViewport) issues.push("missing mobile viewport");
   if (!signals.hasMetaDescription) issues.push("no meta description");
   if (!signals.hasContactForm) issues.push("no contact form detected");
-  if (signals.loadTimeMs > 2000) issues.push("slow page load");
+  if (signals.loadTimeMs > 2000) {
+    issues.push("slow HTML response time");
+  }
   if (!signals.hasPrivacyPolicy) issues.push("missing privacy policy");
 
   const strengths: string[] = [];
@@ -377,15 +364,16 @@ export async function analyzeWebsite(
     const loadTimeMs = Date.now() - start;
 
     if (!response.ok) {
-      const simulated = simulateAnalysis(url, industry);
-      return finalizeAnalysis(
-        simulated,
-        leadContext,
-        (simulated.details.signals as HtmlSignals) ?? ({} as HtmlSignals)
+      throw new WebsiteAnalysisUnavailableError(
+        `Website returned HTTP ${response.status}`
       );
     }
 
     const html = await response.text();
+    if (!html.trim()) {
+      throw new WebsiteAnalysisUnavailableError("Website returned empty content");
+    }
+
     const finalUrl = response.url || url;
     const signals = extractSignals(html, finalUrl, loadTimeMs);
     const heuristic = buildAnalysisResult(signals, industry, {
@@ -401,12 +389,19 @@ export async function analyzeWebsite(
       signals,
       extractPageExcerpt(html)
     );
-  } catch {
-    const simulated = simulateAnalysis(url, industry);
-    return finalizeAnalysis(
-      simulated,
-      leadContext,
-      (simulated.details.signals as HtmlSignals) ?? ({} as HtmlSignals)
+  } catch (error) {
+    if (error instanceof WebsiteAnalysisUnavailableError) {
+      throw error;
+    }
+
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new WebsiteAnalysisUnavailableError(
+        "Website request timed out after 10 seconds"
+      );
+    }
+
+    throw new WebsiteAnalysisUnavailableError(
+      error instanceof Error ? error.message : "Could not fetch website"
     );
   }
 }

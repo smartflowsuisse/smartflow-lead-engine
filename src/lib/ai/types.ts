@@ -36,11 +36,11 @@ export interface AnalysisDetailsMeta {
   analysisEngine: AnalysisEngine;
   heuristic?: {
     scores: {
-      websiteQuality: number;
-      mobileFriendliness: number;
-      speedScore: number;
-      seoScore: number;
-      trustScore: number;
+      websiteQuality: number | null;
+      mobileFriendliness: number | null;
+      speedScore: number | null;
+      seoScore: number | null;
+      trustScore: number | null;
     };
   };
   llm?: LlmCallMeta & {

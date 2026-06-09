@@ -17,7 +17,8 @@ import {
 import type { LeadAnalysis } from "@/lib/types";
 import { getAnalysisEngine } from "@/lib/ai/display";
 import { cn, scoreColor } from "@/lib/utils";
-import { getScoreLabel } from "@/lib/scoring";
+import { getScoreLabel, formatAnalysisScore } from "@/lib/scoring";
+import { isKnownScore } from "@/lib/analysis/score-values";
 
 interface AnalysisPanelProps {
   leadId: number;
@@ -26,7 +27,17 @@ interface AnalysisPanelProps {
   analysis: LeadAnalysis | null | undefined;
 }
 
-function ScoreBar({ label, score, icon }: { label: string; score: number; icon: React.ReactNode }) {
+function ScoreBar({
+  label,
+  score,
+  icon,
+}: {
+  label: string;
+  score: number | null;
+  icon: React.ReactNode;
+}) {
+  const known = isKnownScore(score);
+
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-sm">
@@ -34,16 +45,22 @@ function ScoreBar({ label, score, icon }: { label: string; score: number; icon: 
           {icon}
           {label}
         </span>
-        <span className="font-semibold text-slate-900">{score}/100</span>
+        <span className="font-semibold text-slate-900">
+          {formatAnalysisScore(score)}
+        </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className={cn(
-            "h-full rounded-full transition-all",
-            score >= 70 ? "bg-emerald-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"
-          )}
-          style={{ width: `${score}%` }}
-        />
+        {known ? (
+          <div
+            className={cn(
+              "h-full rounded-full transition-all",
+              score >= 70 ? "bg-emerald-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"
+            )}
+            style={{ width: `${score}%` }}
+          />
+        ) : (
+          <div className="h-full w-full rounded-full bg-slate-200" />
+        )}
       </div>
     </div>
   );
@@ -196,8 +213,20 @@ export function AnalysisPanel({
             <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm">
               <FormInput className="h-4 w-4 text-slate-500" />
               <span className="text-slate-600">Contact Form:</span>
-              <span className={analysis.has_contact_form ? "font-medium text-emerald-600" : "font-medium text-red-600"}>
-                {analysis.has_contact_form ? "Detected" : "Not found"}
+              <span
+                className={
+                  analysis.has_contact_form === null
+                    ? "font-medium text-slate-500"
+                    : analysis.has_contact_form
+                      ? "font-medium text-emerald-600"
+                      : "font-medium text-red-600"
+                }
+              >
+                {analysis.has_contact_form === null
+                  ? "Unknown"
+                  : analysis.has_contact_form
+                    ? "Detected"
+                    : "Not found"}
               </span>
             </div>
           </div>

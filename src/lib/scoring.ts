@@ -1,48 +1,79 @@
 import type { WebsiteAnalysisResult } from "./types";
+import { isKnownScore } from "./analysis/score-values";
 
-interface ScoringWeights {
-  websiteQuality: number;
-  mobileFriendliness: number;
-  speedScore: number;
-  seoScore: number;
-  trustScore: number;
-  contactFormBonus: number;
-  quickWinBonus: number;
+interface OpportunityWeights {
+  missingContactForm: number;
+  quickWinPoints: number;
+  quickWinCap: number;
+  automationPoints: number;
+  automationCap: number;
+  maxScore: number;
 }
 
-const DEFAULT_WEIGHTS: ScoringWeights = {
-  websiteQuality: 0.2,
-  mobileFriendliness: 0.15,
-  speedScore: 0.15,
-  seoScore: 0.15,
-  trustScore: 0.15,
-  contactFormBonus: 5,
-  quickWinBonus: 2,
+const OPPORTUNITY_WEIGHTS: OpportunityWeights = {
+  missingContactForm: 12,
+  quickWinPoints: 2,
+  quickWinCap: 16,
+  automationPoints: 2,
+  automationCap: 10,
+  maxScore: 85,
 };
 
+/**
+ * Average of measured website-quality dimensions.
+ * Unknown dimensions are excluded rather than treated as perfect.
+ */
+export function calculateWebsiteQualityScore(
+  analysis: WebsiteAnalysisResult
+): number | null {
+  const dimensions = [
+    analysis.websiteQuality,
+    analysis.mobileFriendliness,
+    analysis.speedScore,
+    analysis.seoScore,
+    analysis.trustScore,
+  ].filter(isKnownScore);
+
+  if (dimensions.length === 0) return null;
+
+  const average =
+    dimensions.reduce((total, score) => total + score, 0) / dimensions.length;
+
+  return Math.max(0, Math.min(100, Math.round(average)));
+}
+
+/**
+ * SmartFlow opportunity score — gaps and upsell potential, not site quality.
+ */
 export function calculateLeadScore(
   analysis: WebsiteAnalysisResult,
-  weights: ScoringWeights = DEFAULT_WEIGHTS
+  weights: OpportunityWeights = OPPORTUNITY_WEIGHTS
 ): number {
-  const baseScore =
-    analysis.websiteQuality * weights.websiteQuality +
-    analysis.mobileFriendliness * weights.mobileFriendliness +
-    analysis.speedScore * weights.speedScore +
-    analysis.seoScore * weights.seoScore +
-    analysis.trustScore * weights.trustScore;
-
-  let bonus = 0;
-  if (!analysis.hasContactForm) {
-    bonus += weights.contactFormBonus;
+  if (analysis.details.mode === "unavailable") {
+    return 0;
   }
-  bonus += Math.min(analysis.quickWins.length * weights.quickWinBonus, 15);
-  bonus += Math.min(analysis.automationOpportunities.length, 5);
 
-  const rawScore = baseScore + bonus;
-  return Math.max(0, Math.min(100, Math.round(rawScore)));
+  let score = 0;
+
+  if (analysis.hasContactForm === false) {
+    score += weights.missingContactForm;
+  }
+
+  score += Math.min(
+    analysis.quickWins.length * weights.quickWinPoints,
+    weights.quickWinCap
+  );
+
+  score += Math.min(
+    analysis.automationOpportunities.length * weights.automationPoints,
+    weights.automationCap
+  );
+
+  return Math.max(0, Math.min(weights.maxScore, Math.round(score)));
 }
 
 export function getScoreLabel(score: number): string {
+  if (score <= 0) return "Not Scored";
   if (score >= 80) return "Hot Lead";
   if (score >= 60) return "High Priority";
   if (score >= 40) return "Medium Priority";
@@ -51,9 +82,9 @@ export function getScoreLabel(score: number): string {
 }
 
 export function getScorePriority(score: number): "critical" | "high" | "medium" | "low" {
-  if (score >= 80) return "critical";
-  if (score >= 60) return "high";
-  if (score >= 40) return "medium";
+  if (score >= 70) return "critical";
+  if (score >= 50) return "high";
+  if (score >= 30) return "medium";
   return "low";
 }
 
@@ -68,4 +99,8 @@ export function getRecommendedAction(
   if (score >= 50) return "Schedule discovery call";
   if (score >= 30) return "Add to nurture sequence";
   return "Monitor or deprioritize";
+}
+
+export function formatAnalysisScore(score: number | null | undefined): string {
+  return isKnownScore(score) ? `${score}/100` : "Unknown";
 }

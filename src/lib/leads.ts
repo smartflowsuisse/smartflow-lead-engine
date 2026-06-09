@@ -1,4 +1,10 @@
 import { getDb } from "./db";
+import {
+  scoreFromDb,
+  scoreToDb,
+  triStateFromDb,
+  triStateToDb,
+} from "./analysis/score-values";
 import type {
   CreateLeadInput,
   DashboardStats,
@@ -10,6 +16,10 @@ import type {
   UpdateLeadInput,
 } from "./types";
 import { LEAD_STATUSES } from "./types";
+import {
+  normalizeCompany,
+  normalizeWebsite,
+} from "./discovery/dedup";
 
 const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Contacted",
@@ -39,12 +49,12 @@ function rowToAnalysis(row: Record<string, unknown>): LeadAnalysis {
   return {
     id: row.id as number,
     lead_id: row.lead_id as number,
-    website_quality: row.website_quality as number,
-    mobile_friendliness: row.mobile_friendliness as number,
-    speed_score: row.speed_score as number,
-    seo_score: row.seo_score as number,
-    has_contact_form: Boolean(row.has_contact_form),
-    trust_score: row.trust_score as number,
+    website_quality: scoreFromDb(row.website_quality as number),
+    mobile_friendliness: scoreFromDb(row.mobile_friendliness as number),
+    speed_score: scoreFromDb(row.speed_score as number),
+    seo_score: scoreFromDb(row.seo_score as number),
+    has_contact_form: triStateFromDb(row.has_contact_form as number),
+    trust_score: scoreFromDb(row.trust_score as number),
     quick_wins: row.quick_wins as string,
     automation_opportunities: row.automation_opportunities as string,
     raw_analysis: row.raw_analysis as string,
@@ -87,6 +97,37 @@ export function searchLeads(filters: LeadSearchFilters = {}): Lead[] {
 
 export function getAllLeads(status?: LeadStatus): Lead[] {
   return searchLeads(status ? { status } : {});
+}
+
+export function findDuplicateLead(input: {
+  company: string;
+  website?: string | null;
+}): Lead | null {
+  const db = getDb();
+  const normalizedCompany = normalizeCompany(input.company);
+  const normalizedWebsite = input.website
+    ? normalizeWebsite(input.website)
+    : null;
+
+  const rows = db.prepare("SELECT * FROM leads").all();
+
+  for (const row of rows) {
+    const lead = rowToLead(row as Record<string, unknown>);
+
+    if (
+      normalizedWebsite &&
+      lead.website &&
+      normalizeWebsite(lead.website) === normalizedWebsite
+    ) {
+      return lead;
+    }
+
+    if (normalizeCompany(lead.company) === normalizedCompany) {
+      return lead;
+    }
+  }
+
+  return null;
 }
 
 export function getLeadById(id: number): LeadWithAnalysis | null {
@@ -172,12 +213,12 @@ export function deleteLead(id: number): boolean {
 export function saveLeadAnalysis(
   leadId: number,
   analysis: {
-    websiteQuality: number;
-    mobileFriendliness: number;
-    speedScore: number;
-    seoScore: number;
-    hasContactForm: boolean;
-    trustScore: number;
+    websiteQuality: number | null;
+    mobileFriendliness: number | null;
+    speedScore: number | null;
+    seoScore: number | null;
+    hasContactForm: boolean | null;
+    trustScore: number | null;
     quickWins: string[];
     automationOpportunities: string[];
     rawAnalysis: Record<string, unknown>;
@@ -207,12 +248,12 @@ export function saveLeadAnalysis(
       analyzed_at = datetime('now')`
   ).run({
     leadId,
-    websiteQuality: analysis.websiteQuality,
-    mobileFriendliness: analysis.mobileFriendliness,
-    speedScore: analysis.speedScore,
-    seoScore: analysis.seoScore,
-    hasContactForm: analysis.hasContactForm ? 1 : 0,
-    trustScore: analysis.trustScore,
+    websiteQuality: scoreToDb(analysis.websiteQuality),
+    mobileFriendliness: scoreToDb(analysis.mobileFriendliness),
+    speedScore: scoreToDb(analysis.speedScore),
+    seoScore: scoreToDb(analysis.seoScore),
+    hasContactForm: triStateToDb(analysis.hasContactForm),
+    trustScore: scoreToDb(analysis.trustScore),
     quickWins: JSON.stringify(analysis.quickWins),
     automationOpportunities: JSON.stringify(analysis.automationOpportunities),
     rawAnalysis: JSON.stringify(analysis.rawAnalysis),

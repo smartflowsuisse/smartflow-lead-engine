@@ -27,12 +27,12 @@ export interface Lead {
 export interface LeadAnalysis {
   id: number;
   lead_id: number;
-  website_quality: number;
-  mobile_friendliness: number;
-  speed_score: number;
-  seo_score: number;
-  has_contact_form: boolean;
-  trust_score: number;
+  website_quality: number | null;
+  mobile_friendliness: number | null;
+  speed_score: number | null;
+  seo_score: number | null;
+  has_contact_form: boolean | null;
+  trust_score: number | null;
   quick_wins: string;
   automation_opportunities: string;
   raw_analysis: string;
@@ -74,20 +74,27 @@ export interface DashboardStats {
 
 export type AnalysisEngine = "heuristic" | "heuristic+llm";
 
+export type AnalysisMode = "live" | "unavailable";
+
 export interface WebsiteAnalysisResult {
-  websiteQuality: number;
-  mobileFriendliness: number;
-  speedScore: number;
-  seoScore: number;
-  hasContactForm: boolean;
-  trustScore: number;
+  websiteQuality: number | null;
+  mobileFriendliness: number | null;
+  speedScore: number | null;
+  seoScore: number | null;
+  hasContactForm: boolean | null;
+  trustScore: number | null;
   quickWins: string[];
   automationOpportunities: string[];
   details: Record<string, unknown> & {
+    mode?: AnalysisMode;
     analysisEngine?: AnalysisEngine;
     summary?: string;
     salesAngle?: string;
     aiSkippedReason?: string;
+    unavailableReason?: string;
+    websiteQualityScore?: number | null;
+    opportunityScore?: number;
+    speedUnavailableReason?: string;
   };
 }
 
