@@ -12,8 +12,9 @@ import {
 import { getLeadById } from "@/lib/leads";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
 import { OutreachDraftPanel } from "@/components/leads/OutreachDraftPanel";
+import { LeadStatusSelect } from "@/components/leads/LeadStatusSelect";
 import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
-import { cn, formatDateTime, scoreColor, statusColor } from "@/lib/utils";
+import { cn, formatDateTime, scoreColor } from "@/lib/utils";
 import { getScoreLabel, getRecommendedAction } from "@/lib/scoring";
 
 interface PageProps {
@@ -42,14 +43,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">{lead.company}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span
-              className={cn(
-                "rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                statusColor(lead.status)
-              )}
-            >
-              {lead.status}
-            </span>
+            <LeadStatusSelect leadId={lead.id} currentStatus={lead.status} />
             {lead.lead_score > 0 && (
               <span
                 className={cn(

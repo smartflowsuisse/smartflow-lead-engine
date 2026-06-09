@@ -37,6 +37,7 @@ export function statusColor(status: string): string {
     "Follow Up": "bg-amber-100 text-amber-700 border-amber-200",
     "Proposal Sent": "bg-orange-100 text-orange-700 border-orange-200",
     Client: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    Lost: "bg-red-100 text-red-700 border-red-200",
   };
   return colors[status] ?? "bg-gray-100 text-gray-700 border-gray-200";
 }

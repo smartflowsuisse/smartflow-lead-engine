@@ -5,6 +5,7 @@ export const LEAD_STATUSES = [
   "Follow Up",
   "Proposal Sent",
   "Client",
+  "Lost",
 ] as const;
 
 export type LeadStatus = (typeof LEAD_STATUSES)[number];

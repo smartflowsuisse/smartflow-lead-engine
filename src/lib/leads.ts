@@ -26,6 +26,7 @@ const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Follow Up",
   "Proposal Sent",
   "Client",
+  "Lost",
 ];
 
 function rowToLead(row: Record<string, unknown>): Lead {
@@ -312,7 +313,7 @@ export function getDashboardStats(): DashboardStats {
   const highPriorityLeads = (
     db
       .prepare(
-        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 60 AND status NOT IN ('Client', 'Proposal Sent')"
+        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 60 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
       )
       .get() as { count: number }
   ).count;
