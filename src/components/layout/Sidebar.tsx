@@ -8,6 +8,7 @@ import {
   Kanban,
   PlusCircle,
   Radar,
+  Upload,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ const navItems = [
   { href: "/leads", label: "Leads", icon: Users },
   { href: "/pipeline", label: "Pipeline", icon: Kanban },
   { href: "/discovery", label: "Discovery", icon: Radar },
+  { href: "/leads/import", label: "Import CSV", icon: Upload },
   { href: "/leads/new", label: "Add Lead", icon: PlusCircle },
 ];
 
