@@ -113,6 +113,15 @@ export function searchLeads(filters: LeadSearchFilters = {}): Lead[] {
   return rows.map((row) => rowToLead(row as Record<string, unknown>));
 }
 
+export function getAnalyzedLeadIdSet(): Set<number> {
+  const db = getDb();
+  const rows = db
+    .prepare("SELECT lead_id FROM lead_analyses")
+    .all() as Array<{ lead_id: number }>;
+
+  return new Set(rows.map((row) => row.lead_id));
+}
+
 export function getAllLeads(status?: LeadStatus): Lead[] {
   return searchLeads(status ? { status } : {});
 }

@@ -3,6 +3,7 @@ import type { Lead } from "@/lib/types";
 import { cn, formatDate, scoreColor, statusColor } from "@/lib/utils";
 import { getScoreLabel } from "@/lib/scoring";
 import { ExternalLink, ChevronRight } from "lucide-react";
+import { LeadQualificationIndicators } from "./LeadQualificationIndicators";
 
 interface LeadCardProps {
   lead: Lead;
@@ -34,6 +35,8 @@ export function LeadCard({ lead, compact = false }: LeadCardProps) {
         </div>
         <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 group-hover:text-brand-500" />
       </div>
+
+      <LeadQualificationIndicators lead={lead} compact={compact} />
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span
