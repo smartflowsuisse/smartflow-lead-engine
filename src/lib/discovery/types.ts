@@ -1,3 +1,5 @@
+export type DiscoveryProviderName = "mock" | "osm";
+
 export interface DiscoveryCandidate {
   company: string;
   website: string;
@@ -15,10 +17,10 @@ export interface DiscoveryResult {
   query: DiscoveryQuery;
   candidates: DiscoveryCandidate[];
   totalFound: number;
-  provider: "mock";
+  provider: DiscoveryProviderName;
 }
 
 export interface DiscoveryProvider {
-  name: string;
+  name: DiscoveryProviderName;
   discover(query: DiscoveryQuery): Promise<DiscoveryResult>;
 }

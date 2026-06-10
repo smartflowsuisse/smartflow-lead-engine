@@ -29,8 +29,12 @@ export function DiscoveryForm() {
     setNotification({ message, type });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const runDiscovery = async () => {
+    if (!industry.trim() || !city.trim()) {
+      setError("Industry and city are required");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -59,10 +63,16 @@ export function DiscoveryForm() {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void runDiscovery();
+  };
+
   return (
     <div>
       <form
         onSubmit={handleSubmit}
+        noValidate
         className="mb-8 rounded-xl border border-slate-200 bg-white p-6"
       >
         <div className="grid gap-4 sm:grid-cols-3">
@@ -75,7 +85,6 @@ export function DiscoveryForm() {
             </label>
             <input
               id="industry"
-              name="industry"
               type="text"
               required
               value={industry}
@@ -93,7 +102,6 @@ export function DiscoveryForm() {
             </label>
             <input
               id="city"
-              name="city"
               type="text"
               required
               value={city}
@@ -111,7 +119,6 @@ export function DiscoveryForm() {
             </label>
             <input
               id="limit"
-              name="limit"
               type="number"
               min={1}
               max={50}
@@ -131,7 +138,8 @@ export function DiscoveryForm() {
 
         <div className="mt-4 flex items-center gap-3">
           <button
-            type="submit"
+            type="button"
+            onClick={() => void runDiscovery()}
             disabled={loading}
             className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
           >
@@ -143,7 +151,7 @@ export function DiscoveryForm() {
             Run Discovery
           </button>
           <p className="text-xs text-slate-500">
-            Mock data only — no external APIs
+            Real Swiss companies via OpenStreetMap — local search only
           </p>
         </div>
       </form>

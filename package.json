@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:clean": "rm -rf .next && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "db:seed": "tsx scripts/seed.ts",
-    "test": "tsx --test src/lib/ai/__tests__/*.test.ts src/lib/scoring/__tests__/*.test.ts src/lib/outreach/__tests__/*.test.ts src/lib/__tests__/*.test.ts src/lib/tasks/__tests__/*.test.ts src/lib/analysis/__tests__/*.test.ts src/lib/import/__tests__/*.test.ts src/lib/activities/__tests__/*.test.ts"
+    "test": "tsx --test src/lib/ai/__tests__/*.test.ts src/lib/scoring/__tests__/*.test.ts src/lib/outreach/__tests__/*.test.ts src/lib/__tests__/*.test.ts src/lib/tasks/__tests__/*.test.ts src/lib/analysis/__tests__/*.test.ts src/lib/import/__tests__/*.test.ts src/lib/activities/__tests__/*.test.ts src/lib/discovery/__tests__/*.test.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.7.0",

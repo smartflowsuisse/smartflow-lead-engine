@@ -1,6 +1,7 @@
 import { getDiscoveryConfig } from "./config";
 import { mockProvider } from "./providers/mock-provider";
-import type { DiscoveryQuery, DiscoveryResult } from "./types";
+import { osmProvider } from "./providers/osm-provider";
+import type { DiscoveryProvider, DiscoveryQuery, DiscoveryResult } from "./types";
 
 export function validateDiscoveryQuery(
   input: Partial<DiscoveryQuery>
@@ -27,6 +28,11 @@ export function validateDiscoveryQuery(
   };
 }
 
+function getDiscoveryProvider(): DiscoveryProvider {
+  const config = getDiscoveryConfig();
+  return config.provider === "mock" ? mockProvider : osmProvider;
+}
+
 export async function runDiscovery(
   input: Partial<DiscoveryQuery>
 ): Promise<DiscoveryResult> {
@@ -40,5 +46,5 @@ export async function runDiscovery(
     throw new Error("Discovery is disabled");
   }
 
-  return mockProvider.discover(validated.query);
+  return getDiscoveryProvider().discover(validated.query);
 }

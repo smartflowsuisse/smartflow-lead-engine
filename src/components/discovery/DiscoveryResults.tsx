@@ -14,6 +14,10 @@ import {
 import { getCandidateKey } from "@/lib/discovery/dedup";
 import type { DiscoveryCandidate, DiscoveryResult } from "@/lib/discovery/types";
 
+function providerLabel(provider: DiscoveryResult["provider"]): string {
+  return provider === "osm" ? "OpenStreetMap" : "Mock provider";
+}
+
 interface DiscoveryResultsProps {
   result: DiscoveryResult;
   onNotification?: (message: string, type: "success" | "error") => void;
@@ -141,7 +145,7 @@ export function DiscoveryResults({ result, onNotification }: DiscoveryResultsPro
           </p>
         </div>
         <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-          Mock provider
+          {providerLabel(result.provider)}
         </span>
       </div>
 
@@ -175,15 +179,19 @@ export function DiscoveryResults({ result, onNotification }: DiscoveryResultsPro
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <a
-                        href={company.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700"
-                      >
-                        {company.website.replace(/^https?:\/\//, "")}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
+                      {company.website ? (
+                        <a
+                          href={company.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700"
+                        >
+                          {company.website.replace(/^https?:\/\//, "")}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-slate-400">Not listed</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center gap-1 text-slate-600">
@@ -239,8 +247,9 @@ export function DiscoveryResults({ result, onNotification }: DiscoveryResultsPro
         <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
           <p className="text-lg font-medium text-slate-700">No companies found</p>
           <p className="mt-1 text-sm text-slate-500">
-            Try a different industry or city. Mock data includes Zürich, Basel,
-            Genève, Lausanne, Bern, Luzern, and St. Gallen.
+            Try a different industry or city. Real results come from OpenStreetMap
+            for Swiss cities such as Zürich, Basel, Genève, Lausanne, Bern, Luzern,
+            and St. Gallen.
           </p>
         </div>
       )}
