@@ -23,6 +23,9 @@ export interface Lead {
   notes: string | null;
   contacted_at: string | null;
   contacted_language: string | null;
+  contact_page_url: string | null;
+  email_confidence: number | null;
+  phone_confidence: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -63,6 +66,9 @@ export interface UpdateLeadInput {
   lead_score?: number;
   status?: LeadStatus;
   notes?: string;
+  contact_page_url?: string;
+  email_confidence?: number;
+  phone_confidence?: number;
 }
 
 export interface DashboardStats {
@@ -141,7 +147,8 @@ export interface UpdateLeadTaskInput {
 export type LeadActivityType =
   | "analysis_completed"
   | "outreach_generated"
-  | "contacted";
+  | "contacted"
+  | "contact_discovered";
 
 export interface LeadActivity {
   id: number;

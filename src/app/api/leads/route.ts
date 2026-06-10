@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createLead, searchLeads } from "@/lib/leads";
+import { enrichLeadWithDiscoveredContact } from "@/lib/contact/enrich-lead-contact";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/types";
 
 function parseStatus(value: string | null): LeadStatus | undefined {
@@ -36,16 +37,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const lead = createLead({
-      company: body.company.trim(),
-      website: body.website?.trim() || undefined,
-      email: body.email?.trim() || undefined,
-      phone: body.phone?.trim() || undefined,
-      city: body.city?.trim() || undefined,
-      industry: body.industry?.trim() || undefined,
-      status: body.status || undefined,
-      notes: body.notes?.trim() || undefined,
-    });
+    const lead = await enrichLeadWithDiscoveredContact(
+      createLead({
+        company: body.company.trim(),
+        website: body.website?.trim() || undefined,
+        email: body.email?.trim() || undefined,
+        phone: body.phone?.trim() || undefined,
+        city: body.city?.trim() || undefined,
+        industry: body.industry?.trim() || undefined,
+        status: body.status || undefined,
+        notes: body.notes?.trim() || undefined,
+      })
+    );
 
     return NextResponse.json(lead, { status: 201 });
   } catch (error) {
