@@ -7,7 +7,9 @@ import {
   buildNominatimSearchQuery,
   buildOverpassFilterClause,
   isConstructionIndustry,
+  isRealEstateIndustry,
   matchesConstructionBusinessName,
+  matchesRealEstateBusinessName,
 } from "../providers/industry-tags";
 import {
   dedupeCandidates,
@@ -85,6 +87,13 @@ describe("buildIndustrySearchQueries", () => {
       "restaurant Zürich",
     ]);
   });
+
+  it("returns multiple queries for real-estate industries", () => {
+    const queries = buildIndustrySearchQueries("Immobilien", "Genève");
+    assert.ok(queries.length >= 3);
+    assert.ok(queries.some((query) => query.includes("immobilier")));
+    assert.ok(queries.some((query) => query.includes("Immobilien")));
+  });
 });
 
 describe("buildNominatimSearchQuery", () => {
@@ -125,6 +134,22 @@ describe("matchesConstructionBusinessName", () => {
     assert.equal(matchesConstructionBusinessName("Neubag Bauunternehmung"), true);
     assert.equal(matchesConstructionBusinessName("Bau- & Holzwerker AG"), true);
     assert.equal(matchesConstructionBusinessName("Restaurant Konshi"), false);
+  });
+
+  it("rejects common false positives in Geneva", () => {
+    assert.equal(matchesConstructionBusinessName("AtelierBois sarl"), false);
+    assert.equal(matchesConstructionBusinessName("Okjob agency job"), false);
+  });
+});
+
+describe("matchesRealEstateBusinessName", () => {
+  it("matches real-estate company names", () => {
+    assert.equal(matchesRealEstateBusinessName("Comptoir Immobilier"), true);
+    assert.equal(
+      matchesRealEstateBusinessName("PLAFIDA IMMOBILIER SA"),
+      true
+    );
+    assert.equal(matchesRealEstateBusinessName("Restaurant Konshi"), false);
   });
 });
 
@@ -183,6 +208,65 @@ describe("isLikelyBusinessResult", () => {
           boundingbox: ["47.3", "47.4", "8.4", "8.6"],
         },
         "Bauunternehmen"
+      ),
+      false
+    );
+
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 4,
+          name: "Construction spatiale aux troisième et quatrième dimensions",
+          displayName: "Construction spatiale, Genève",
+          class: "tourism",
+          type: "artwork",
+          lat: 46.2,
+          lon: 6.14,
+          address: { city: "Genève", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["46.1", "46.3", "6.1", "6.2"],
+        },
+        "Construction"
+      ),
+      false
+    );
+  });
+
+  it("accepts real-estate agencies and rejects libraries", () => {
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 5,
+          name: "Comptoir Immobilier",
+          displayName: "Comptoir Immobilier, Genève",
+          class: "shop",
+          type: "estate_agent",
+          lat: 46.2,
+          lon: 6.14,
+          address: { city: "Genève", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["46.1", "46.3", "6.1", "6.2"],
+        },
+        "Immobilien"
+      ),
+      true
+    );
+
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 6,
+          name: "Bibliothèque de l'immobilier",
+          displayName: "Bibliothèque de l'immobilier, Genève",
+          class: "amenity",
+          type: "library",
+          lat: 46.2,
+          lon: 6.14,
+          address: { city: "Genève", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["46.1", "46.3", "6.1", "6.2"],
+        },
+        "Immobilien"
       ),
       false
     );

@@ -3,7 +3,7 @@ import {
   extractWebsite,
   sortCandidatesByWebsite,
 } from "./map-osm-element";
-import { buildIndustrySearchQueries, buildCantonFallbackQueries } from "./industry-tags";
+import { buildIndustrySearchQueries, buildCantonFallbackQueries, prefersCantonBeforeOverpass, shouldUseRegionalFallback } from "./industry-tags";
 import {
   mergeOverpassResults,
   searchConstructionViaOverpass,
@@ -66,6 +66,64 @@ export function mapNominatimSearchResultToCandidate(
   };
 }
 
+async function mergeCantonResults(
+  unique: DiscoveryCandidate[],
+  sorted: DiscoveryCandidate[],
+  industry: string,
+  city: string,
+  location: NominatimResult,
+  limit: number,
+  config: ReturnType<typeof getDiscoveryConfig>
+): Promise<DiscoveryCandidate[]> {
+  if (!location.state) {
+    return sorted;
+  }
+
+  const cantonQueries = buildCantonFallbackQueries(industry, location.state);
+  const cantonResults = await searchSwissBusinessesMultiple(
+    cantonQueries,
+    location,
+    limit,
+    {
+      nominatimUrl: config.nominatimUrl,
+      userAgent: config.userAgent,
+      restrictToViewbox: false,
+    }
+  );
+
+  const cantonMapped = cantonResults
+    .map((result) =>
+      mapNominatimSearchResultToCandidate(result, industry, city, location, {
+        regionalFallback: true,
+      })
+    )
+    .filter((candidate): candidate is DiscoveryCandidate => Boolean(candidate));
+
+  return sortCandidatesByWebsite(dedupeCandidates([...unique, ...cantonMapped]));
+}
+
+async function mergeOverpassConstructionResults(
+  sorted: DiscoveryCandidate[],
+  industry: string,
+  city: string,
+  location: NominatimResult,
+  limit: number,
+  config: ReturnType<typeof getDiscoveryConfig>
+): Promise<DiscoveryCandidate[]> {
+  const overpassResults = await searchConstructionViaOverpass(
+    location,
+    industry,
+    city,
+    limit,
+    {
+      overpassUrl: config.overpassUrl,
+      userAgent: config.userAgent,
+    }
+  );
+
+  return mergeOverpassResults(sorted, overpassResults, limit);
+}
+
 export const osmProvider: DiscoveryProvider = {
   name: "osm",
 
@@ -111,56 +169,52 @@ export const osmProvider: DiscoveryProvider = {
 
     let unique = dedupeCandidates(mapped);
     let sorted = sortCandidatesByWebsite(unique);
+    const minResults = Math.min(3, limit);
+    const cantonFirst = prefersCantonBeforeOverpass(location.state);
 
-    if (shouldUseOverpassFallback(industry, sorted.length, Math.min(3, limit))) {
+    const applyCantonFallback = async () => {
+      if (!shouldUseRegionalFallback(industry, unique.length, minResults)) {
+        return;
+      }
+
+      sorted = await mergeCantonResults(
+        unique,
+        sorted,
+        industry,
+        city,
+        location,
+        limit,
+        config
+      );
+      unique = sorted;
+    };
+
+    const applyOverpassFallback = async () => {
+      if (!shouldUseOverpassFallback(industry, unique.length, minResults)) {
+        return;
+      }
+
       try {
-        const overpassResults = await searchConstructionViaOverpass(
-          location,
+        sorted = await mergeOverpassConstructionResults(
+          sorted,
           industry,
           city,
+          location,
           limit,
-          {
-            overpassUrl: config.overpassUrl,
-            userAgent: config.userAgent,
-          }
+          config
         );
-        sorted = await mergeOverpassResults(sorted, overpassResults, limit);
         unique = sorted;
       } catch (error) {
         console.error("Overpass construction fallback failed:", error);
       }
-    }
+    };
 
-    if (
-      shouldUseOverpassFallback(industry, unique.length, Math.min(3, limit)) &&
-      location.state
-    ) {
-      const cantonQueries = buildCantonFallbackQueries(industry, location.state);
-      const cantonResults = await searchSwissBusinessesMultiple(
-        cantonQueries,
-        location,
-        limit,
-        {
-          nominatimUrl: config.nominatimUrl,
-          userAgent: config.userAgent,
-          restrictToViewbox: false,
-        }
-      );
-
-      const cantonMapped = cantonResults
-        .map((result) =>
-          mapNominatimSearchResultToCandidate(result, industry, city, location, {
-            regionalFallback: true,
-          })
-        )
-        .filter((candidate): candidate is DiscoveryCandidate =>
-          Boolean(candidate)
-        );
-
-      sorted = sortCandidatesByWebsite(
-        dedupeCandidates([...unique, ...cantonMapped])
-      );
-      unique = sorted;
+    if (cantonFirst) {
+      await applyCantonFallback();
+      await applyOverpassFallback();
+    } else {
+      await applyOverpassFallback();
+      await applyCantonFallback();
     }
 
     return {

@@ -1,6 +1,8 @@
 import {
   isConstructionIndustry,
+  isRealEstateIndustry,
   matchesConstructionBusinessName,
+  matchesRealEstateBusinessName,
 } from "./industry-tags";
 import type { NominatimResult, NominatimSearchResult } from "./nominatim";
 
@@ -117,6 +119,10 @@ export function isLikelyBusinessResult(
     return false;
   }
 
+  if (result.class === "tourism") {
+    return false;
+  }
+
   if (result.class === "landuse" && result.type === "construction") {
     return false;
   }
@@ -127,6 +133,22 @@ export function isLikelyBusinessResult(
 
   if (result.class === "emergency") {
     return false;
+  }
+
+  if (result.class === "amenity" && result.type === "library") {
+    return isRealEstateIndustry(industry) ? false : true;
+  }
+
+  if (isRealEstateIndustry(industry)) {
+    if (result.type === "estate_agent") {
+      return result.class === "shop" || result.class === "office";
+    }
+
+    if (result.class === "office" && result.type === "yes") {
+      return matchesRealEstateBusinessName(result.name);
+    }
+
+    return matchesRealEstateBusinessName(result.name);
   }
 
   if (result.class === "building" && !result.extratags.website) {

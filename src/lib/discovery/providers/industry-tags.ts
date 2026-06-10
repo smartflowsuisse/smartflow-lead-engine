@@ -29,18 +29,42 @@ const CONSTRUCTION_KEYWORDS = [
 ];
 
 const CONSTRUCTION_NOMINATIM_TERMS = [
+  "entreprise construction",
+  "génie civil",
+  "construction",
   "Bauunternehmung",
   "Bau AG",
   "Bau",
   "Generalunternehmer",
-  "construction",
-  "entreprise construction",
-  "génie civil",
   "Contractor",
+];
+
+const REAL_ESTATE_KEYWORDS = [
+  "immobilien",
+  "immobilier",
+  "real estate",
+  "realty",
+  "estate agent",
+  "agence immobilière",
+  "agence immobiliere",
+];
+
+const REAL_ESTATE_NOMINATIM_TERMS = [
+  "immobilier",
+  "Immobilien",
+  "agence immobilière",
+  "real estate",
+  "estate agent",
 ];
 
 const CONSTRUCTION_NAME_PATTERN =
   /bau|construction|bâtiment|batiment|génie|genie|generalunternehmer|contractor|baut|charpent|maçon|macon|travaux/i;
+
+const REAL_ESTATE_NAME_PATTERN =
+  /immobilier|immobilien|real[\s-]?estate|estate agent|comptoir immobilier|fiduciaire/i;
+
+const CONSTRUCTION_FALSE_POSITIVE_PATTERN =
+  /\b(job|agency|emploi|recrutement|okjob)\b|atelier.*bois|centre.*bois|mezzanines bois/i;
 
 function escapeOverpass(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
@@ -53,6 +77,14 @@ function normalizeIndustry(value: string): string {
 export function isConstructionIndustry(industry: string): boolean {
   const normalized = normalizeIndustry(industry);
   return CONSTRUCTION_KEYWORDS.some(
+    (keyword) =>
+      normalized.includes(keyword) || keyword.includes(normalized)
+  );
+}
+
+export function isRealEstateIndustry(industry: string): boolean {
+  const normalized = normalizeIndustry(industry);
+  return REAL_ESTATE_KEYWORDS.some(
     (keyword) =>
       normalized.includes(keyword) || keyword.includes(normalized)
   );
@@ -88,6 +120,10 @@ export function buildIndustrySearchQueries(
     return CONSTRUCTION_NOMINATIM_TERMS.map((term) => `${term} ${cityName}`);
   }
 
+  if (isRealEstateIndustry(industry)) {
+    return REAL_ESTATE_NOMINATIM_TERMS.map((term) => `${term} ${cityName}`);
+  }
+
   return [buildNominatimSearchQuery(industry, cityName)];
 }
 
@@ -97,7 +133,15 @@ export function buildNominatimSearchQuery(industry: string, city: string): strin
 }
 
 export function matchesConstructionBusinessName(name: string): boolean {
+  if (CONSTRUCTION_FALSE_POSITIVE_PATTERN.test(name)) {
+    return false;
+  }
+
   return CONSTRUCTION_NAME_PATTERN.test(name);
+}
+
+export function matchesRealEstateBusinessName(name: string): boolean {
+  return REAL_ESTATE_NAME_PATTERN.test(name);
 }
 
 export function buildIndustryTagFilters(industry: string): string[] {
@@ -131,17 +175,61 @@ export function buildCantonFallbackQueries(
   industry: string,
   state: string
 ): string[] {
-  if (!isConstructionIndustry(industry) || !state.trim()) {
+  if (!state.trim()) {
     return [];
   }
 
   const canton = state.trim();
-  return [
-    `Bauunternehmung ${canton}`,
-    `construction ${canton}`,
-    `entreprise construction ${canton}`,
-    `génie civil ${canton}`,
-  ];
+
+  if (isConstructionIndustry(industry)) {
+    return [
+      `entreprise construction ${canton}`,
+      `construction ${canton}`,
+      `génie civil ${canton}`,
+      `Bauunternehmung ${canton}`,
+    ];
+  }
+
+  if (isRealEstateIndustry(industry)) {
+    return [
+      `immobilier ${canton}`,
+      `Immobilien ${canton}`,
+      `agence immobilière ${canton}`,
+    ];
+  }
+
+  return [];
+}
+
+const ROMANDIE_CANTONS = new Set([
+  "genève",
+  "geneva",
+  "vaud",
+  "valais",
+  "neuchâtel",
+  "neuchatel",
+  "jura",
+  "fribourg",
+  "freiburg",
+]);
+
+export function prefersCantonBeforeOverpass(state: string | null): boolean {
+  if (!state) {
+    return false;
+  }
+
+  return ROMANDIE_CANTONS.has(state.trim().toLowerCase());
+}
+
+export function shouldUseRegionalFallback(
+  industry: string,
+  resultCount: number,
+  minResults: number
+): boolean {
+  return (
+    (isConstructionIndustry(industry) || isRealEstateIndustry(industry)) &&
+    resultCount < minResults
+  );
 }
 
 export function buildConstructionOverpassQuery(

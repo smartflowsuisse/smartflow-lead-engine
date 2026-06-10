@@ -13,6 +13,9 @@ import { isWithinBoundingBox } from "./search-filters";
 import type { NominatimResult } from "./nominatim";
 import type { DiscoveryCandidate } from "../types";
 
+const OVERPASS_FALSE_POSITIVE_PATTERN =
+  /\b(job|agency|emploi|recrutement|okjob)\b|atelier.*bois|centre.*bois|mezzanines bois/i;
+
 interface OverpassResponse {
   elements: OsmElement[];
 }
@@ -23,11 +26,11 @@ function isRelevantConstructionElement(element: OsmElement): boolean {
     return false;
   }
 
-  if (tags.office === "construction") {
-    return true;
+  if (OVERPASS_FALSE_POSITIVE_PATTERN.test(tags.name)) {
+    return false;
   }
 
-  if (matchesConstructionBusinessName(tags.name)) {
+  if (tags.office === "construction") {
     return true;
   }
 
@@ -42,7 +45,11 @@ function isRelevantConstructionElement(element: OsmElement): boolean {
     "concrete",
   ]);
 
-  return relevantCrafts.has(tags.craft ?? "");
+  if (relevantCrafts.has(tags.craft ?? "")) {
+    return true;
+  }
+
+  return matchesConstructionBusinessName(tags.name);
 }
 
 function elementCoordinates(element: OsmElement): { lat: number; lon: number } | null {
