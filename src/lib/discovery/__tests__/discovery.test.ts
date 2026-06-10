@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  buildIndustrySearchQueries,
   buildIndustrySearchTerm,
   buildIndustryTagFilters,
   buildNominatimSearchQuery,
   buildOverpassFilterClause,
+  isConstructionIndustry,
+  matchesConstructionBusinessName,
 } from "../providers/industry-tags";
 import {
   dedupeCandidates,
@@ -20,14 +23,67 @@ import {
   toOverpassAreaId,
 } from "../providers/nominatim";
 import { mapNominatimSearchResultToCandidate } from "../providers/osm-provider";
+import {
+  isLikelyBusinessResult,
+  isWithinBoundingBox,
+  matchesCity,
+} from "../providers/search-filters";
+import { shouldUseOverpassFallback } from "../providers/overpass-search";
+
+const zurichLocation = {
+  placeId: 1,
+  osmType: "relation" as const,
+  osmId: 12345,
+  displayName: "Zürich, Switzerland",
+  boundingbox: ["47.3202187", "47.4346662", "8.4480061", "8.6254413"] as [
+    string,
+    string,
+    string,
+    string,
+  ],
+  state: "Zürich",
+  lat: 47.3744489,
+  lon: 8.5410422,
+};
 
 describe("buildIndustrySearchTerm", () => {
   it("maps gastro to restaurant search term", () => {
     assert.equal(buildIndustrySearchTerm("Gastro"), "restaurant");
   });
 
+  it("maps construction terms to Bauunternehmung", () => {
+    assert.equal(buildIndustrySearchTerm("Construction"), "Bauunternehmung");
+    assert.equal(buildIndustrySearchTerm("Bau"), "Bauunternehmung");
+    assert.equal(buildIndustrySearchTerm("Bauunternehmen"), "Bauunternehmung");
+  });
+
   it("falls back to the raw industry for unknown categories", () => {
     assert.equal(buildIndustrySearchTerm("Florist"), "Florist");
+  });
+});
+
+describe("isConstructionIndustry", () => {
+  it("detects construction-related industries", () => {
+    assert.equal(isConstructionIndustry("Construction"), true);
+    assert.equal(isConstructionIndustry("Bauunternehmen"), true);
+    assert.equal(isConstructionIndustry("Generalunternehmer"), true);
+    assert.equal(isConstructionIndustry("Entreprise de construction"), true);
+    assert.equal(isConstructionIndustry("Gastro"), false);
+  });
+});
+
+describe("buildIndustrySearchQueries", () => {
+  it("returns multiple queries for construction industries", () => {
+    const queries = buildIndustrySearchQueries("Construction", "Lausanne");
+    assert.ok(queries.length >= 5);
+    assert.ok(queries.some((query) => query.includes("Bauunternehmung")));
+    assert.ok(queries.some((query) => query.includes("Bau AG")));
+  });
+
+  it("returns a single query for non-construction industries", () => {
+    assert.deepEqual(buildIndustrySearchQueries("Gastro", "Zürich"), [
+      "restaurant Zürich",
+    ]);
   });
 });
 
@@ -41,7 +97,13 @@ describe("buildNominatimSearchQuery", () => {
 });
 
 describe("buildIndustryTagFilters", () => {
-  it("builds a name filter for fallback tag matching", () => {
+  it("builds construction overpass tag filters", () => {
+    const filters = buildIndustryTagFilters("Construction");
+    assert.match(filters.join(" "), /construction/);
+    assert.match(filters.join(" "), /builder/);
+  });
+
+  it("builds a name filter for non-construction industries", () => {
     const filters = buildIndustryTagFilters("IT");
     assert.match(filters[0], /Informatik/i);
   });
@@ -55,6 +117,116 @@ describe("buildOverpassFilterClause", () => {
     ]);
     assert.match(clause, /office/);
     assert.match(clause, /shop/);
+  });
+});
+
+describe("matchesConstructionBusinessName", () => {
+  it("matches common construction company names", () => {
+    assert.equal(matchesConstructionBusinessName("Neubag Bauunternehmung"), true);
+    assert.equal(matchesConstructionBusinessName("Bau- & Holzwerker AG"), true);
+    assert.equal(matchesConstructionBusinessName("Restaurant Konshi"), false);
+  });
+});
+
+describe("isLikelyBusinessResult", () => {
+  it("excludes construction sites and government offices", () => {
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 1,
+          name: "Chantier Gare de Lausanne",
+          displayName: "Chantier, Lausanne",
+          class: "landuse",
+          type: "construction",
+          lat: 46.5,
+          lon: 6.6,
+          address: { city: "Lausanne", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["46.4", "46.6", "6.5", "6.7"],
+        },
+        "Construction"
+      ),
+      false
+    );
+
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 2,
+          name: "Neubag Bauunternehmung",
+          displayName: "Neubag, Zürich",
+          class: "office",
+          type: "company",
+          lat: 47.37,
+          lon: 8.54,
+          address: { city: "Zürich", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["47.3", "47.4", "8.4", "8.6"],
+        },
+        "Construction"
+      ),
+      true
+    );
+
+    assert.equal(
+      isLikelyBusinessResult(
+        {
+          placeId: 3,
+          name: "China Construction Bank",
+          displayName: "China Construction Bank, Zürich",
+          class: "office",
+          type: "company",
+          lat: 47.37,
+          lon: 8.54,
+          address: { city: "Zürich", country_code: "ch" },
+          extratags: {},
+          boundingbox: ["47.3", "47.4", "8.4", "8.6"],
+        },
+        "Bauunternehmen"
+      ),
+      false
+    );
+  });
+});
+
+describe("matchesCity", () => {
+  it("accepts results within the city bounding box", () => {
+    assert.equal(
+      matchesCity(
+        {
+          placeId: 1,
+          name: "Meier-Ehrensperger AG",
+          displayName: "Meier-Ehrensperger AG, Zürich",
+          class: "craft",
+          type: "builder",
+          lat: 47.37,
+          lon: 8.54,
+          address: {},
+          extratags: {},
+          boundingbox: ["47.3", "47.4", "8.4", "8.6"],
+        },
+        "Zürich",
+        zurichLocation
+      ),
+      true
+    );
+  });
+});
+
+describe("isWithinBoundingBox", () => {
+  it("checks coordinates against nominatim bounding boxes", () => {
+    assert.equal(
+      isWithinBoundingBox(47.37, 8.54, zurichLocation.boundingbox),
+      true
+    );
+  });
+});
+
+describe("shouldUseOverpassFallback", () => {
+  it("enables fallback for sparse construction results", () => {
+    assert.equal(shouldUseOverpassFallback("Construction", 0, 3), true);
+    assert.equal(shouldUseOverpassFallback("Gastro", 0, 3), false);
+    assert.equal(shouldUseOverpassFallback("Construction", 5, 3), false);
   });
 });
 
@@ -107,6 +279,10 @@ describe("mapNominatimSearchResultToCandidate", () => {
         placeId: 1,
         name: "Konshi",
         displayName: "Konshi, Zürich, Switzerland",
+        class: "amenity",
+        type: "restaurant",
+        lat: 47.37,
+        lon: 8.54,
         address: {
           city: "Zürich",
           country_code: "ch",
@@ -117,7 +293,8 @@ describe("mapNominatimSearchResultToCandidate", () => {
         boundingbox: ["47.3", "47.4", "8.4", "8.6"],
       },
       "Gastro",
-      "Zürich"
+      "Zürich",
+      zurichLocation
     );
 
     assert.ok(candidate);
@@ -132,6 +309,10 @@ describe("mapNominatimSearchResultToCandidate", () => {
         placeId: 2,
         name: "Geneva Restaurant",
         displayName: "Geneva Restaurant, Genève, Switzerland",
+        class: "amenity",
+        type: "restaurant",
+        lat: 46.2,
+        lon: 6.14,
         address: {
           city: "Genève",
           country_code: "ch",
@@ -140,7 +321,8 @@ describe("mapNominatimSearchResultToCandidate", () => {
         boundingbox: ["46.2", "46.3", "6.1", "6.2"],
       },
       "Gastro",
-      "Zürich"
+      "Zürich",
+      zurichLocation
     );
 
     assert.equal(candidate, null);
@@ -216,10 +398,14 @@ describe("parseNominatimResults", () => {
         osm_id: 12345,
         display_name: "Zürich, Switzerland",
         boundingbox: ["47.2", "47.5", "8.4", "8.7"],
+        lat: "47.37",
+        lon: "8.54",
+        address: { state: "Zürich" },
       },
     ]);
 
     assert.equal(parsed[0]?.osmType, "relation");
+    assert.equal(parsed[0]?.state, "Zürich");
     assert.equal(toOverpassAreaId("relation", 12345), 3_600_012_345);
   });
 });
@@ -233,6 +419,10 @@ describe("parseNominatimSearchResults", () => {
         osm_id: 99,
         display_name: "Konshi, Zürich, Switzerland",
         boundingbox: ["47.3", "47.4", "8.4", "8.6"],
+        class: "amenity",
+        type: "restaurant",
+        lat: "47.37",
+        lon: "8.54",
         name: "Konshi",
         address: { city: "Zürich", country_code: "ch" },
         extratags: { website: "https://konshi-zuerich.ch/" },
@@ -241,6 +431,7 @@ describe("parseNominatimSearchResults", () => {
 
     assert.equal(parsed[0]?.name, "Konshi");
     assert.equal(parsed[0]?.extratags.website, "https://konshi-zuerich.ch/");
+    assert.equal(parsed[0]?.class, "amenity");
   });
 });
 

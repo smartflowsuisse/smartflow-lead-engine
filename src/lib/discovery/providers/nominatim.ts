@@ -4,12 +4,19 @@ export interface NominatimResult {
   osmId: number;
   displayName: string;
   boundingbox: [string, string, string, string];
+  state: string | null;
+  lat: number | null;
+  lon: number | null;
 }
 
 export interface NominatimSearchResult {
   placeId: number;
   name: string;
   displayName: string;
+  class: string;
+  type: string;
+  lat: number | null;
+  lon: number | null;
   address: {
     city?: string;
     town?: string;
@@ -30,6 +37,11 @@ interface NominatimResponseItem {
   boundingbox: [string, string, string, string];
   class?: string;
   type?: string;
+  lat?: string;
+  lon?: string;
+  address?: {
+    state?: string;
+  };
 }
 
 interface NominatimSearchResponseItem extends NominatimResponseItem {
@@ -43,6 +55,12 @@ function parseOsmType(value: string): NominatimResult["osmType"] | null {
     return value;
   }
   return null;
+}
+
+function parseCoordinate(value: string | undefined): number | null {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 export function toOverpassAreaId(
@@ -69,6 +87,9 @@ export function parseNominatimResults(
       osmId: item.osm_id,
       displayName: item.display_name,
       boundingbox: item.boundingbox,
+      state: item.address?.state ?? null,
+      lat: parseCoordinate(item.lat),
+      lon: parseCoordinate(item.lon),
     });
   }
 
@@ -87,6 +108,10 @@ export function parseNominatimSearchResults(
       placeId: item.place_id,
       name: item.name.trim(),
       displayName: item.display_name,
+      class: item.class ?? "",
+      type: item.type ?? "",
+      lat: parseCoordinate(item.lat),
+      lon: parseCoordinate(item.lon),
       address: item.address ?? {},
       extratags: item.extratags ?? {},
       boundingbox: item.boundingbox,
@@ -99,6 +124,10 @@ export function parseNominatimSearchResults(
 export function buildViewbox(boundingbox: [string, string, string, string]): string {
   const [south, north, west, east] = boundingbox;
   return `${west},${north},${east},${south}`;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function geocodeSwissCity(
@@ -139,6 +168,7 @@ export async function searchSwissBusinesses(
   options: {
     nominatimUrl: string;
     userAgent: string;
+    restrictToViewbox?: boolean;
   }
 ): Promise<NominatimSearchResult[]> {
   const url = new URL("/search", options.nominatimUrl);
@@ -148,7 +178,10 @@ export async function searchSwissBusinesses(
   url.searchParams.set("addressdetails", "1");
   url.searchParams.set("extratags", "1");
   url.searchParams.set("limit", String(Math.min(limit * 3, 50)));
-  url.searchParams.set("viewbox", buildViewbox(location.boundingbox));
+
+  if (options.restrictToViewbox !== false) {
+    url.searchParams.set("viewbox", buildViewbox(location.boundingbox));
+  }
 
   const response = await fetch(url, {
     headers: {
@@ -164,4 +197,35 @@ export async function searchSwissBusinesses(
 
   const payload = (await response.json()) as NominatimSearchResponseItem[];
   return parseNominatimSearchResults(payload);
+}
+
+export async function searchSwissBusinessesMultiple(
+  queries: string[],
+  location: NominatimResult,
+  limit: number,
+  options: {
+    nominatimUrl: string;
+    userAgent: string;
+    restrictToViewbox?: boolean;
+  }
+): Promise<NominatimSearchResult[]> {
+  const merged = new Map<number, NominatimSearchResult>();
+  const targetCount = Math.min(limit * 3, 50);
+
+  for (const query of queries) {
+    const results = await searchSwissBusinesses(query, location, limit, options);
+    for (const result of results) {
+      merged.set(result.placeId, result);
+    }
+
+    if (merged.size >= targetCount) {
+      break;
+    }
+
+    if (queries.length > 1) {
+      await sleep(1_100);
+    }
+  }
+
+  return [...merged.values()];
 }

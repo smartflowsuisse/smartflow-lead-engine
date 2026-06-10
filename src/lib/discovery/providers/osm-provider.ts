@@ -3,12 +3,23 @@ import {
   extractWebsite,
   sortCandidatesByWebsite,
 } from "./map-osm-element";
-import { buildNominatimSearchQuery } from "./industry-tags";
+import { buildIndustrySearchQueries, buildCantonFallbackQueries } from "./industry-tags";
+import {
+  mergeOverpassResults,
+  searchConstructionViaOverpass,
+  shouldUseOverpassFallback,
+} from "./overpass-search";
 import {
   geocodeSwissCity,
-  searchSwissBusinesses,
+  searchSwissBusinessesMultiple,
   type NominatimSearchResult,
+  type NominatimResult,
 } from "./nominatim";
+import {
+  isLikelyBusinessResult,
+  matchesCity,
+  matchesRegion,
+} from "./search-filters";
 import { getDiscoveryConfig } from "../config";
 import type {
   DiscoveryCandidate,
@@ -17,44 +28,40 @@ import type {
   DiscoveryResult,
 } from "../types";
 
-function normalize(value: string): string {
-  return value.trim().toLowerCase();
-}
-
-function matchesCity(resultCity: string, queryCity: string): boolean {
-  const left = normalize(resultCity);
-  const right = normalize(queryCity);
-  return left.includes(right) || right.includes(left);
-}
-
-function extractResultCity(result: NominatimSearchResult, fallbackCity: string): string {
-  return (
-    result.address.city ||
-    result.address.town ||
-    result.address.municipality ||
-    result.address.village ||
-    fallbackCity
-  ).trim();
-}
-
 export function mapNominatimSearchResultToCandidate(
   result: NominatimSearchResult,
   industry: string,
-  queryCity: string
+  queryCity: string,
+  location: NominatimResult,
+  options: { regionalFallback?: boolean } = {}
 ): DiscoveryCandidate | null {
   if (result.address.country_code && result.address.country_code !== "ch") {
     return null;
   }
 
-  const city = extractResultCity(result, queryCity);
-  if (!matchesCity(city, queryCity)) {
+  if (!isLikelyBusinessResult(result, industry)) {
     return null;
   }
+
+  const inArea = options.regionalFallback
+    ? matchesRegion(result, queryCity, location)
+    : matchesCity(result, queryCity, location);
+
+  if (!inArea) {
+    return null;
+  }
+
+  const city =
+    result.address.city ||
+    result.address.town ||
+    result.address.municipality ||
+    result.address.village ||
+    queryCity;
 
   return {
     company: result.name,
     website: extractWebsite(result.extratags),
-    city,
+    city: city.trim(),
     industry: industry.trim(),
   };
 }
@@ -85,25 +92,81 @@ export const osmProvider: DiscoveryProvider = {
       };
     }
 
-    const searchQuery = buildNominatimSearchQuery(industry, city);
-    const results = await searchSwissBusinesses(searchQuery, location, limit, {
-      nominatimUrl: config.nominatimUrl,
-      userAgent: config.userAgent,
-    });
+    const searchQueries = buildIndustrySearchQueries(industry, city);
+    const results = await searchSwissBusinessesMultiple(
+      searchQueries,
+      location,
+      limit,
+      {
+        nominatimUrl: config.nominatimUrl,
+        userAgent: config.userAgent,
+      }
+    );
 
     const mapped = results
       .map((result) =>
-        mapNominatimSearchResultToCandidate(result, industry, city)
+        mapNominatimSearchResultToCandidate(result, industry, city, location)
       )
       .filter((candidate): candidate is DiscoveryCandidate => Boolean(candidate));
 
-    const unique = dedupeCandidates(mapped);
-    const sorted = sortCandidatesByWebsite(unique);
+    let unique = dedupeCandidates(mapped);
+    let sorted = sortCandidatesByWebsite(unique);
+
+    if (shouldUseOverpassFallback(industry, sorted.length, Math.min(3, limit))) {
+      try {
+        const overpassResults = await searchConstructionViaOverpass(
+          location,
+          industry,
+          city,
+          limit,
+          {
+            overpassUrl: config.overpassUrl,
+            userAgent: config.userAgent,
+          }
+        );
+        sorted = await mergeOverpassResults(sorted, overpassResults, limit);
+        unique = sorted;
+      } catch (error) {
+        console.error("Overpass construction fallback failed:", error);
+      }
+    }
+
+    if (
+      shouldUseOverpassFallback(industry, unique.length, Math.min(3, limit)) &&
+      location.state
+    ) {
+      const cantonQueries = buildCantonFallbackQueries(industry, location.state);
+      const cantonResults = await searchSwissBusinessesMultiple(
+        cantonQueries,
+        location,
+        limit,
+        {
+          nominatimUrl: config.nominatimUrl,
+          userAgent: config.userAgent,
+          restrictToViewbox: false,
+        }
+      );
+
+      const cantonMapped = cantonResults
+        .map((result) =>
+          mapNominatimSearchResultToCandidate(result, industry, city, location, {
+            regionalFallback: true,
+          })
+        )
+        .filter((candidate): candidate is DiscoveryCandidate =>
+          Boolean(candidate)
+        );
+
+      sorted = sortCandidatesByWebsite(
+        dedupeCandidates([...unique, ...cantonMapped])
+      );
+      unique = sorted;
+    }
 
     return {
       query: { industry, city, limit },
       candidates: sorted.slice(0, limit),
-      totalFound: sorted.length,
+      totalFound: unique.length,
       provider: "osm",
     };
   },

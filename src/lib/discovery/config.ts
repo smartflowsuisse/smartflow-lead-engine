@@ -14,5 +14,7 @@ export function getDiscoveryConfig() {
     userAgent:
       process.env.DISCOVERY_USER_AGENT ??
       "SmartFlow-Lead-Engine/1.0 (local discovery)",
+    overpassUrl:
+      process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter",
   };
 }
