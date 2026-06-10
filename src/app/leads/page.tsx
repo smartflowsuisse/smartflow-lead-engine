@@ -4,14 +4,13 @@ import { getAnalyzedLeadIdSet, searchLeads } from "@/lib/leads";
 import { LeadCard } from "@/components/leads/LeadCard";
 import { LeadFilters } from "@/components/leads/LeadFilters";
 import { LeadListSummaryBar } from "@/components/leads/LeadListSummary";
+import { LeadExportButton } from "@/components/leads/LeadExportButton";
 import {
   computeLeadListSummary,
-  filterLeadsByContact,
-  filterLeadsByScore,
+  getLeadsForListView,
   parseLeadContactFilter,
   parseLeadScoreFilter,
   parseLeadSortOption,
-  sortLeads,
 } from "@/lib/leads/list-view";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/types";
 
@@ -43,13 +42,11 @@ export default async function LeadsPage({ searchParams }: PageProps) {
   const baseLeads = searchLeads({ q, status });
   const analyzedLeadIds = getAnalyzedLeadIdSet();
   const summary = computeLeadListSummary(baseLeads, analyzedLeadIds);
-  const leads = sortLeads(
-    filterLeadsByScore(
-      filterLeadsByContact(baseLeads, contactFilter),
-      scoreFilter
-    ),
-    sortOption
-  );
+  const leads = getLeadsForListView(baseLeads, {
+    contact: contactFilter,
+    score: scoreFilter,
+    sort: sortOption,
+  });
 
   const hasFilters = Boolean(
     q ||
@@ -69,13 +66,22 @@ export default async function LeadsPage({ searchParams }: PageProps) {
             {hasFilters ? " shown" : " in your database"}
           </p>
         </div>
-        <Link
-          href="/leads/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
-        >
-          <Plus className="h-4 w-4" />
-          Add Lead
-        </Link>
+        <div className="flex items-center gap-3">
+          <LeadExportButton
+            q={q}
+            status={status}
+            contact={contactFilter}
+            score={scoreFilter}
+            sort={sortOption}
+          />
+          <Link
+            href="/leads/new"
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
+          >
+            <Plus className="h-4 w-4" />
+            Add Lead
+          </Link>
+        </div>
       </div>
 
       <LeadListSummaryBar summary={summary} />

@@ -127,6 +127,23 @@ export function filterLeadsByScore(
   }
 }
 
+export function getLeadsForListView(
+  baseLeads: Lead[],
+  filters: {
+    contact: LeadContactFilter;
+    score: LeadScoreFilter;
+    sort: LeadSortOption;
+  }
+): Lead[] {
+  return sortLeads(
+    filterLeadsByScore(
+      filterLeadsByContact(baseLeads, filters.contact),
+      filters.score
+    ),
+    filters.sort
+  );
+}
+
 export function sortLeads(
   leads: Lead[],
   sortOption: LeadSortOption
