@@ -45,6 +45,19 @@ function rowToLead(row: Record<string, unknown>): Lead {
     notes: (row.notes as string) ?? null,
     contacted_at: (row.contacted_at as string) ?? null,
     contacted_language: (row.contacted_language as string) ?? null,
+    contact_page_url: (row.contact_page_url as string) ?? null,
+    email_confidence:
+      typeof row.email_confidence === "number"
+        ? row.email_confidence
+        : row.email_confidence != null
+          ? Number(row.email_confidence)
+          : null,
+    phone_confidence:
+      typeof row.phone_confidence === "number"
+        ? row.phone_confidence
+        : row.phone_confidence != null
+          ? Number(row.phone_confidence)
+          : null,
     created_at: row.created_at as string,
     updated_at: row.updated_at as string,
   };
@@ -191,6 +204,9 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
       lead_score = @lead_score,
       status = @status,
       notes = @notes,
+      contact_page_url = @contact_page_url,
+      email_confidence = @email_confidence,
+      phone_confidence = @phone_confidence,
       updated_at = datetime('now')
      WHERE id = @id`
   ).run({
@@ -204,6 +220,18 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
     lead_score: input.lead_score ?? existing.lead_score,
     status: input.status ?? existing.status,
     notes: input.notes !== undefined ? input.notes : existing.notes,
+    contact_page_url:
+      input.contact_page_url !== undefined
+        ? input.contact_page_url
+        : existing.contact_page_url,
+    email_confidence:
+      input.email_confidence !== undefined
+        ? input.email_confidence
+        : existing.email_confidence,
+    phone_confidence:
+      input.phone_confidence !== undefined
+        ? input.phone_confidence
+        : existing.phone_confidence,
   });
 
   return getLeadById(id);

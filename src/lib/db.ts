@@ -93,6 +93,18 @@ function runMigrations(database: Database.Database) {
   if (!columnNames.has("contacted_language")) {
     database.exec("ALTER TABLE leads ADD COLUMN contacted_language TEXT");
   }
+
+  if (!columnNames.has("contact_page_url")) {
+    database.exec("ALTER TABLE leads ADD COLUMN contact_page_url TEXT");
+  }
+
+  if (!columnNames.has("email_confidence")) {
+    database.exec("ALTER TABLE leads ADD COLUMN email_confidence INTEGER");
+  }
+
+  if (!columnNames.has("phone_confidence")) {
+    database.exec("ALTER TABLE leads ADD COLUMN phone_confidence INTEGER");
+  }
 }
 
 export function getDb(): Database.Database {

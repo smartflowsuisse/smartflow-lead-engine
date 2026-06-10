@@ -10,6 +10,7 @@ describe("formatActivityTitle", () => {
     assert.equal(formatActivityTitle("analysis_completed"), "Analysis completed");
     assert.equal(formatActivityTitle("outreach_generated"), "Outreach generated");
     assert.equal(formatActivityTitle("contacted"), "Contacted");
+    assert.equal(formatActivityTitle("contact_discovered"), "Contact discovered");
   });
 });
 
@@ -35,6 +36,16 @@ describe("formatActivityDescription", () => {
     assert.match(
       formatActivityDescription("contacted", { language: "de" }),
       /German/
+    );
+  });
+
+  it("describes auto-discovered contact details", () => {
+    assert.match(
+      formatActivityDescription("contact_discovered", {
+        email: "info@acme.ch",
+        phone: "+41 21 555 66 77",
+      }),
+      /info@acme.ch/
     );
   });
 });

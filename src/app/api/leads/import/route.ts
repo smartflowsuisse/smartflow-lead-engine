@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No rows to import" }, { status: 400 });
     }
 
-    const result = executeImport(rows);
+    const result = await executeImport(rows);
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error("POST /api/leads/import error:", error);

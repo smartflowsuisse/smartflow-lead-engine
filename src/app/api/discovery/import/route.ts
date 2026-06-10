@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = importDiscoveryCandidate(candidate);
+    const result = await importDiscoveryCandidate(candidate);
 
     if (!result.ok && result.duplicate) {
       return NextResponse.json(result, { status: 409 });

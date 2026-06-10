@@ -1,5 +1,6 @@
 import { getDb } from "../db";
 import { createLead, findDuplicateLead } from "../leads";
+import { enrichLeadWithDiscoveredContact } from "../contact/enrich-lead-contact";
 import type { Lead } from "../types";
 import type { CsvLeadRow, ImportExecuteResult } from "./types";
 
@@ -8,7 +9,9 @@ export interface ImportConfirmRow {
   data: CsvLeadRow;
 }
 
-export function executeImport(rows: ImportConfirmRow[]): ImportExecuteResult {
+export async function executeImport(
+  rows: ImportConfirmRow[]
+): Promise<ImportExecuteResult> {
   const db = getDb();
   const result: ImportExecuteResult = {
     imported: 0,
@@ -68,7 +71,13 @@ export function executeImport(rows: ImportConfirmRow[]): ImportExecuteResult {
   });
 
   const executed = importRows(rows);
-  result.leads = executed.created;
+  const enrichedLeads: Lead[] = [];
+
+  for (const lead of executed.created) {
+    enrichedLeads.push(await enrichLeadWithDiscoveredContact(lead));
+  }
+
+  result.leads = enrichedLeads;
   result.errors = executed.errors;
   result.imported = executed.imported;
   result.skipped = executed.skipped;

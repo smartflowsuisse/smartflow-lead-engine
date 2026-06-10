@@ -8,6 +8,8 @@ export function formatActivityTitle(type: LeadActivityType): string {
       return "Outreach generated";
     case "contacted":
       return "Contacted";
+    case "contact_discovered":
+      return "Contact discovered";
   }
 }
 
@@ -50,6 +52,21 @@ export function formatActivityDescription(
       return languageLabel
         ? `Marked as contacted · ${languageLabel} outreach`
         : "Lead moved to Contacted";
+    }
+    case "contact_discovered": {
+      const parts: string[] = [];
+      if (typeof details.email === "string" && details.email) {
+        parts.push(`email ${details.email}`);
+      }
+      if (typeof details.phone === "string" && details.phone) {
+        parts.push(`phone ${details.phone}`);
+      }
+      if (typeof details.contactPageUrl === "string" && details.contactPageUrl) {
+        parts.push("contact page");
+      }
+      return parts.length
+        ? `Auto-discovered ${parts.join(", ")}`
+        : "Contact discovery completed";
     }
   }
 }
