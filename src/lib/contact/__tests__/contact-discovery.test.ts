@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { CONTACT_PAGE_PATHS } from "../contact-paths";
+import {
+  CONTACT_PAGE_PATHS,
+  isContactLikeUrl,
+  isHtmlPageUrl,
+} from "../contact-paths";
 import {
   extractContactPageLinksFromHtml,
   extractContactsFromHtml,
@@ -117,6 +121,54 @@ describe("extractContactsFromHtml", () => {
       extractContactsFromHtml(html, "https://acme.ch").contactPageUrl,
       "https://acme.ch/contact-us"
     );
+  });
+});
+
+describe("isHtmlPageUrl", () => {
+  it("rejects CSS, JS, and plugin asset URLs", () => {
+    assert.equal(
+      isHtmlPageUrl(
+        "https://www.marti.ch/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4"
+      ),
+      false
+    );
+    assert.equal(isHtmlPageUrl("https://acme.ch/assets/app.js"), false);
+    assert.equal(isHtmlPageUrl("https://acme.ch/static/logo.png"), false);
+    assert.equal(isHtmlPageUrl("https://acme.ch/kontakt"), true);
+    assert.equal(isHtmlPageUrl("https://acme.ch/de/contact"), true);
+  });
+});
+
+describe("isContactLikeUrl", () => {
+  it("rejects plugin and asset URLs even when they contain contact keywords", () => {
+    assert.equal(
+      isContactLikeUrl(
+        "https://www.marti.ch/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4"
+      ),
+      false
+    );
+    assert.equal(isContactLikeUrl("https://acme.ch/wp-content/plugins/contact-form-7/includes/js/scripts.js"), false);
+    assert.equal(isContactLikeUrl("https://acme.ch/kontakt"), true);
+    assert.equal(isContactLikeUrl("https://acme.ch/de/kontakt"), true);
+    assert.equal(isContactLikeUrl("https://acme.ch/contact-us"), true);
+  });
+});
+
+describe("extractContactsFromHtml contact page detection", () => {
+  it("ignores contact-form plugin CSS links and prefers real kontakt pages", () => {
+    const html = `
+      <link rel="stylesheet" href="/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4" />
+      <a href="/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4">Broken</a>
+      <a href="/kontakt">Kontakt</a>
+      <a href="mailto:marti@marti.ch">Email</a>
+    `;
+
+    const links = extractContactPageLinksFromHtml(html, "https://www.marti.ch");
+    assert.ok(!links.some((url) => url.includes("styles.css")));
+    assert.ok(links.includes("https://www.marti.ch/kontakt"));
+
+    const result = extractContactsFromHtml(html, "https://www.marti.ch");
+    assert.equal(result.contactPageUrl, "https://www.marti.ch/kontakt");
   });
 });
 
