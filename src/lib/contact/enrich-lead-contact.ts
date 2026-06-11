@@ -1,5 +1,5 @@
 import { createLeadActivity } from "../activities";
-import { updateLead } from "../leads";
+import { getLeadById, persistLeadScore, updateLead } from "../leads";
 import type { Lead } from "../types";
 import { normalizeWebsite } from "../website";
 import { discoverContactFromWebsite } from "./discover-contact";
@@ -79,5 +79,6 @@ export async function enrichLeadWithDiscoveredContact(lead: Lead): Promise<Lead>
     pagesCrawled: discovery.pagesCrawled,
   });
 
-  return updated;
+  persistLeadScore(updated.id);
+  return getLeadById(updated.id) ?? updated;
 }

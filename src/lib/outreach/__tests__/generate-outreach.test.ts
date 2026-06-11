@@ -85,7 +85,7 @@ describe("generateOutreachDraft", () => {
       "en"
     );
     assert.match(draft.body, /6\/100/);
-    assert.match(draft.body, /Not Qualified/);
+    assert.match(draft.body, /Cold/);
     assert.match(draft.subject, /digital improvements/i);
   });
 

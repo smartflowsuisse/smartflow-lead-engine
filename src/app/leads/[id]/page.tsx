@@ -15,6 +15,10 @@ import {
   LeadCompanySection,
   LeadProfileHeader,
 } from "@/components/leads/LeadProfileSections";
+import {
+  calculateLeadScoreBreakdown,
+  leadAnalysisToWebsiteResult,
+} from "@/lib/scoring";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -30,6 +34,10 @@ export default async function LeadDetailPage({ params }: PageProps) {
 
   const tasks = getTasksByLeadId(leadId);
   const activities = getActivitiesByLeadId(leadId);
+  const scoreBreakdown = calculateLeadScoreBreakdown(
+    lead,
+    lead.analysis ? leadAnalysisToWebsiteResult(lead.analysis) : null
+  );
 
   return (
     <div className="p-8">
@@ -41,7 +49,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
         Back to leads
       </Link>
 
-      <LeadProfileHeader lead={lead} />
+      <LeadProfileHeader lead={lead} scoreBreakdown={scoreBreakdown} />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-1">
@@ -72,6 +80,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
               leadId={lead.id}
               website={lead.website}
               leadScore={lead.lead_score}
+              scoreBreakdown={scoreBreakdown}
               analysis={lead.analysis}
             />
           </section>

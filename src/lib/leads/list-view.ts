@@ -83,7 +83,7 @@ export function hasLeadContactPage(lead: Lead): boolean {
 
 export function isHighPriorityLead(lead: Lead): boolean {
   return (
-    lead.lead_score >= 60 && !POST_PRIORITY_STATUSES.includes(lead.status)
+    lead.lead_score >= 65 && !POST_PRIORITY_STATUSES.includes(lead.status)
   );
 }
 

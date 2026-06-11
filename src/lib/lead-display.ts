@@ -1,6 +1,6 @@
 export function scoreColor(score: number): string {
-  if (score >= 70) return "text-emerald-600 bg-emerald-50 border-emerald-200";
-  if (score >= 40) return "text-amber-600 bg-amber-50 border-amber-200";
+  if (score >= 65) return "text-emerald-600 bg-emerald-50 border-emerald-200";
+  if (score >= 45) return "text-amber-600 bg-amber-50 border-amber-200";
   return "text-red-600 bg-red-50 border-red-200";
 }
 

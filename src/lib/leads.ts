@@ -22,6 +22,10 @@ import {
 } from "./discovery/dedup";
 import { createLeadActivity } from "./activities";
 import { parseOutreachLanguage } from "./outreach/languages";
+import {
+  calculateLeadScore,
+  leadAnalysisToWebsiteResult,
+} from "./scoring";
 
 const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Contacted",
@@ -246,6 +250,21 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
   return getLeadById(id);
 }
 
+export function persistLeadScore(leadId: number): number {
+  const lead = getLeadById(leadId);
+  if (!lead) {
+    return 0;
+  }
+
+  const analysis = lead.analysis
+    ? leadAnalysisToWebsiteResult(lead.analysis)
+    : null;
+  const leadScore = calculateLeadScore(lead, analysis);
+
+  updateLead(leadId, { lead_score: leadScore });
+  return leadScore;
+}
+
 export function deleteLead(id: number): boolean {
   const db = getDb();
   const result = db.prepare("DELETE FROM leads WHERE id = ?").run(id);
@@ -384,7 +403,7 @@ export function getDashboardStats(): DashboardStats {
   const highPriorityLeads = (
     db
       .prepare(
-        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 60 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
+        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 65 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
       )
       .get() as { count: number }
   ).count;

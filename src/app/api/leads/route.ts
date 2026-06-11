@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createLead, searchLeads } from "@/lib/leads";
+import { createLead, getLeadById, persistLeadScore, searchLeads } from "@/lib/leads";
 import { enrichLeadWithDiscoveredContact } from "@/lib/contact/enrich-lead-contact";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/types";
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const lead = await enrichLeadWithDiscoveredContact(
+    const created = await enrichLeadWithDiscoveredContact(
       createLead({
         company: body.company.trim(),
         website: body.website?.trim() || undefined,
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
         notes: body.notes?.trim() || undefined,
       })
     );
+    persistLeadScore(created.id);
+    const lead = getLeadById(created.id) ?? created;
 
     return NextResponse.json(lead, { status: 201 });
   } catch (error) {

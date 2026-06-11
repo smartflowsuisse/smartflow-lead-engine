@@ -25,13 +25,16 @@ import {
   isLegacyUnavailableError,
 } from "@/lib/analysis/unavailable-display";
 import { cn, scoreColor } from "@/lib/utils";
+import type { LeadScoreBreakdown as LeadScoreBreakdownType } from "@/lib/scoring";
 import { getScoreLabel, formatAnalysisScore } from "@/lib/scoring";
+import { LeadScoreBreakdown } from "@/components/leads/LeadScoreBreakdown";
 import { isKnownScore } from "@/lib/analysis/score-values";
 
 interface AnalysisPanelProps {
   leadId: number;
   website: string | null;
   leadScore: number;
+  scoreBreakdown?: LeadScoreBreakdownType;
   analysis: LeadAnalysis | null | undefined;
 }
 
@@ -105,6 +108,7 @@ export function AnalysisPanel({
   leadId,
   website,
   leadScore,
+  scoreBreakdown,
   analysis,
 }: AnalysisPanelProps) {
   const router = useRouter();
@@ -265,6 +269,9 @@ export function AnalysisPanel({
                 <p className="text-xs">/ 100</p>
               </div>
             </div>
+            {scoreBreakdown && leadScore > 0 && (
+              <LeadScoreBreakdown breakdown={scoreBreakdown} />
+            )}
           </div>
 
           <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">

@@ -273,7 +273,18 @@ function buildAnalysisResult(
     details: {
       ...result.details,
       websiteQualityScore: calculateWebsiteQualityScore(result),
-      opportunityScore: calculateLeadScore(result),
+      opportunityScore: calculateLeadScore(
+        {
+          email: null,
+          phone: null,
+          contact_page_url: null,
+          website: (meta.url as string) ?? null,
+          company: (meta.company as string) ?? "",
+          city: (meta.city as string) ?? null,
+          industry: (meta.industry as string) ?? industry ?? null,
+        },
+        result
+      ),
     },
   };
 }
@@ -356,6 +367,9 @@ export async function analyzeWebsite(
       requestedUrl: fetched.requestedUrl,
       statusCode: fetched.statusCode,
       loadTimeMs: fetched.loadTimeMs,
+      company: leadContext.company ?? "",
+      city: leadContext.city ?? null,
+      industry: leadContext.industry ?? null,
     });
 
     return finalizeAnalysis(

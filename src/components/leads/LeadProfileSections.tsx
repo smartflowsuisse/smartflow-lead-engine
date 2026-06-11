@@ -6,13 +6,19 @@ import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
 import { needsContactEnrichment } from "@/lib/leads/contact-enrichment";
 import { LeadContactEnrichmentBadge } from "@/components/leads/LeadContactEnrichmentBadge";
 import { cn, formatDateTime, scoreColor } from "@/lib/utils";
+import type { LeadScoreBreakdown as LeadScoreBreakdownType } from "@/lib/scoring";
 import { getScoreLabel, getRecommendedAction } from "@/lib/scoring";
+import { LeadScoreBreakdown } from "@/components/leads/LeadScoreBreakdown";
 
 interface LeadProfileHeaderProps {
   lead: Lead;
+  scoreBreakdown?: LeadScoreBreakdownType;
 }
 
-export function LeadProfileHeader({ lead }: LeadProfileHeaderProps) {
+export function LeadProfileHeader({
+  lead,
+  scoreBreakdown,
+}: LeadProfileHeaderProps) {
   const hasScore = lead.lead_score > 0;
   const showEnrichmentBadge = needsContactEnrichment(lead);
 
@@ -34,10 +40,20 @@ export function LeadProfileHeader({ lead }: LeadProfileHeaderProps) {
                 : "border-slate-200 bg-slate-50 text-slate-600"
             )}
           >
-            Score: {hasScore ? lead.lead_score : "—"} — {getScoreLabel(lead.lead_score)}
+            Score: {hasScore ? `${lead.lead_score}/100` : "—"} —{" "}
+            {getScoreLabel(lead.lead_score)}
           </span>
           {showEnrichmentBadge && <LeadContactEnrichmentBadge />}
         </div>
+
+        {scoreBreakdown && hasScore && (
+          <div className="mt-4 max-w-md rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              Score breakdown
+            </p>
+            <LeadScoreBreakdown breakdown={scoreBreakdown} />
+          </div>
+        )}
 
         <p className="mt-3 text-sm text-slate-600">
           {getRecommendedAction(lead.lead_score, lead.status)}
