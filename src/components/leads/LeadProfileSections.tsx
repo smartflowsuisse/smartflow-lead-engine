@@ -29,7 +29,7 @@ export function LeadProfileHeader({
     <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          Lead Profile
+          Lead Details
         </p>
         <h1 className="mt-1 text-2xl font-bold text-slate-900">{lead.company}</h1>
 
