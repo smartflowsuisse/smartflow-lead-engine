@@ -1,6 +1,6 @@
 import { createLead, findDuplicateLead } from "../leads";
 import { enrichLeadWithDiscoveredContact } from "../contact/enrich-lead-contact";
-import type { Lead } from "../types";
+import type { CreateLeadInput, Lead } from "../types";
 import { getCandidateKey } from "./dedup";
 import type { DiscoveryCandidate } from "./types";
 
@@ -46,6 +46,19 @@ export function getImportStatusForCandidates(
   return status;
 }
 
+export function buildDiscoveryLeadInput(
+  candidate: DiscoveryCandidate
+): CreateLeadInput {
+  return {
+    company: candidate.company.trim(),
+    website: candidate.website?.trim() || undefined,
+    city: candidate.city?.trim() || undefined,
+    industry: candidate.industry?.trim() || undefined,
+    status: "New Lead",
+    notes: "Imported from Discovery",
+  };
+}
+
 export async function importDiscoveryCandidate(
   candidate: DiscoveryCandidate
 ): Promise<DiscoveryImportResponse> {
@@ -72,14 +85,7 @@ export async function importDiscoveryCandidate(
   }
 
   const lead = await enrichLeadWithDiscoveredContact(
-    createLead({
-      company: candidate.company.trim(),
-      website: candidate.website?.trim() || undefined,
-      city: candidate.city?.trim() || undefined,
-      industry: candidate.industry?.trim() || undefined,
-      status: "New Lead",
-      notes: "Imported from Discovery",
-    })
+    createLead(buildDiscoveryLeadInput(candidate))
   );
 
   return {

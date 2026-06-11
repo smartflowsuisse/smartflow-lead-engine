@@ -10,12 +10,14 @@ import {
   Radar,
   Upload,
   Zap,
+  Send,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: Users },
+  { href: "/outreach", label: "Outreach", icon: Send },
   { href: "/pipeline", label: "Pipeline", icon: Kanban },
   { href: "/discovery", label: "Discovery", icon: Radar },
   { href: "/leads/import", label: "Import CSV", icon: Upload },

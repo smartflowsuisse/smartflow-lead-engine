@@ -105,6 +105,15 @@ function runMigrations(database: Database.Database) {
   if (!columnNames.has("phone_confidence")) {
     database.exec("ALTER TABLE leads ADD COLUMN phone_confidence INTEGER");
   }
+
+  if (!columnNames.has("outreach_status")) {
+    database.exec(
+      "ALTER TABLE leads ADD COLUMN outreach_status TEXT NOT NULL DEFAULT 'New'"
+    );
+    database.exec(
+      "CREATE INDEX IF NOT EXISTS idx_leads_outreach_status ON leads(outreach_status)"
+    );
+  }
 }
 
 export function getDb(): Database.Database {

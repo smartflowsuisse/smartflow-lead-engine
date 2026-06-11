@@ -2,18 +2,23 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
-import { getTasksByLeadId } from "@/lib/tasks";
+import { getTasksByLeadId, summarizeLeadTasks } from "@/lib/tasks";
 import { getActivitiesByLeadId } from "@/lib/activities";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
-import { OutreachDraftPanel } from "@/components/leads/OutreachDraftPanel";
+import { EmailGeneratorPanel } from "@/components/leads/EmailGeneratorPanel";
 import { LeadNotesPanel } from "@/components/leads/LeadNotesPanel";
 import { LeadTasksPanel } from "@/components/leads/LeadTasksPanel";
 import { LeadActivityHistory } from "@/components/leads/LeadActivityHistory";
 import { LeadContactSection } from "@/components/leads/LeadContactSection";
+import { LeadReadinessChecklist } from "@/components/leads/LeadReadinessChecklist";
 import {
   LeadCompanySection,
   LeadProfileHeader,
 } from "@/components/leads/LeadProfileSections";
+import {
+  calculateLeadScoreBreakdown,
+  leadAnalysisToWebsiteResult,
+} from "@/lib/scoring";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -28,7 +33,12 @@ export default async function LeadDetailPage({ params }: PageProps) {
   if (!lead) notFound();
 
   const tasks = getTasksByLeadId(leadId);
+  const taskSummary = summarizeLeadTasks(tasks);
   const activities = getActivitiesByLeadId(leadId);
+  const scoreBreakdown = calculateLeadScoreBreakdown(
+    lead,
+    lead.analysis ? leadAnalysisToWebsiteResult(lead.analysis) : null
+  );
 
   return (
     <div className="p-8">
@@ -40,12 +50,20 @@ export default async function LeadDetailPage({ params }: PageProps) {
         Back to leads
       </Link>
 
-      <LeadProfileHeader lead={lead} />
+      <LeadProfileHeader
+        lead={lead}
+        scoreBreakdown={scoreBreakdown}
+        taskSummary={taskSummary}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-1">
           <LeadCompanySection lead={lead} />
           <LeadContactSection lead={lead} />
+          <LeadReadinessChecklist
+            lead={lead}
+            hasAnalysis={Boolean(lead.analysis)}
+          />
           <LeadNotesPanel
             leadId={lead.id}
             initialNotes={lead.notes}
@@ -53,23 +71,26 @@ export default async function LeadDetailPage({ params }: PageProps) {
           />
           <LeadTasksPanel leadId={lead.id} initialTasks={tasks} />
           <LeadActivityHistory activities={activities} />
-          <OutreachDraftPanel
-            leadId={lead.id}
-            hasAnalysis={Boolean(lead.analysis)}
-            contactedAt={lead.contacted_at}
-            contactedLanguage={lead.contacted_language}
-          />
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2">
           <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <AnalysisPanel
               leadId={lead.id}
               website={lead.website}
               leadScore={lead.lead_score}
+              scoreBreakdown={scoreBreakdown}
               analysis={lead.analysis}
             />
           </section>
+
+          <EmailGeneratorPanel
+            leadId={lead.id}
+            leadEmail={lead.email}
+            hasAnalysis={Boolean(lead.analysis)}
+            contactedAt={lead.contacted_at}
+            contactedLanguage={lead.contacted_language}
+          />
         </div>
       </div>
     </div>

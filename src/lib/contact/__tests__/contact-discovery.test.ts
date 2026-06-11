@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  CONTACT_PAGE_PATHS,
+  isContactLikeUrl,
+  isHtmlPageUrl,
+} from "../contact-paths";
+import {
+  extractContactPageLinksFromHtml,
   extractContactsFromHtml,
   mergeContactDiscovery,
 } from "../extract-contacts";
@@ -21,6 +27,7 @@ const sampleLead = (overrides: Partial<Lead> = {}): Lead => ({
   industry: "Construction",
   lead_score: 0,
   status: "New Lead",
+  outreach_status: "New",
   notes: null,
   contacted_at: null,
   contacted_language: null,
@@ -48,7 +55,7 @@ describe("extractContactsFromHtml", () => {
 
     assert.equal(result.email?.value, "info@acme.ch");
     assert.equal(result.email?.confidence, 95);
-    assert.match(result.phone?.value ?? "", /41215556677/);
+    assert.equal(result.phone?.value, "+41 21 555 66 77");
     assert.equal(result.contactPageUrl, "https://acme.ch/kontakt");
   });
 
@@ -71,6 +78,99 @@ describe("extractContactsFromHtml", () => {
     const merged = mergeContactDiscovery(homepage, contactPage);
     assert.equal(merged.email?.value, "info@acme.ch");
   });
+
+  it("extracts obfuscated email from plain text", () => {
+    const html = `<p>Reach us at info [at] acme [dot] ch</p>`;
+    const result = extractContactsFromHtml(html, "https://acme.ch/kontakt");
+    assert.equal(result.email?.value, "info@acme.ch");
+    assert.equal(result.email?.source, "text:contact-page");
+  });
+
+  it("prefers structured JSON-LD contact data on contact pages", () => {
+    const html = `
+      <script type="application/ld+json">
+        {"email":"office@acme.ch","telephone":"+41 44 492 06 71"}
+      </script>
+    `;
+    const result = extractContactsFromHtml(html, "https://acme.ch/kontakt");
+    assert.equal(result.email?.value, "office@acme.ch");
+    assert.equal(result.phone?.value, "+41 44 492 06 71");
+  });
+
+  it("extracts microdata email and Swiss phone from text", () => {
+    const html = `
+      <span itemprop="email">kontakt@acme.ch</span>
+      <p>Telefon 044 492 06 70</p>
+    `;
+    const result = extractContactsFromHtml(html, "https://acme.ch/impressum");
+    assert.equal(result.email?.value, "kontakt@acme.ch");
+    assert.equal(result.phone?.value, "044 492 06 70");
+  });
+
+  it("detects contact page links for about and contact-us paths", () => {
+    const html = `
+      <a href="/contact-us">Contact us</a>
+      <a href="/about">About</a>
+      <a href="/datenschutz">Privacy</a>
+    `;
+
+    const links = extractContactPageLinksFromHtml(html, "https://acme.ch");
+    assert.ok(links.includes("https://acme.ch/contact-us"));
+    assert.ok(links.includes("https://acme.ch/about"));
+    assert.ok(links.includes("https://acme.ch/datenschutz"));
+    assert.equal(
+      extractContactsFromHtml(html, "https://acme.ch").contactPageUrl,
+      "https://acme.ch/contact-us"
+    );
+  });
+});
+
+describe("isHtmlPageUrl", () => {
+  it("rejects CSS, JS, and plugin asset URLs", () => {
+    assert.equal(
+      isHtmlPageUrl(
+        "https://www.marti.ch/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4"
+      ),
+      false
+    );
+    assert.equal(isHtmlPageUrl("https://acme.ch/assets/app.js"), false);
+    assert.equal(isHtmlPageUrl("https://acme.ch/static/logo.png"), false);
+    assert.equal(isHtmlPageUrl("https://acme.ch/kontakt"), true);
+    assert.equal(isHtmlPageUrl("https://acme.ch/de/contact"), true);
+  });
+});
+
+describe("isContactLikeUrl", () => {
+  it("rejects plugin and asset URLs even when they contain contact keywords", () => {
+    assert.equal(
+      isContactLikeUrl(
+        "https://www.marti.ch/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4"
+      ),
+      false
+    );
+    assert.equal(isContactLikeUrl("https://acme.ch/wp-content/plugins/contact-form-7/includes/js/scripts.js"), false);
+    assert.equal(isContactLikeUrl("https://acme.ch/kontakt"), true);
+    assert.equal(isContactLikeUrl("https://acme.ch/de/kontakt"), true);
+    assert.equal(isContactLikeUrl("https://acme.ch/contact-us"), true);
+  });
+});
+
+describe("extractContactsFromHtml contact page detection", () => {
+  it("ignores contact-form plugin CSS links and prefers real kontakt pages", () => {
+    const html = `
+      <link rel="stylesheet" href="/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4" />
+      <a href="/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4">Broken</a>
+      <a href="/kontakt">Kontakt</a>
+      <a href="mailto:marti@marti.ch">Email</a>
+    `;
+
+    const links = extractContactPageLinksFromHtml(html, "https://www.marti.ch");
+    assert.ok(!links.some((url) => url.includes("styles.css")));
+    assert.ok(links.includes("https://www.marti.ch/kontakt"));
+
+    const result = extractContactsFromHtml(html, "https://www.marti.ch");
+    assert.equal(result.contactPageUrl, "https://www.marti.ch/kontakt");
+  });
 });
 
 describe("buildContactPageCandidates", () => {
@@ -79,6 +179,10 @@ describe("buildContactPageCandidates", () => {
     assert.ok(candidates.includes("https://acme.ch/contact"));
     assert.ok(candidates.includes("https://acme.ch/kontakt"));
     assert.ok(candidates.includes("https://acme.ch/impressum"));
+    assert.ok(candidates.includes("https://acme.ch/datenschutz"));
+    assert.ok(candidates.includes("https://acme.ch/contact-us"));
+    assert.ok(candidates.includes("https://acme.ch/contactez-nous"));
+    assert.equal(candidates.length, CONTACT_PAGE_PATHS.length);
   });
 });
 

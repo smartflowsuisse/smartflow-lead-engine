@@ -1,3 +1,4 @@
+import { CONTACT_PAGE_PATHS } from "./contact-paths";
 import { normalizeWebsite } from "../website";
 
 export interface FetchedPage {
@@ -63,16 +64,5 @@ export function buildContactPageCandidates(baseUrl: string): string[] {
     return [];
   }
 
-  const paths = [
-    "/contact",
-    "/kontakt",
-    "/contact-us",
-    "/impressum",
-    "/imprint",
-    "/about",
-    "/about-us",
-    "/ueber-uns",
-  ];
-
-  return paths.map((path) => `${origin}${path}`);
+  return CONTACT_PAGE_PATHS.map((path) => `${origin}${path}`);
 }

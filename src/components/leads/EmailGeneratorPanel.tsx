@@ -2,32 +2,32 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Loader2, Mail, Check, UserCheck } from "lucide-react";
+import { Copy, ExternalLink, Loader2, Mail, Check, UserCheck } from "lucide-react";
 import {
   OUTREACH_LANGUAGES,
   type OutreachLanguage,
 } from "@/lib/outreach/languages";
+import type { OutreachDraft } from "@/lib/outreach/generate-outreach";
+import {
+  buildOutreachMailtoLink,
+  formatOutreachEmailForCopy,
+} from "@/lib/outreach/generate-outreach";
 
-interface OutreachDraftPanelProps {
+interface EmailGeneratorPanelProps {
   leadId: number;
+  leadEmail?: string | null;
   hasAnalysis: boolean;
   contactedAt?: string | null;
   contactedLanguage?: string | null;
 }
 
-interface OutreachDraft {
-  subject: string;
-  body: string;
-  language: OutreachLanguage;
-  generatedAt: string;
-}
-
-export function OutreachDraftPanel({
+export function EmailGeneratorPanel({
   leadId,
+  leadEmail,
   hasAnalysis,
   contactedAt,
   contactedLanguage,
-}: OutreachDraftPanelProps) {
+}: EmailGeneratorPanelProps) {
   const router = useRouter();
   const [language, setLanguage] = useState<OutreachLanguage>(
     (contactedLanguage as OutreachLanguage) || "fr"
@@ -37,11 +37,11 @@ export function OutreachDraftPanel({
   const [contactSuccess, setContactSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState<OutreachDraft | null>(null);
-  const [copiedField, setCopiedField] = useState<"subject" | "message" | null>(
-    null
-  );
+  const [copiedField, setCopiedField] = useState<
+    "email" | "subject" | "message" | null
+  >(null);
 
-  const generateDraft = async () => {
+  const generateEmail = async () => {
     setLoading(true);
     setError(null);
     setCopiedField(null);
@@ -55,7 +55,7 @@ export function OutreachDraftPanel({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to generate outreach draft");
+        throw new Error(data.error || "Failed to generate email");
       }
 
       setDraft(data as OutreachDraft);
@@ -92,19 +92,31 @@ export function OutreachDraftPanel({
     }
   };
 
-  const copyText = async (text: string, field: "subject" | "message") => {
+  const copyText = async (
+    text: string,
+    field: "email" | "subject" | "message"
+  ) => {
     await navigator.clipboard.writeText(text);
     setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-start justify-between gap-3">
+    <section
+      id="email-generator"
+      className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-slate-900">Outreach Draft</h2>
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            SmartFlow Email Generator
+          </p>
+          <h2 className="mt-1 text-lg font-semibold text-slate-900">
+            Personalized outreach email
+          </h2>
           <p className="mt-1 text-sm text-slate-500">
-            Local template — not sent, no external APIs
+            Draft only — uses company profile, website analysis, quick wins,
+            automation opportunities, and lead score. Nothing is sent.
           </p>
         </div>
         <button
@@ -138,7 +150,7 @@ export function OutreachDraftPanel({
             >
               <input
                 type="radio"
-                name="outreach-language"
+                name="email-language"
                 value={option.code}
                 checked={language === option.code}
                 onChange={() => setLanguage(option.code)}
@@ -152,26 +164,26 @@ export function OutreachDraftPanel({
 
       <button
         type="button"
-        onClick={() => void generateDraft()}
+        onClick={() => void generateEmail()}
         disabled={loading}
-        className="mb-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
           <Mail className="h-4 w-4" />
         )}
-        Generate Outreach Message
+        Generate Email
       </button>
 
       {contactSuccess && (
-        <p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
           Lead marked as contacted.
         </p>
       )}
 
       {contactedAt && (
-        <p className="mb-4 text-sm text-slate-600">
+        <p className="mt-4 text-sm text-slate-600">
           Last contacted{" "}
           {new Date(contactedAt).toLocaleString("de-CH")}
           {contactedLanguage
@@ -181,24 +193,52 @@ export function OutreachDraftPanel({
       )}
 
       {!hasAnalysis && !draft && (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Run website analysis first for a richer outreach draft.
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          Run website analysis first for a richer email with quick wins and
+          automation opportunities.
         </p>
       )}
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
 
       {draft && (
-        <div className="space-y-4">
-          <p className="text-xs text-slate-500">
-            Generated{" "}
-            {new Date(draft.generatedAt).toLocaleString("de-CH")} ·{" "}
-            {OUTREACH_LANGUAGES.find((item) => item.code === draft.language)?.label}
-          </p>
+        <div className="mt-6 space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-slate-500">
+              Preview ·{" "}
+              {new Date(draft.generatedAt).toLocaleString("de-CH")} ·{" "}
+              {OUTREACH_LANGUAGES.find((item) => item.code === draft.language)?.label}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href={buildOutreachMailtoLink({
+                  recipient: leadEmail,
+                  subject: draft.subject,
+                  body: draft.body,
+                })}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-600 bg-white px-3 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-50"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                Open in Email Client
+              </a>
+              <button
+                type="button"
+                onClick={() => void copyText(formatOutreachEmailForCopy(draft), "email")}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-800"
+              >
+                {copiedField === "email" ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+                {copiedField === "email" ? "Copied" : "Copy Email"}
+              </button>
+            </div>
+          </div>
 
           <div>
             <div className="mb-1 flex items-center justify-between gap-2">
@@ -208,7 +248,7 @@ export function OutreachDraftPanel({
               <button
                 type="button"
                 onClick={() => void copyText(draft.subject, "subject")}
-                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
               >
                 {copiedField === "subject" ? (
                   <Check className="h-3 w-3 text-emerald-600" />
@@ -218,7 +258,7 @@ export function OutreachDraftPanel({
                 {copiedField === "subject" ? "Copied" : "Copy subject"}
               </button>
             </div>
-            <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900">
+            <p className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900">
               {draft.subject}
             </p>
           </div>
@@ -226,27 +266,27 @@ export function OutreachDraftPanel({
           <div>
             <div className="mb-1 flex items-center justify-between gap-2">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                Message
+                Email body
               </p>
               <button
                 type="button"
                 onClick={() => void copyText(draft.body, "message")}
-                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
               >
                 {copiedField === "message" ? (
                   <Check className="h-3 w-3 text-emerald-600" />
                 ) : (
                   <Copy className="h-3 w-3" />
                 )}
-                {copiedField === "message" ? "Copied" : "Copy message"}
+                {copiedField === "message" ? "Copied" : "Copy body"}
               </button>
             </div>
-            <pre className="whitespace-pre-wrap rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 font-sans text-sm leading-relaxed text-slate-800">
+            <pre className="max-h-[28rem] overflow-y-auto whitespace-pre-wrap rounded-lg border border-slate-200 bg-white px-4 py-3 font-sans text-sm leading-relaxed text-slate-800">
               {draft.body}
             </pre>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }

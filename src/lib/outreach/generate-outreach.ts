@@ -179,7 +179,7 @@ function buildFrenchDraft(input: OutreachDraftInput): string {
   return [
     "Bonjour,",
     "",
-    `Je suis Andrii, fondateur de SmartFlow Suisse. J'ai regardé ${target} et souhaitais partager une observation concrète sur votre présence en ligne.`,
+    `Je m'appelle Andrii Moroz, fondateur de SmartFlow Suisse. J'ai regardé ${target} et souhaitais partager une observation concrète sur votre présence en ligne.`,
     "",
     websiteRef,
     scoreLine(input, "fr"),
@@ -223,7 +223,7 @@ function buildGermanDraft(input: OutreachDraftInput): string {
   return [
     "Guten Tag,",
     "",
-    `Ich bin Andrii, Gründer von SmartFlow Suisse. Ich habe mir ${target} angesehen und möchte eine konkrete Beobachtung zu Ihrer Online-Präsenz teilen.`,
+    `Mein Name ist Andrii Moroz, Gründer von SmartFlow Suisse. Ich habe mir ${target} angesehen und möchte eine konkrete Beobachtung zu Ihrer Online-Präsenz teilen.`,
     "",
     websiteRef,
     scoreLine(input, "de"),
@@ -267,7 +267,7 @@ function buildEnglishDraft(input: OutreachDraftInput): string {
   return [
     "Hello,",
     "",
-    `I'm Andrii, founder of SmartFlow Suisse. I reviewed ${target} and wanted to share a specific observation about your online presence.`,
+    `My name is Andrii Moroz, founder of SmartFlow Suisse. I reviewed ${target} and wanted to share a specific observation about your online presence.`,
     "",
     websiteRef,
     scoreLine(input, "en"),
@@ -286,6 +286,42 @@ function buildEnglishDraft(input: OutreachDraftInput): string {
     "",
     OUTREACH_SIGNATURE,
   ].join("\n");
+}
+
+export function formatOutreachEmailForCopy(draft: OutreachDraft): string {
+  return `Subject: ${draft.subject}\n\n${draft.body}`;
+}
+
+export interface OutreachMailtoInput {
+  recipient?: string | null;
+  subject: string;
+  body: string;
+}
+
+function encodeMailtoQueryValue(value: string): string {
+  // encodeURIComponent uses %20 for spaces; URLSearchParams uses "+" which
+  // many mail clients render literally in subject/body fields.
+  return encodeURIComponent(value);
+}
+
+export function buildOutreachMailtoLink(input: OutreachMailtoInput): string {
+  const recipient = input.recipient?.trim() ?? "";
+  const queryParts: string[] = [];
+
+  if (input.subject) {
+    queryParts.push(`subject=${encodeMailtoQueryValue(input.subject)}`);
+  }
+
+  if (input.body) {
+    queryParts.push(`body=${encodeMailtoQueryValue(input.body)}`);
+  }
+
+  const query = queryParts.join("&");
+  if (!recipient) {
+    return query ? `mailto:?${query}` : "mailto:";
+  }
+
+  return query ? `mailto:${recipient}?${query}` : `mailto:${recipient}`;
 }
 
 export function generateOutreachDraft(

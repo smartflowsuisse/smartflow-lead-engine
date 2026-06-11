@@ -32,7 +32,7 @@ export async function POST(_request: Request, { params }: RouteParams) {
       city: lead.city,
       industry: lead.industry,
     });
-    const leadScore = calculateLeadScore(analysis);
+    const leadScore = calculateLeadScore(lead, analysis);
 
     const savedAnalysis = saveLeadAnalysis(leadId, {
       websiteQuality: analysis.websiteQuality,

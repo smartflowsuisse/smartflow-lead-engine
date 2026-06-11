@@ -3,9 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { clsx, type ClassValue } from "clsx";
 import type { Lead, LeadStatus } from "@/lib/types";
 import { LEAD_STATUSES } from "@/lib/types";
-import { cn, scoreColor, statusColor } from "@/lib/utils";
+import { scoreColor, statusColor } from "@/lib/lead-display";
+
+function cn(...inputs: ClassValue[]) {
+  return clsx(inputs);
+}
 
 interface PipelineBoardProps {
   initialPipeline: Record<LeadStatus, Lead[]>;

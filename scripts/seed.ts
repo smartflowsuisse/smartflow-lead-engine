@@ -74,7 +74,7 @@ async function seed() {
     if (data.website) {
       try {
         const analysis = await analyzeWebsite(data.website, data.industry);
-        const score = calculateLeadScore(analysis);
+        const score = calculateLeadScore(lead, analysis);
         saveLeadAnalysis(lead.id, {
           websiteQuality: analysis.websiteQuality,
           mobileFriendliness: analysis.mobileFriendliness,

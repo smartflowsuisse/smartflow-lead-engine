@@ -22,6 +22,10 @@ import {
 } from "./discovery/dedup";
 import { createLeadActivity } from "./activities";
 import { parseOutreachLanguage } from "./outreach/languages";
+import {
+  calculateLeadScore,
+  leadAnalysisToWebsiteResult,
+} from "./scoring";
 
 const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Contacted",
@@ -42,6 +46,7 @@ function rowToLead(row: Record<string, unknown>): Lead {
     industry: (row.industry as string) ?? null,
     lead_score: row.lead_score as number,
     status: row.status as LeadStatus,
+    outreach_status: (row.outreach_status as Lead["outreach_status"]) ?? "New",
     notes: (row.notes as string) ?? null,
     contacted_at: (row.contacted_at as string) ?? null,
     contacted_language: (row.contacted_language as string) ?? null,
@@ -111,6 +116,32 @@ export function searchLeads(filters: LeadSearchFilters = {}): Lead[] {
     .all(params);
 
   return rows.map((row) => rowToLead(row as Record<string, unknown>));
+}
+
+export function getOutreachQueueLeads(): Lead[] {
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `SELECT * FROM leads
+       WHERE lead_score >= 45
+         AND (
+           (email IS NOT NULL AND trim(email) != '')
+           OR (phone IS NOT NULL AND trim(phone) != '')
+         )
+       ORDER BY lead_score DESC, created_at DESC`
+    )
+    .all();
+
+  return rows.map((row) => rowToLead(row as Record<string, unknown>));
+}
+
+export function getAnalyzedLeadIdSet(): Set<number> {
+  const db = getDb();
+  const rows = db
+    .prepare("SELECT lead_id FROM lead_analyses")
+    .all() as Array<{ lead_id: number }>;
+
+  return new Set(rows.map((row) => row.lead_id));
 }
 
 export function getAllLeads(status?: LeadStatus): Lead[] {
@@ -203,6 +234,7 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
       industry = @industry,
       lead_score = @lead_score,
       status = @status,
+      outreach_status = @outreach_status,
       notes = @notes,
       contact_page_url = @contact_page_url,
       email_confidence = @email_confidence,
@@ -219,6 +251,7 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
     industry: input.industry !== undefined ? input.industry : existing.industry,
     lead_score: input.lead_score ?? existing.lead_score,
     status: input.status ?? existing.status,
+    outreach_status: input.outreach_status ?? existing.outreach_status,
     notes: input.notes !== undefined ? input.notes : existing.notes,
     contact_page_url:
       input.contact_page_url !== undefined
@@ -235,6 +268,21 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
   });
 
   return getLeadById(id);
+}
+
+export function persistLeadScore(leadId: number): number {
+  const lead = getLeadById(leadId);
+  if (!lead) {
+    return 0;
+  }
+
+  const analysis = lead.analysis
+    ? leadAnalysisToWebsiteResult(lead.analysis)
+    : null;
+  const leadScore = calculateLeadScore(lead, analysis);
+
+  updateLead(leadId, { lead_score: leadScore });
+  return leadScore;
 }
 
 export function deleteLead(id: number): boolean {
@@ -375,7 +423,7 @@ export function getDashboardStats(): DashboardStats {
   const highPriorityLeads = (
     db
       .prepare(
-        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 60 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
+        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 65 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
       )
       .get() as { count: number }
   ).count;

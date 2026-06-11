@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Check, Loader2, Plus } from "lucide-react";
+import { Calendar, Check, Loader2, Plus, Trash2 } from "lucide-react";
 import type { LeadTask } from "@/lib/types";
 import { isTaskOverdue } from "@/lib/tasks/overdue";
+import { sortLeadTasks, summarizeLeadTasks } from "@/lib/tasks/helpers";
 import { cn, formatDate } from "@/lib/utils";
 
 interface LeadTasksPanelProps {
@@ -27,7 +28,9 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
   const [dueDate, setDueDate] = useState(defaultDueDate);
   const [creating, setCreating] = useState(false);
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const taskSummary = summarizeLeadTasks(tasks);
 
   useEffect(() => {
     setTasks(initialTasks);
@@ -53,7 +56,7 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
         throw new Error(data.error || "Failed to create task");
       }
 
-      setTasks((prev) => [...prev, data as LeadTask].sort(sortTasks));
+      setTasks((prev) => sortLeadTasks([...prev, data as LeadTask]));
       setTitle("");
       setDueDate(defaultDueDate());
       router.refresh();
@@ -70,11 +73,11 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
 
     const nextCompleted = !task.completed;
     setTasks((prev) =>
-      prev
-        .map((item) =>
+      sortLeadTasks(
+        prev.map((item) =>
           item.id === task.id ? { ...item, completed: nextCompleted } : item
         )
-        .sort(sortTasks)
+      )
     );
 
     try {
@@ -90,16 +93,18 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
       }
 
       setTasks((prev) =>
-        prev.map((item) => (item.id === task.id ? (data as LeadTask) : item)).sort(sortTasks)
+        sortLeadTasks(
+          prev.map((item) => (item.id === task.id ? (data as LeadTask) : item))
+        )
       );
       router.refresh();
     } catch (err) {
       setTasks((prev) =>
-        prev
-          .map((item) =>
+        sortLeadTasks(
+          prev.map((item) =>
             item.id === task.id ? { ...item, completed: task.completed } : item
           )
-          .sort(sortTasks)
+        )
       );
       setError(err instanceof Error ? err.message : "Failed to update task");
     } finally {
@@ -107,9 +112,44 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
     }
   };
 
+  const deleteTask = async (task: LeadTask) => {
+    setDeletingId(task.id);
+    setError(null);
+
+    const previousTasks = tasks;
+    setTasks((prev) => prev.filter((item) => item.id !== task.id));
+
+    try {
+      const res = await fetch(`/api/leads/${leadId}/tasks/${task.id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete task");
+      }
+
+      router.refresh();
+    } catch (err) {
+      setTasks(previousTasks);
+      setError(err instanceof Error ? err.message : "Failed to delete task");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="mb-4 font-semibold text-slate-900">Follow-up Tasks</h3>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h3 className="font-semibold text-slate-900">Follow-up Tasks</h3>
+        <span className="text-xs font-medium text-slate-500">
+          {taskSummary.total === 0
+            ? "0 tasks"
+            : taskSummary.open === 0
+              ? `${taskSummary.total} completed`
+              : `${taskSummary.open} open · ${taskSummary.total} total`}
+        </span>
+      </div>
 
       <form onSubmit={(e) => void createTask(e)} className="mb-4 space-y-3">
         <input
@@ -207,6 +247,20 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
                     {overdue && " · Overdue"}
                   </p>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => void deleteTask(task)}
+                  disabled={deletingId === task.id}
+                  aria-label={`Delete task ${task.title}`}
+                  className="mt-0.5 shrink-0 rounded p-1 text-slate-400 transition-colors hover:bg-white hover:text-red-600 disabled:opacity-60"
+                >
+                  {deletingId === task.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </button>
               </li>
             );
           })}
@@ -214,11 +268,4 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
       )}
     </div>
   );
-}
-
-function sortTasks(a: LeadTask, b: LeadTask): number {
-  if (a.completed !== b.completed) {
-    return a.completed ? 1 : -1;
-  }
-  return a.due_date.localeCompare(b.due_date);
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getLeadById, updateLead, deleteLead } from "@/lib/leads";
-import { LEAD_STATUSES } from "@/lib/types";
+import { LEAD_STATUSES, OUTREACH_STATUSES } from "@/lib/types";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -39,6 +39,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     if (body.status && !LEAD_STATUSES.includes(body.status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    if (
+      body.outreach_status &&
+      !OUTREACH_STATUSES.includes(body.outreach_status)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid outreach status" },
+        { status: 400 }
+      );
     }
 
     const lead = updateLead(leadId, body);
