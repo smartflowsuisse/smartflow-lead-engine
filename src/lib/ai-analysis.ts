@@ -1,11 +1,11 @@
 import { enrichAnalysisWithAi } from "./ai/enrich-analysis";
+import { fetchWebsiteForAnalysis } from "./analysis/fetch-website";
 import { WebsiteAnalysisUnavailableError } from "./analysis/unavailable";
 import {
   calculateLeadScore,
   calculateWebsiteQualityScore,
 } from "./scoring";
 import type { LeadAnalysisContext, WebsiteAnalysisResult } from "./types";
-import { normalizeWebsite } from "./website";
 
 interface HtmlSignals {
   hasViewport: boolean;
@@ -333,71 +333,40 @@ export async function analyzeWebsite(
   industry?: string | null,
   context: LeadAnalysisContext = {}
 ): Promise<WebsiteAnalysisResult> {
-  const url = normalizeWebsite(website);
-  if (!url) {
+  if (!website.trim()) {
     throw new Error("Website URL is required for analysis");
   }
 
-  const leadContext: LeadAnalysisContext = {
-    ...context,
-    website: url,
-    industry: context.industry ?? industry ?? null,
-  };
-
-  const start = Date.now();
-
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const fetched = await fetchWebsiteForAnalysis(website);
+    const leadContext: LeadAnalysisContext = {
+      ...context,
+      website: fetched.finalUrl,
+      industry: context.industry ?? industry ?? null,
+    };
 
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        "User-Agent":
-          "SmartFlow-Lead-Engine/1.0 (Website Analysis Bot; +https://smartflow.ch)",
-        Accept: "text/html,application/xhtml+xml",
-      },
-      redirect: "follow",
-    });
-
-    clearTimeout(timeout);
-    const loadTimeMs = Date.now() - start;
-
-    if (!response.ok) {
-      throw new WebsiteAnalysisUnavailableError(
-        `Website returned HTTP ${response.status}`
-      );
-    }
-
-    const html = await response.text();
-    if (!html.trim()) {
-      throw new WebsiteAnalysisUnavailableError("Website returned empty content");
-    }
-
-    const finalUrl = response.url || url;
-    const signals = extractSignals(html, finalUrl, loadTimeMs);
+    const signals = extractSignals(
+      fetched.html,
+      fetched.finalUrl,
+      fetched.loadTimeMs
+    );
     const heuristic = buildAnalysisResult(signals, industry, {
       mode: "live",
-      url: finalUrl,
-      statusCode: response.status,
-      loadTimeMs,
+      url: fetched.finalUrl,
+      requestedUrl: fetched.requestedUrl,
+      statusCode: fetched.statusCode,
+      loadTimeMs: fetched.loadTimeMs,
     });
 
     return finalizeAnalysis(
       heuristic,
       leadContext,
       signals,
-      extractPageExcerpt(html)
+      extractPageExcerpt(fetched.html)
     );
   } catch (error) {
     if (error instanceof WebsiteAnalysisUnavailableError) {
       throw error;
-    }
-
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new WebsiteAnalysisUnavailableError(
-        "Website request timed out after 10 seconds"
-      );
     }
 
     throw new WebsiteAnalysisUnavailableError(
