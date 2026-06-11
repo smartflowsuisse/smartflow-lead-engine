@@ -2,10 +2,14 @@ import {
   buildContactPageCandidates,
   fetchWebsiteHtml,
 } from "./fetch-website-html";
-import { extractContactsFromHtml, mergeContactDiscovery } from "./extract-contacts";
+import {
+  extractContactPageLinksFromHtml,
+  extractContactsFromHtml,
+  mergeContactDiscovery,
+} from "./extract-contacts";
 import type { ContactDiscoveryResult } from "./types";
 
-const MAX_CONTACT_PAGES = 3;
+const MAX_CONTACT_PAGES = 5;
 
 export async function discoverContactFromWebsite(
   website: string
@@ -33,7 +37,11 @@ export async function discoverContactFromWebsite(
     extractContactsFromHtml(homepage.html, homepage.url)
   );
 
-  const candidateUrls = buildContactPageCandidates(homepage.url);
+  const linkedUrls = extractContactPageLinksFromHtml(homepage.html, homepage.url);
+  const candidateUrls = [
+    ...linkedUrls,
+    ...buildContactPageCandidates(homepage.url),
+  ].filter((url, index, urls) => urls.indexOf(url) === index);
   let crawledContactPages = 0;
 
   for (const candidateUrl of candidateUrls) {
