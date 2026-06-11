@@ -15,6 +15,8 @@ export function parseOutreachLanguage(value: unknown): OutreachLanguage {
 
 export const OUTREACH_SIGNATURE = [
   "Andrii Moroz",
-  "Founder, SmartFlow Suisse",
+  "Founder",
+  "SmartFlow Suisse",
+  "https://smartflowsuisse.ch",
   "info@smartflowsuisse.com",
 ].join("\n");

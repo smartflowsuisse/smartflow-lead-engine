@@ -10,6 +10,17 @@ export const LEAD_STATUSES = [
 
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
+export const OUTREACH_STATUSES = [
+  "New",
+  "Contacted",
+  "Replied",
+  "Meeting",
+  "Won",
+  "Lost",
+] as const;
+
+export type OutreachStatus = (typeof OUTREACH_STATUSES)[number];
+
 export interface Lead {
   id: number;
   company: string;
@@ -20,6 +31,7 @@ export interface Lead {
   industry: string | null;
   lead_score: number;
   status: LeadStatus;
+  outreach_status: OutreachStatus;
   notes: string | null;
   contacted_at: string | null;
   contacted_language: string | null;
@@ -65,6 +77,7 @@ export interface UpdateLeadInput {
   industry?: string;
   lead_score?: number;
   status?: LeadStatus;
+  outreach_status?: OutreachStatus;
   notes?: string;
   contact_page_url?: string;
   email_confidence?: number;

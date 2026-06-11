@@ -27,6 +27,7 @@ function sampleLead(overrides: Partial<Lead> = {}): Lead {
     industry: "Construction",
     lead_score: 72,
     status: "Analyzed",
+    outreach_status: "New",
     notes: null,
     contacted_at: null,
     contacted_language: null,

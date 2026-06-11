@@ -46,6 +46,7 @@ function rowToLead(row: Record<string, unknown>): Lead {
     industry: (row.industry as string) ?? null,
     lead_score: row.lead_score as number,
     status: row.status as LeadStatus,
+    outreach_status: (row.outreach_status as Lead["outreach_status"]) ?? "New",
     notes: (row.notes as string) ?? null,
     contacted_at: (row.contacted_at as string) ?? null,
     contacted_language: (row.contacted_language as string) ?? null,
@@ -113,6 +114,23 @@ export function searchLeads(filters: LeadSearchFilters = {}): Lead[] {
       `SELECT * FROM leads ${where} ORDER BY lead_score DESC, created_at DESC`
     )
     .all(params);
+
+  return rows.map((row) => rowToLead(row as Record<string, unknown>));
+}
+
+export function getOutreachQueueLeads(): Lead[] {
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `SELECT * FROM leads
+       WHERE lead_score >= 45
+         AND (
+           (email IS NOT NULL AND trim(email) != '')
+           OR (phone IS NOT NULL AND trim(phone) != '')
+         )
+       ORDER BY lead_score DESC, created_at DESC`
+    )
+    .all();
 
   return rows.map((row) => rowToLead(row as Record<string, unknown>));
 }
@@ -216,6 +234,7 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
       industry = @industry,
       lead_score = @lead_score,
       status = @status,
+      outreach_status = @outreach_status,
       notes = @notes,
       contact_page_url = @contact_page_url,
       email_confidence = @email_confidence,
@@ -232,6 +251,7 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
     industry: input.industry !== undefined ? input.industry : existing.industry,
     lead_score: input.lead_score ?? existing.lead_score,
     status: input.status ?? existing.status,
+    outreach_status: input.outreach_status ?? existing.outreach_status,
     notes: input.notes !== undefined ? input.notes : existing.notes,
     contact_page_url:
       input.contact_page_url !== undefined

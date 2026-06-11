@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildOutreachInput,
+  formatOutreachEmailForCopy,
   generateOutreachDraft,
 } from "../generate-outreach";
 import type { Lead, LeadAnalysis } from "../../types";
@@ -16,7 +17,11 @@ const baseLead: Lead = {
   industry: "Retail & E-commerce",
   lead_score: 76,
   status: "Analyzed",
+  outreach_status: "New",
   notes: null,
+  contact_page_url: null,
+  email_confidence: null,
+  phone_confidence: null,
   contacted_at: null,
   contacted_language: null,
   created_at: "2026-06-09T08:00:00Z",
@@ -46,6 +51,20 @@ const baseAnalysis: LeadAnalysis = {
   analyzed_at: "2026-06-09T08:00:00Z",
 };
 
+describe("formatOutreachEmailForCopy", () => {
+  it("combines subject and body for clipboard copy", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "en"
+    );
+    const copied = formatOutreachEmailForCopy(draft);
+
+    assert.match(copied, /^Subject: /);
+    assert.ok(copied.includes(draft.subject));
+    assert.ok(copied.includes(draft.body));
+  });
+});
+
 describe("generateOutreachDraft", () => {
   it("includes company, city, industry, and website", () => {
     const draft = generateOutreachDraft(
@@ -69,7 +88,9 @@ describe("generateOutreachDraft", () => {
     assert.match(draft.body, /Smart contact form with CRM integration/);
     assert.match(draft.subject, /TechHandel AG/);
     assert.match(draft.body, /Andrii Moroz/);
+    assert.match(draft.body, /https:\/\/smartflowsuisse\.ch/);
     assert.match(draft.body, /info@smartflowsuisse.com/);
+    assert.match(draft.body, /My name is Andrii Moroz, founder of SmartFlow Suisse/);
   });
 
   it("uses softer messaging for low-priority leads", () => {
@@ -107,6 +128,10 @@ describe("generateOutreachDraft", () => {
     );
     assert.equal(draft.language, "fr");
     assert.match(draft.body, /^Bonjour,/);
+    assert.match(
+      draft.body,
+      /Je m'appelle Andrii Moroz, fondateur de SmartFlow Suisse/
+    );
     assert.match(draft.body, /SmartFlow Suisse aide les entreprises suisses/);
   });
 
@@ -117,6 +142,10 @@ describe("generateOutreachDraft", () => {
     );
     assert.equal(draft.language, "de");
     assert.match(draft.body, /^Guten Tag,/);
+    assert.match(
+      draft.body,
+      /Mein Name ist Andrii Moroz, Gründer von SmartFlow Suisse/
+    );
     assert.match(draft.body, /SmartFlow Suisse unterstützt Schweizer Unternehmen/);
   });
 
@@ -127,6 +156,10 @@ describe("generateOutreachDraft", () => {
     );
     assert.equal(draft.language, "en");
     assert.match(draft.body, /^Hello,/);
+    assert.match(
+      draft.body,
+      /My name is Andrii Moroz, founder of SmartFlow Suisse/
+    );
     assert.match(draft.body, /15-minute call/i);
   });
 });

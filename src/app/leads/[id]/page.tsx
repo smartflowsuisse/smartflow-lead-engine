@@ -5,7 +5,7 @@ import { getLeadById } from "@/lib/leads";
 import { getTasksByLeadId } from "@/lib/tasks";
 import { getActivitiesByLeadId } from "@/lib/activities";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
-import { OutreachDraftPanel } from "@/components/leads/OutreachDraftPanel";
+import { EmailGeneratorPanel } from "@/components/leads/EmailGeneratorPanel";
 import { LeadNotesPanel } from "@/components/leads/LeadNotesPanel";
 import { LeadTasksPanel } from "@/components/leads/LeadTasksPanel";
 import { LeadActivityHistory } from "@/components/leads/LeadActivityHistory";
@@ -66,15 +66,9 @@ export default async function LeadDetailPage({ params }: PageProps) {
           />
           <LeadTasksPanel leadId={lead.id} initialTasks={tasks} />
           <LeadActivityHistory activities={activities} />
-          <OutreachDraftPanel
-            leadId={lead.id}
-            hasAnalysis={Boolean(lead.analysis)}
-            contactedAt={lead.contacted_at}
-            contactedLanguage={lead.contacted_language}
-          />
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2">
           <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <AnalysisPanel
               leadId={lead.id}
@@ -84,6 +78,13 @@ export default async function LeadDetailPage({ params }: PageProps) {
               analysis={lead.analysis}
             />
           </section>
+
+          <EmailGeneratorPanel
+            leadId={lead.id}
+            hasAnalysis={Boolean(lead.analysis)}
+            contactedAt={lead.contacted_at}
+            contactedLanguage={lead.contacted_language}
+          />
         </div>
       </div>
     </div>

@@ -23,6 +23,6 @@ export function formatDateTime(dateString: string): string {
   });
 }
 
-export { scoreColor, statusColor } from "./lead-display";
+export { outreachStatusColor, scoreColor, statusColor } from "./lead-display";
 
 export { normalizeWebsite } from "./website";
