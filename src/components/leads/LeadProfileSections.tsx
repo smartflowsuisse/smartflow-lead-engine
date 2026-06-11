@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Building2, MapPin, Pencil } from "lucide-react";
+import { Building2, ListTodo, MapPin, Pencil } from "lucide-react";
 import type { Lead } from "@/lib/types";
+import type { LeadTaskSummary } from "@/lib/tasks/helpers";
 import { LeadStatusSelect } from "@/components/leads/LeadStatusSelect";
 import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
 import { needsContactEnrichment } from "@/lib/leads/contact-enrichment";
@@ -13,11 +14,13 @@ import { LeadScoreBreakdown } from "@/components/leads/LeadScoreBreakdown";
 interface LeadProfileHeaderProps {
   lead: Lead;
   scoreBreakdown?: LeadScoreBreakdownType;
+  taskSummary?: LeadTaskSummary;
 }
 
 export function LeadProfileHeader({
   lead,
   scoreBreakdown,
+  taskSummary,
 }: LeadProfileHeaderProps) {
   const hasScore = lead.lead_score > 0;
   const showEnrichmentBadge = needsContactEnrichment(lead);
@@ -44,6 +47,14 @@ export function LeadProfileHeader({
             {getScoreLabel(lead.lead_score)}
           </span>
           {showEnrichmentBadge && <LeadContactEnrichmentBadge />}
+          {taskSummary && taskSummary.total > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600">
+              <ListTodo className="h-3 w-3" />
+              {taskSummary.open > 0
+                ? `${taskSummary.open} open task${taskSummary.open === 1 ? "" : "s"}`
+                : `${taskSummary.total} task${taskSummary.total === 1 ? "" : "s"}`}
+            </span>
+          )}
         </div>
 
         {scoreBreakdown && hasScore && (

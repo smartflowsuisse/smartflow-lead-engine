@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getLeadTaskForLead, updateLeadTask } from "@/lib/tasks";
+import {
+  deleteLeadTask,
+  getLeadTaskForLead,
+  updateLeadTask,
+} from "@/lib/tasks";
 
 type RouteParams = { params: Promise<{ id: string; taskId: string }> };
 
@@ -69,6 +73,34 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     console.error("PATCH /api/leads/[id]/tasks/[taskId] error:", error);
     return NextResponse.json(
       { error: "Failed to update task" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(_request: Request, { params }: RouteParams) {
+  try {
+    const { id, taskId } = await params;
+    const ids = parseIds(id, taskId);
+    if (!ids) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const existing = getLeadTaskForLead(ids.leadId, ids.taskId);
+    if (!existing) {
+      return NextResponse.json({ error: "Task not found" }, { status: 404 });
+    }
+
+    const deleted = deleteLeadTask(ids.leadId, ids.taskId);
+    if (!deleted) {
+      return NextResponse.json({ error: "Task not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("DELETE /api/leads/[id]/tasks/[taskId] error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete task" },
       { status: 500 }
     );
   }

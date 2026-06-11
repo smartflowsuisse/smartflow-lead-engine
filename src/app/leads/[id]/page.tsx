@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
-import { getTasksByLeadId } from "@/lib/tasks";
+import { getTasksByLeadId, summarizeLeadTasks } from "@/lib/tasks";
 import { getActivitiesByLeadId } from "@/lib/activities";
 import { AnalysisPanel } from "@/components/leads/AnalysisPanel";
 import { EmailGeneratorPanel } from "@/components/leads/EmailGeneratorPanel";
@@ -33,6 +33,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
   if (!lead) notFound();
 
   const tasks = getTasksByLeadId(leadId);
+  const taskSummary = summarizeLeadTasks(tasks);
   const activities = getActivitiesByLeadId(leadId);
   const scoreBreakdown = calculateLeadScoreBreakdown(
     lead,
@@ -49,7 +50,11 @@ export default async function LeadDetailPage({ params }: PageProps) {
         Back to leads
       </Link>
 
-      <LeadProfileHeader lead={lead} scoreBreakdown={scoreBreakdown} />
+      <LeadProfileHeader
+        lead={lead}
+        scoreBreakdown={scoreBreakdown}
+        taskSummary={taskSummary}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-1">

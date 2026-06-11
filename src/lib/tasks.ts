@@ -100,3 +100,18 @@ export function getLeadTaskForLead(
   if (!task || task.lead_id !== leadId) return null;
   return task;
 }
+
+export function deleteLeadTask(leadId: number, taskId: number): boolean {
+  const task = getLeadTaskForLead(leadId, taskId);
+  if (!task) return false;
+
+  const db = getDb();
+  const result = db.prepare("DELETE FROM lead_tasks WHERE id = ?").run(taskId);
+  return result.changes > 0;
+}
+
+export {
+  sortLeadTasks,
+  summarizeLeadTasks,
+  type LeadTaskSummary,
+} from "./tasks/helpers";
