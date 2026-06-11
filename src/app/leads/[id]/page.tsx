@@ -10,6 +10,7 @@ import { LeadNotesPanel } from "@/components/leads/LeadNotesPanel";
 import { LeadTasksPanel } from "@/components/leads/LeadTasksPanel";
 import { LeadActivityHistory } from "@/components/leads/LeadActivityHistory";
 import { LeadContactSection } from "@/components/leads/LeadContactSection";
+import { LeadReadinessChecklist } from "@/components/leads/LeadReadinessChecklist";
 import {
   LeadCompanySection,
   LeadProfileHeader,
@@ -46,6 +47,10 @@ export default async function LeadDetailPage({ params }: PageProps) {
         <div className="space-y-6 lg:col-span-1">
           <LeadCompanySection lead={lead} />
           <LeadContactSection lead={lead} />
+          <LeadReadinessChecklist
+            lead={lead}
+            hasAnalysis={Boolean(lead.analysis)}
+          />
           <LeadNotesPanel
             leadId={lead.id}
             initialNotes={lead.notes}

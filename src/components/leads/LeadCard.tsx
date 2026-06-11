@@ -3,6 +3,8 @@ import type { Lead } from "@/lib/types";
 import { cn, formatDate, scoreColor, statusColor } from "@/lib/utils";
 import { getScoreLabel } from "@/lib/scoring";
 import { ExternalLink, ChevronRight } from "lucide-react";
+import { needsContactEnrichment } from "@/lib/leads/contact-enrichment";
+import { LeadContactEnrichmentBadge } from "./LeadContactEnrichmentBadge";
 import { LeadQualificationIndicators } from "./LeadQualificationIndicators";
 
 interface LeadCardProps {
@@ -11,6 +13,8 @@ interface LeadCardProps {
 }
 
 export function LeadCard({ lead, compact = false }: LeadCardProps) {
+  const showEnrichmentBadge = needsContactEnrichment(lead);
+
   return (
     <Link
       href={`/leads/${lead.id}`}
@@ -37,6 +41,12 @@ export function LeadCard({ lead, compact = false }: LeadCardProps) {
       </div>
 
       <LeadQualificationIndicators lead={lead} compact={compact} />
+
+      {showEnrichmentBadge && (
+        <div className={cn(compact ? "mt-2" : "mt-2.5")}>
+          <LeadContactEnrichmentBadge compact={compact} />
+        </div>
+      )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span

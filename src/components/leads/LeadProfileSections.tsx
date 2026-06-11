@@ -3,6 +3,8 @@ import { Building2, MapPin, Pencil } from "lucide-react";
 import type { Lead } from "@/lib/types";
 import { LeadStatusSelect } from "@/components/leads/LeadStatusSelect";
 import { DeleteLeadButton } from "@/components/leads/DeleteLeadButton";
+import { needsContactEnrichment } from "@/lib/leads/contact-enrichment";
+import { LeadContactEnrichmentBadge } from "@/components/leads/LeadContactEnrichmentBadge";
 import { cn, formatDateTime, scoreColor } from "@/lib/utils";
 import { getScoreLabel, getRecommendedAction } from "@/lib/scoring";
 
@@ -12,6 +14,7 @@ interface LeadProfileHeaderProps {
 
 export function LeadProfileHeader({ lead }: LeadProfileHeaderProps) {
   const hasScore = lead.lead_score > 0;
+  const showEnrichmentBadge = needsContactEnrichment(lead);
 
   return (
     <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
@@ -33,6 +36,7 @@ export function LeadProfileHeader({ lead }: LeadProfileHeaderProps) {
           >
             Score: {hasScore ? lead.lead_score : "—"} — {getScoreLabel(lead.lead_score)}
           </span>
+          {showEnrichmentBadge && <LeadContactEnrichmentBadge />}
         </div>
 
         <p className="mt-3 text-sm text-slate-600">
