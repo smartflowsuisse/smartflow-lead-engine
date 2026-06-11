@@ -7,6 +7,7 @@ import {
   formatAnalysisScore,
   getScoreLabel,
   getScorePriority,
+  MAX_SCORE_WITHOUT_CONTACTABILITY,
   scoreAutomationOpportunities,
   scoreContactability,
   scoreSwissSmbFit,
@@ -196,6 +197,34 @@ describe("calculateLeadScore", () => {
       null
     );
     assert.equal(score, 0);
+  });
+
+  it("caps total at 49 when contactability is zero", () => {
+    const lead = sampleLead({
+      email: null,
+      phone: null,
+      contact_page_url: null,
+    });
+    const analysis = buildResult({
+      websiteQuality: 10,
+      mobileFriendliness: 10,
+      seoScore: 10,
+      trustScore: 10,
+      automationOpportunities: Array.from({ length: 6 }, (_, i) => `Op ${i}`),
+    });
+
+    const breakdown = calculateLeadScoreBreakdown(lead, analysis);
+
+    assert.equal(breakdown.contactability, 0);
+    assert.ok(breakdown.websiteGap + breakdown.automation + breakdown.swissSmbFit > 49);
+    assert.equal(breakdown.total, MAX_SCORE_WITHOUT_CONTACTABILITY);
+    assert.ok(getScoreLabel(breakdown.total) !== "High Priority");
+    assert.ok(getScoreLabel(breakdown.total) !== "Hot Lead");
+  });
+
+  it("allows scores above 49 when contact data exists", () => {
+    const score = calculateLeadScore(sampleLead(), buildResult());
+    assert.ok(score > MAX_SCORE_WITHOUT_CONTACTABILITY);
   });
 });
 

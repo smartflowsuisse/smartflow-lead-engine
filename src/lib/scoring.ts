@@ -29,6 +29,9 @@ const SMB_INDUSTRY_PATTERN =
 const ENTERPRISE_PATTERN =
   /university|universität|schulen|school|holding|konzern|international group|global|ministry|ministerium|stadtverwaltung|kanton|bundesamt/i;
 
+/** Leads without email, phone, or contact page cannot exceed this total. */
+export const MAX_SCORE_WITHOUT_CONTACTABILITY = 49;
+
 /**
  * Average of measured website-quality dimensions.
  * Unknown dimensions are excluded rather than treated as perfect.
@@ -234,13 +237,13 @@ export function calculateLeadScoreBreakdown(
   const automation = scoreAutomationOpportunities(analysis);
   const swissSmbFit = scoreSwissSmbFit(lead);
 
-  const total = Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(contactability + websiteGap + automation + swissSmbFit)
-    )
-  );
+  let total = Math.round(contactability + websiteGap + automation + swissSmbFit);
+
+  if (contactability === 0) {
+    total = Math.min(total, MAX_SCORE_WITHOUT_CONTACTABILITY);
+  }
+
+  total = Math.max(0, Math.min(100, total));
 
   return {
     contactability,
