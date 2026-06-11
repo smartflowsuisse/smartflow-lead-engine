@@ -81,6 +81,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
 
           <EmailGeneratorPanel
             leadId={lead.id}
+            leadEmail={lead.email}
             hasAnalysis={Boolean(lead.analysis)}
             contactedAt={lead.contacted_at}
             contactedLanguage={lead.contacted_language}

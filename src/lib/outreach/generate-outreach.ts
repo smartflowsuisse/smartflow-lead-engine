@@ -292,6 +292,38 @@ export function formatOutreachEmailForCopy(draft: OutreachDraft): string {
   return `Subject: ${draft.subject}\n\n${draft.body}`;
 }
 
+export interface OutreachMailtoInput {
+  recipient?: string | null;
+  subject: string;
+  body: string;
+}
+
+function encodeMailtoQueryValue(value: string): string {
+  // encodeURIComponent uses %20 for spaces; URLSearchParams uses "+" which
+  // many mail clients render literally in subject/body fields.
+  return encodeURIComponent(value);
+}
+
+export function buildOutreachMailtoLink(input: OutreachMailtoInput): string {
+  const recipient = input.recipient?.trim() ?? "";
+  const queryParts: string[] = [];
+
+  if (input.subject) {
+    queryParts.push(`subject=${encodeMailtoQueryValue(input.subject)}`);
+  }
+
+  if (input.body) {
+    queryParts.push(`body=${encodeMailtoQueryValue(input.body)}`);
+  }
+
+  const query = queryParts.join("&");
+  if (!recipient) {
+    return query ? `mailto:?${query}` : "mailto:";
+  }
+
+  return query ? `mailto:${recipient}?${query}` : `mailto:${recipient}`;
+}
+
 export function generateOutreachDraft(
   input: OutreachDraftInput,
   language: OutreachLanguage = "fr"

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildOutreachInput,
+  buildOutreachMailtoLink,
   formatOutreachEmailForCopy,
   generateOutreachDraft,
 } from "../generate-outreach";
@@ -50,6 +51,142 @@ const baseAnalysis: LeadAnalysis = {
   }),
   analyzed_at: "2026-06-09T08:00:00Z",
 };
+
+function parseMailtoQuery(link: string): { subject?: string; body?: string } {
+  const query = link.split("?")[1] ?? "";
+  const result: { subject?: string; body?: string } = {};
+
+  for (const part of query.split("&")) {
+    const separator = part.indexOf("=");
+    if (separator === -1) continue;
+
+    const key = part.slice(0, separator);
+    const value = part.slice(separator + 1);
+
+    if (key === "subject") {
+      result.subject = decodeURIComponent(value);
+    } else if (key === "body") {
+      result.body = decodeURIComponent(value);
+    }
+  }
+
+  return result;
+}
+
+function assertMailtoEncoding(link: string): void {
+  assert.ok(!link.includes("+"), `mailto link must not use + for spaces: ${link}`);
+  assert.ok(link.includes("%20"), `mailto link should encode spaces as %20: ${link}`);
+}
+
+describe("buildOutreachMailtoLink", () => {
+  it("builds a mailto link with recipient, subject, and body", () => {
+    const link = buildOutreachMailtoLink({
+      recipient: "info@acme.ch",
+      subject: "SmartFlow Suisse — hello",
+      body: "Bonjour,\n\nTest message.",
+    });
+
+    assert.match(link, /^mailto:info@acme\.ch\?/);
+    assertMailtoEncoding(link);
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, "SmartFlow Suisse — hello");
+    assert.equal(body, "Bonjour,\n\nTest message.");
+  });
+
+  it("omits recipient when lead email is missing", () => {
+    const link = buildOutreachMailtoLink({
+      recipient: null,
+      subject: "Follow up",
+      body: "Hello there",
+    });
+
+    assert.match(link, /^mailto:\?/);
+    assertMailtoEncoding(link);
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, "Follow up");
+    assert.equal(body, "Hello there");
+  });
+
+  it("encodes special characters for mail clients", () => {
+    const link = buildOutreachMailtoLink({
+      recipient: "contact@example.com",
+      subject: "A & B — test",
+      body: "Line 1\nLine 2",
+    });
+
+    assertMailtoEncoding(link);
+    assert.ok(link.includes("%0A"), "line breaks should be encoded as %0A");
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, "A & B — test");
+    assert.equal(body, "Line 1\nLine 2");
+    assert.ok(!link.includes("?subject=A &"));
+  });
+
+  it("encodes French outreach drafts with accented characters", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "fr"
+    );
+    const link = buildOutreachMailtoLink({
+      recipient: "info@techhandel.ch",
+      subject: draft.subject,
+      body: draft.body,
+    });
+
+    assertMailtoEncoding(link);
+    assert.match(link, /^mailto:info@techhandel\.ch\?/);
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, draft.subject);
+    assert.equal(body, draft.body);
+    assert.match(body ?? "", /entreprises suisses/);
+    assert.match(body ?? "", /^Bonjour,/);
+  });
+
+  it("encodes German outreach drafts with umlauts and spaces", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "de"
+    );
+    const link = buildOutreachMailtoLink({
+      recipient: "info@techhandel.ch",
+      subject: draft.subject,
+      body: draft.body,
+    });
+
+    assertMailtoEncoding(link);
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, draft.subject);
+    assert.equal(body, draft.body);
+    assert.match(body ?? "", /^Guten Tag,/);
+    assert.match(body ?? "", /Schweizer/);
+  });
+
+  it("encodes English outreach drafts with spaces and line breaks", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, baseAnalysis),
+      "en"
+    );
+    const link = buildOutreachMailtoLink({
+      recipient: "info@techhandel.ch",
+      subject: draft.subject,
+      body: draft.body,
+    });
+
+    assertMailtoEncoding(link);
+    assert.ok(link.includes("%0A"), "body should preserve line breaks as %0A");
+
+    const { subject, body } = parseMailtoQuery(link);
+    assert.equal(subject, draft.subject);
+    assert.equal(body, draft.body);
+    assert.match(body ?? "", /^Hello,/);
+    assert.match(body ?? "", /15-minute call/);
+  });
+});
 
 describe("formatOutreachEmailForCopy", () => {
   it("combines subject and body for clipboard copy", () => {

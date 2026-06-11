@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Loader2, Mail, Check, UserCheck } from "lucide-react";
+import { Copy, ExternalLink, Loader2, Mail, Check, UserCheck } from "lucide-react";
 import {
   OUTREACH_LANGUAGES,
   type OutreachLanguage,
 } from "@/lib/outreach/languages";
 import type { OutreachDraft } from "@/lib/outreach/generate-outreach";
-import { formatOutreachEmailForCopy } from "@/lib/outreach/generate-outreach";
+import {
+  buildOutreachMailtoLink,
+  formatOutreachEmailForCopy,
+} from "@/lib/outreach/generate-outreach";
 
 interface EmailGeneratorPanelProps {
   leadId: number;
+  leadEmail?: string | null;
   hasAnalysis: boolean;
   contactedAt?: string | null;
   contactedLanguage?: string | null;
@@ -19,6 +23,7 @@ interface EmailGeneratorPanelProps {
 
 export function EmailGeneratorPanel({
   leadId,
+  leadEmail,
   hasAnalysis,
   contactedAt,
   contactedLanguage,
@@ -208,18 +213,31 @@ export function EmailGeneratorPanel({
               {new Date(draft.generatedAt).toLocaleString("de-CH")} ·{" "}
               {OUTREACH_LANGUAGES.find((item) => item.code === draft.language)?.label}
             </p>
-            <button
-              type="button"
-              onClick={() => void copyText(formatOutreachEmailForCopy(draft), "email")}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-800"
-            >
-              {copiedField === "email" ? (
-                <Check className="h-3.5 w-3.5" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              {copiedField === "email" ? "Copied" : "Copy Email"}
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href={buildOutreachMailtoLink({
+                  recipient: leadEmail,
+                  subject: draft.subject,
+                  body: draft.body,
+                })}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-600 bg-white px-3 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-50"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                Open in Email Client
+              </a>
+              <button
+                type="button"
+                onClick={() => void copyText(formatOutreachEmailForCopy(draft), "email")}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-800"
+              >
+                {copiedField === "email" ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+                {copiedField === "email" ? "Copied" : "Copy Email"}
+              </button>
+            </div>
           </div>
 
           <div>
