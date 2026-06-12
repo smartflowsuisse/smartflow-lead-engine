@@ -287,9 +287,11 @@ export function getRecommendedAction(
   score: number,
   status: string
 ): string {
-  if (status === "Client") return "Maintain relationship and upsell automation services";
+  if (status === "Won") return "Maintain relationship and upsell automation services";
   if (status === "Lost") return "No further action — lead closed";
-  if (status === "Proposal Sent") return "Follow up within 3 business days";
+  if (status === "Proposal") return "Follow up within 3 business days";
+  if (status === "Meeting") return "Confirm agenda and send pre-meeting summary";
+  if (status === "Replied") return "Respond promptly and propose next step";
   if (score >= 80 && status === "Analyzed") {
     return "Send personalized outreach email today";
   }

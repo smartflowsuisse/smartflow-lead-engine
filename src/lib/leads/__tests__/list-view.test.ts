@@ -21,7 +21,7 @@ function sampleLead(overrides: Partial<Lead> = {}): Lead {
     city: "Zürich",
     industry: "Construction",
     lead_score: 0,
-    status: "New Lead",
+    status: "New",
     outreach_status: "New",
     notes: null,
     contacted_at: null,
@@ -157,7 +157,7 @@ describe("isHighPriorityLead", () => {
   it("excludes closed pipeline statuses", () => {
     assert.equal(
       isHighPriorityLead(
-        sampleLead({ lead_score: 80, status: "Client" })
+        sampleLead({ lead_score: 80, status: "Won" })
       ),
       false
     );

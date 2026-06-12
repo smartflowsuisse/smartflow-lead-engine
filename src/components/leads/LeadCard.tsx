@@ -63,6 +63,7 @@ export function LeadCard({ lead, compact = false }: LeadCardProps) {
             "inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium",
             statusColor(lead.status)
           )}
+          title={`Stage: ${lead.status}`}
         >
           {lead.status}
         </span>

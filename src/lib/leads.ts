@@ -22,6 +22,7 @@ import {
 } from "./discovery/dedup";
 import { createLeadActivity } from "./activities";
 import { parseOutreachLanguage } from "./outreach/languages";
+import { normalizeLeadStatus } from "./leads/lead-status";
 import {
   calculateLeadScore,
   leadAnalysisToWebsiteResult,
@@ -29,9 +30,10 @@ import {
 
 const POST_CONTACT_STATUSES: LeadStatus[] = [
   "Contacted",
-  "Follow Up",
-  "Proposal Sent",
-  "Client",
+  "Replied",
+  "Meeting",
+  "Proposal",
+  "Won",
   "Lost",
 ];
 
@@ -45,7 +47,7 @@ function rowToLead(row: Record<string, unknown>): Lead {
     city: (row.city as string) ?? null,
     industry: (row.industry as string) ?? null,
     lead_score: row.lead_score as number,
-    status: row.status as LeadStatus,
+    status: normalizeLeadStatus(row.status as string),
     outreach_status: (row.outreach_status as Lead["outreach_status"]) ?? "New",
     notes: (row.notes as string) ?? null,
     contacted_at: (row.contacted_at as string) ?? null,
@@ -211,7 +213,7 @@ export function createLead(input: CreateLeadInput): Lead {
       phone: input.phone ?? null,
       city: input.city ?? null,
       industry: input.industry ?? null,
-      status: input.status ?? "New Lead",
+      status: input.status ?? "New",
       notes: input.notes ?? null,
     });
 
@@ -399,11 +401,16 @@ export function getDashboardStats(): DashboardStats {
 
   const byStatus = {} as Record<LeadStatus, number>;
   for (const status of LEAD_STATUSES) {
-    byStatus[status] = (
-      db
-        .prepare("SELECT COUNT(*) as count FROM leads WHERE status = ?")
-        .get(status) as { count: number }
-    ).count;
+    byStatus[status] = 0;
+  }
+
+  const statusRows = db
+    .prepare("SELECT status, COUNT(*) as count FROM leads GROUP BY status")
+    .all() as Array<{ status: string; count: number }>;
+
+  for (const row of statusRows) {
+    const normalized = normalizeLeadStatus(row.status);
+    byStatus[normalized] += row.count;
   }
 
   const avgRow = db
@@ -416,14 +423,14 @@ export function getDashboardStats(): DashboardStats {
     }
   ).count;
 
-  const clientCount = byStatus["Client"];
+  const wonCount = byStatus["Won"];
   const conversionRate =
-    totalLeads > 0 ? Math.round((clientCount / totalLeads) * 100) : 0;
+    totalLeads > 0 ? Math.round((wonCount / totalLeads) * 100) : 0;
 
   const highPriorityLeads = (
     db
       .prepare(
-        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 65 AND status NOT IN ('Client', 'Proposal Sent', 'Lost')"
+        "SELECT COUNT(*) as count FROM leads WHERE lead_score >= 65 AND status NOT IN ('Won', 'Proposal', 'Lost', 'Client', 'Proposal Sent')"
       )
       .get() as { count: number }
   ).count;

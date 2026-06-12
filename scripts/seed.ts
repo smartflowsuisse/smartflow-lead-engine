@@ -11,7 +11,7 @@ const sampleLeads = [
     phone: "+41 44 123 45 67",
     city: "Zürich",
     industry: "Consulting",
-    status: "New Lead" as const,
+    status: "New" as const,
     notes: "Potential automation client — manual processes identified.",
   },
   {
@@ -31,7 +31,7 @@ const sampleLeads = [
     phone: "+41 21 555 12 34",
     city: "Lausanne",
     industry: "Retail & E-commerce",
-    status: "Follow Up" as const,
+    status: "Replied" as const,
   },
   {
     company: "Müller & Partner Rechtsanwälte",
@@ -48,7 +48,7 @@ const sampleLeads = [
     phone: "+41 31 222 33 44",
     city: "Basel",
     industry: "Technology",
-    status: "Proposal Sent" as const,
+    status: "Proposal" as const,
     notes: "Proposal sent for CRM + chatbot package.",
   },
   {
@@ -57,7 +57,7 @@ const sampleLeads = [
     email: "contact@geneve-immo.ch",
     city: "Genève",
     industry: "Real Estate",
-    status: "Client" as const,
+    status: "Won" as const,
     notes: "Signed contract — website + lead automation.",
   },
 ];

@@ -36,7 +36,7 @@ export function LeadForm({
     phone: initialData.phone ?? "",
     city: initialData.city ?? "",
     industry: initialData.industry ?? "",
-    status: initialData.status ?? "New Lead",
+    status: initialData.status ?? "New",
     notes: initialData.notes ?? "",
   });
 

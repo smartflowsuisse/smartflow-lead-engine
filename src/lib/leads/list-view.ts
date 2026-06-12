@@ -37,7 +37,7 @@ const CONTACT_FILTER_ALIASES: Record<string, LeadContactFilter> = {
   missing_contact_page: "no_contact_page",
 };
 
-const POST_PRIORITY_STATUSES: LeadStatus[] = ["Client", "Proposal Sent", "Lost"];
+const POST_PRIORITY_STATUSES: LeadStatus[] = ["Won", "Proposal", "Lost"];
 
 export function parseLeadContactFilter(value?: string): LeadContactFilter {
   if (!value) {

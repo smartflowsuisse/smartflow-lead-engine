@@ -24,7 +24,7 @@ function initSchema(database: Database.Database) {
       city TEXT,
       industry TEXT,
       lead_score INTEGER NOT NULL DEFAULT 0,
-      status TEXT NOT NULL DEFAULT 'New Lead',
+      status TEXT NOT NULL DEFAULT 'New',
       notes TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -114,6 +114,17 @@ function runMigrations(database: Database.Database) {
       "CREATE INDEX IF NOT EXISTS idx_leads_outreach_status ON leads(outreach_status)"
     );
   }
+
+  migrateLeadPipelineStatuses(database);
+}
+
+function migrateLeadPipelineStatuses(database: Database.Database) {
+  database.exec(`
+    UPDATE leads SET status = 'New' WHERE status = 'New Lead';
+    UPDATE leads SET status = 'Replied' WHERE status = 'Follow Up';
+    UPDATE leads SET status = 'Proposal' WHERE status = 'Proposal Sent';
+    UPDATE leads SET status = 'Won' WHERE status = 'Client';
+  `);
 }
 
 export function getDb(): Database.Database {

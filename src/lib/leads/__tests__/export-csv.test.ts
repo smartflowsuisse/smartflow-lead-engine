@@ -106,7 +106,7 @@ describe("buildLeadsExportCsv", () => {
   it("builds a CSV with headers and escaped rows", () => {
     const csv = buildLeadsExportCsv([
       sampleLead({ company: "Acme; SA" }),
-      sampleLead({ id: 2, company: "Beta AG", lead_score: 0, status: "New Lead" }),
+      sampleLead({ id: 2, company: "Beta AG", lead_score: 0, status: "New" }),
     ]);
 
     const lines = csv.replace(/^\uFEFF/, "").split("\n");
@@ -137,14 +137,14 @@ describe("buildLeadsExportFilename", () => {
 
 describe("getLeadsForListView export filtering", () => {
   const leads = [
-    sampleLead({ id: 1, company: "Alpha", lead_score: 10, status: "New Lead" }),
+    sampleLead({ id: 1, company: "Alpha", lead_score: 10, status: "New" }),
     sampleLead({ id: 2, company: "Beta", lead_score: 65, status: "Analyzed" }),
     sampleLead({
       id: 3,
       company: "Gamma",
       email: null,
       lead_score: 65,
-      status: "New Lead",
+      status: "New",
     }),
   ];
 
