@@ -4,7 +4,7 @@ import { buildDiscoveryLeadInput } from "../import";
 import type { DiscoveryCandidate } from "../types";
 
 describe("buildDiscoveryLeadInput", () => {
-  it("maps discovery fields and sets New Lead status", () => {
+  it("maps discovery fields and sets New status", () => {
     const candidate: DiscoveryCandidate = {
       company: "Albis Metallbau GmbH",
       website: "http://www.albismetallbau.ch",
@@ -17,7 +17,7 @@ describe("buildDiscoveryLeadInput", () => {
       website: "http://www.albismetallbau.ch",
       city: "Zürich",
       industry: "Metallbau",
-      status: "New Lead",
+      status: "New",
       notes: "Imported from Discovery",
     });
   });

@@ -2,14 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowRight, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import type { LeadStatus } from "@/lib/types";
 import { getNextLeadStatus } from "@/lib/leads/pipeline";
+import { getAnalyzeActionLabel } from "@/lib/leads/lead-details";
+import {
+  ANALYSIS_UNAVAILABLE_ACTION,
+  ANALYSIS_UNAVAILABLE_MESSAGE,
+  ANALYSIS_UNAVAILABLE_REASON,
+  isAnalysisUnavailablePayload,
+  isLegacyUnavailableError,
+} from "@/lib/analysis/unavailable-display";
 
 interface LeadDetailsActionsProps {
   leadId: number;
   currentStatus: LeadStatus;
   website: string | null;
+  hasAnalysis: boolean;
 }
 
 function websiteHref(website: string): string {
@@ -20,11 +29,50 @@ export function LeadDetailsActions({
   leadId,
   currentStatus,
   website,
+  hasAnalysis,
 }: LeadDetailsActionsProps) {
   const router = useRouter();
   const [advancing, setAdvancing] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [analysisNotice, setAnalysisNotice] = useState<string | null>(null);
   const nextStatus = getNextLeadStatus(currentStatus);
+
+  const handleAnalyze = async () => {
+    if (!website) return;
+
+    setAnalyzing(true);
+    setError(null);
+    setAnalysisNotice(null);
+
+    try {
+      const res = await fetch(`/api/leads/${leadId}/analyze`, { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (isAnalysisUnavailablePayload(data)) {
+          setAnalysisNotice(data.message);
+          return;
+        }
+
+        const message =
+          typeof data.error === "string" ? data.error : "Analysis could not be completed";
+
+        if (isLegacyUnavailableError(message)) {
+          setAnalysisNotice(ANALYSIS_UNAVAILABLE_MESSAGE);
+          return;
+        }
+
+        throw new Error(message);
+      }
+
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Analysis could not be completed");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
   const handleMoveToNextStage = async () => {
     if (!nextStatus) return;
@@ -55,6 +103,20 @@ export function LeadDetailsActions({
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => void handleAnalyze()}
+          disabled={!website || analyzing}
+          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {analyzing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4" />
+          )}
+          {getAnalyzeActionLabel(hasAnalysis)}
+        </button>
+
         <button
           type="button"
           onClick={() => void handleMoveToNextStage()}
@@ -90,6 +152,21 @@ export function LeadDetailsActions({
           </button>
         )}
       </div>
+
+      {!website && (
+        <p className="mt-2 text-xs text-amber-700">
+          Add a website URL to enable AI analysis.
+        </p>
+      )}
+
+      {analysisNotice && (
+        <p className="mt-2 text-xs text-slate-600">
+          {analysisNotice}
+          {analysisNotice === ANALYSIS_UNAVAILABLE_MESSAGE && (
+            <> {ANALYSIS_UNAVAILABLE_REASON}. {ANALYSIS_UNAVAILABLE_ACTION}</>
+          )}
+        </p>
+      )}
 
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </div>

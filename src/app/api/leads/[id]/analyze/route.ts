@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { analyzeWebsite } from "@/lib/ai-analysis";
-import { WebsiteAnalysisUnavailableError } from "@/lib/analysis/unavailable";
 import { buildAnalysisUnavailablePayload } from "@/lib/analysis/unavailable-display";
-import { getLeadById, saveLeadAnalysis } from "@/lib/leads";
-import { calculateLeadScore } from "@/lib/scoring";
+import { runLeadWebsiteAnalysis } from "@/lib/analysis/run-lead-analysis";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -15,52 +12,38 @@ export async function POST(_request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Invalid lead ID" }, { status: 400 });
     }
 
-    const lead = getLeadById(leadId);
-    if (!lead) {
-      return NextResponse.json({ error: "Lead not found" }, { status: 404 });
-    }
+    const result = await runLeadWebsiteAnalysis(leadId);
 
-    if (!lead.website) {
+    if (!result.ok) {
+      if (result.reason === "not_found") {
+        return NextResponse.json({ error: "Lead not found" }, { status: 404 });
+      }
+
+      if (result.reason === "no_website") {
+        return NextResponse.json(
+          { error: "Lead has no website URL to analyze" },
+          { status: 400 }
+        );
+      }
+
+      if (result.reason === "unavailable") {
+        return NextResponse.json(buildAnalysisUnavailablePayload(), {
+          status: 422,
+        });
+      }
+
       return NextResponse.json(
-        { error: "Lead has no website URL to analyze" },
-        { status: 400 }
+        { error: result.error ?? "Analysis could not be completed" },
+        { status: 500 }
       );
     }
 
-    const analysis = await analyzeWebsite(lead.website, lead.industry, {
-      company: lead.company,
-      city: lead.city,
-      industry: lead.industry,
-    });
-    const leadScore = calculateLeadScore(lead, analysis);
-
-    const savedAnalysis = saveLeadAnalysis(leadId, {
-      websiteQuality: analysis.websiteQuality,
-      mobileFriendliness: analysis.mobileFriendliness,
-      speedScore: analysis.speedScore,
-      seoScore: analysis.seoScore,
-      hasContactForm: analysis.hasContactForm,
-      trustScore: analysis.trustScore,
-      quickWins: analysis.quickWins,
-      automationOpportunities: analysis.automationOpportunities,
-      rawAnalysis: analysis.details,
-      leadScore,
-    });
-
-    const updatedLead = getLeadById(leadId);
-
     return NextResponse.json({
-      lead: updatedLead,
-      analysis: savedAnalysis,
-      score: leadScore,
+      lead: result.lead,
+      analysis: result.analysis,
+      score: result.score,
     });
   } catch (error) {
-    if (error instanceof WebsiteAnalysisUnavailableError) {
-      return NextResponse.json(buildAnalysisUnavailablePayload(), {
-        status: 422,
-      });
-    }
-
     console.error("POST /api/leads/[id]/analyze error:", error);
     return NextResponse.json(
       { error: "Analysis could not be completed" },

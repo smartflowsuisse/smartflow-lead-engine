@@ -1,10 +1,11 @@
 export const LEAD_STATUSES = [
-  "New Lead",
+  "New",
   "Analyzed",
   "Contacted",
-  "Follow Up",
-  "Proposal Sent",
-  "Client",
+  "Replied",
+  "Meeting",
+  "Proposal",
+  "Won",
   "Lost",
 ] as const;
 

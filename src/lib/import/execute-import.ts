@@ -65,7 +65,7 @@ export async function executeImport(
         notes: item.data.notes?.trim()
           ? `Imported from CSV\n${item.data.notes.trim()}`
           : "Imported from CSV",
-        status: "New Lead",
+        status: "New",
       });
 
       created.push(lead);

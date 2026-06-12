@@ -8,8 +8,10 @@ import {
 } from "lucide-react";
 import type { Lead } from "@/lib/types";
 import { LeadStatusSelect } from "@/components/leads/LeadStatusSelect";
+import { LeadQualificationIndicators } from "@/components/leads/LeadQualificationIndicators";
 import { cn, scoreColor } from "@/lib/utils";
 import { getScoreLabel } from "@/lib/scoring";
+import { formatLeadQualification } from "@/lib/leads/export-csv";
 
 interface LeadDetailsOverviewProps {
   lead: Lead;
@@ -69,6 +71,22 @@ export function LeadDetailsOverview({ lead }: LeadDetailsOverviewProps) {
           >
             {hasScore ? `${lead.lead_score}/100` : "—"} — {getScoreLabel(lead.lead_score)}
           </span>
+        </DetailItem>
+
+        <DetailItem icon={<Building2 className="h-4 w-4" />} label="Qualification">
+          <div className="space-y-2">
+            <span
+              className={cn(
+                "inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                hasScore
+                  ? scoreColor(lead.lead_score)
+                  : "border-slate-200 bg-slate-50 text-slate-600"
+              )}
+            >
+              {formatLeadQualification(lead.lead_score)}
+            </span>
+            <LeadQualificationIndicators lead={lead} />
+          </div>
         </DetailItem>
 
         <DetailItem icon={<Building2 className="h-4 w-4" />} label="Status">

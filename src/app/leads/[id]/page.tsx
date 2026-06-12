@@ -64,10 +64,16 @@ export default async function LeadDetailPage({ params }: PageProps) {
           leadId={lead.id}
           currentStatus={lead.status}
           website={lead.website}
+          hasAnalysis={Boolean(lead.analysis)}
         />
         <LeadDetailsOverview lead={lead} />
         <LeadAiAuditSection analysis={lead.analysis} />
         <LeadOpportunitySummary summary={opportunitySummary} />
+        <LeadNotesPanel
+          leadId={lead.id}
+          initialNotes={lead.notes}
+          updatedAt={lead.updated_at}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -76,11 +82,6 @@ export default async function LeadDetailPage({ params }: PageProps) {
           <LeadReadinessChecklist
             lead={lead}
             hasAnalysis={Boolean(lead.analysis)}
-          />
-          <LeadNotesPanel
-            leadId={lead.id}
-            initialNotes={lead.notes}
-            updatedAt={lead.updated_at}
           />
           <LeadTasksPanel leadId={lead.id} initialTasks={tasks} />
           <LeadActivityHistory activities={activities} />

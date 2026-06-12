@@ -41,13 +41,13 @@ export default function DashboardPage() {
         <StatCard
           title="High Priority"
           value={stats.highPriorityLeads}
-          subtitle="Score ≥ 60, not yet client"
+          subtitle="Score ≥ 60, not yet won"
           icon={<Target className="h-5 w-5" />}
         />
         <StatCard
           title="Conversion Rate"
           value={`${stats.conversionRate}%`}
-          subtitle={`${stats.byStatus["Client"]} clients from ${stats.totalLeads} leads`}
+          subtitle={`${stats.byStatus["Won"]} won from ${stats.totalLeads} leads`}
           icon={<TrendingUp className="h-5 w-5" />}
           trend={stats.conversionRate > 0 ? "Active pipeline" : undefined}
         />
@@ -118,13 +118,15 @@ export default function DashboardPage() {
             </div>
             <div className="rounded-lg bg-emerald-50 p-4 text-center">
               <p className="text-3xl font-bold text-emerald-700">
-                {stats.byStatus["Contacted"] + stats.byStatus["Follow Up"]}
+                {stats.byStatus["Contacted"] +
+                  stats.byStatus["Replied"] +
+                  stats.byStatus["Meeting"]}
               </p>
               <p className="mt-1 text-xs text-slate-500">In Outreach</p>
             </div>
             <div className="rounded-lg bg-brand-50 p-4 text-center">
               <p className="text-3xl font-bold text-brand-700">
-                {stats.byStatus["Proposal Sent"]}
+                {stats.byStatus["Proposal"]}
               </p>
               <p className="mt-1 text-xs text-slate-500">Proposals Sent</p>
             </div>

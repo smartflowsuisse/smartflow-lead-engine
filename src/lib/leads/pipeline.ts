@@ -1,12 +1,13 @@
-import { LEAD_STATUSES, type LeadStatus } from "../types";
+import type { LeadStatus } from "../types";
 
 const SALES_PIPELINE: LeadStatus[] = [
-  "New Lead",
+  "New",
   "Analyzed",
   "Contacted",
-  "Follow Up",
-  "Proposal Sent",
-  "Client",
+  "Replied",
+  "Meeting",
+  "Proposal",
+  "Won",
 ];
 
 export function getNextLeadStatus(current: LeadStatus): LeadStatus | null {
@@ -18,6 +19,6 @@ export function getNextLeadStatus(current: LeadStatus): LeadStatus | null {
   return SALES_PIPELINE[index + 1] ?? null;
 }
 
-export function isPipelineStatus(status: LeadStatus): boolean {
-  return LEAD_STATUSES.includes(status);
+export function getSalesPipelineStages(): LeadStatus[] {
+  return [...SALES_PIPELINE, "Lost"];
 }

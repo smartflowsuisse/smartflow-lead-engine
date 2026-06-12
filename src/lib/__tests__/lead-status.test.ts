@@ -6,12 +6,13 @@ import { outreachStatusColor, statusColor } from "../utils";
 describe("LEAD_STATUSES", () => {
   it("includes all CRM sales workflow statuses", () => {
     const expected = [
-      "New Lead",
+      "New",
       "Analyzed",
       "Contacted",
-      "Follow Up",
-      "Proposal Sent",
-      "Client",
+      "Replied",
+      "Meeting",
+      "Proposal",
+      "Won",
       "Lost",
     ];
     assert.deepEqual([...LEAD_STATUSES], expected);
@@ -34,6 +35,12 @@ describe("OUTREACH_STATUSES", () => {
 describe("statusColor", () => {
   it("returns a color class for Lost status", () => {
     assert.match(statusColor("Lost"), /red/);
+  });
+
+  it("returns a color class for each pipeline stage", () => {
+    for (const status of LEAD_STATUSES) {
+      assert.ok(statusColor(status).length > 0);
+    }
   });
 });
 
