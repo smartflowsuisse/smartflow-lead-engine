@@ -6,6 +6,7 @@ import { ArrowRight, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import type { LeadStatus } from "@/lib/types";
 import { getNextLeadStatus } from "@/lib/leads/pipeline";
 import { getAnalyzeActionLabel } from "@/lib/leads/lead-details";
+import { ANALYSIS_REQUIRES_WEBSITE_MESSAGE } from "@/lib/leads/website-display";
 import {
   ANALYSIS_UNAVAILABLE_ACTION,
   ANALYSIS_UNAVAILABLE_MESSAGE,
@@ -155,7 +156,7 @@ export function LeadDetailsActions({
 
       {!website && (
         <p className="mt-2 text-xs text-amber-700">
-          Add a website URL to enable AI analysis.
+          {ANALYSIS_REQUIRES_WEBSITE_MESSAGE}
         </p>
       )}
 

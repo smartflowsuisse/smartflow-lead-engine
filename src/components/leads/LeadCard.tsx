@@ -4,12 +4,18 @@ import { cn, formatDate, scoreColor, statusColor } from "@/lib/utils";
 import { getScoreLabel, getScorePriority } from "@/lib/scoring";
 import { ExternalLink, ChevronRight } from "lucide-react";
 import { needsContactEnrichment } from "@/lib/leads/contact-enrichment";
+import {
+  ANALYSIS_REQUIRES_WEBSITE_MESSAGE,
+  formatLeadWebsiteLabel,
+} from "@/lib/leads/website-display";
+import { hasLeadWebsite } from "@/lib/leads/contact-enrichment";
 import { LeadContactEnrichmentBadge } from "./LeadContactEnrichmentBadge";
 import { LeadQualificationIndicators } from "./LeadQualificationIndicators";
 
 interface LeadCardProps {
   lead: Lead;
   compact?: boolean;
+  hasAnalysis?: boolean;
 }
 
 const priorityLabel: Record<ReturnType<typeof getScorePriority>, string> = {
@@ -19,8 +25,14 @@ const priorityLabel: Record<ReturnType<typeof getScorePriority>, string> = {
   low: "Low",
 };
 
-export function LeadCard({ lead, compact = false }: LeadCardProps) {
+export function LeadCard({
+  lead,
+  compact = false,
+  hasAnalysis: hasAnalysisProp,
+}: LeadCardProps) {
   const showEnrichmentBadge = needsContactEnrichment(lead);
+  const hasWebsite = hasLeadWebsite(lead);
+  const hasAnalysis = hasAnalysisProp ?? false;
   const scorePriority =
     lead.lead_score > 0 ? priorityLabel[getScorePriority(lead.lead_score)] : null;
 
@@ -51,7 +63,28 @@ export function LeadCard({ lead, compact = false }: LeadCardProps) {
 
       <LeadQualificationIndicators lead={lead} compact={compact} />
 
-      {showEnrichmentBadge && (
+      {!compact && (
+        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+          <span>
+            Website:{" "}
+            <span className={hasWebsite ? "text-slate-700" : "font-medium text-amber-700"}>
+              {formatLeadWebsiteLabel(lead.website)}
+            </span>
+          </span>
+          <span>
+            Analysis:{" "}
+            <span className="text-slate-700">
+              {hasAnalysis
+                ? "Available"
+                : hasWebsite
+                  ? "Not run yet"
+                  : ANALYSIS_REQUIRES_WEBSITE_MESSAGE}
+            </span>
+          </span>
+        </div>
+      )}
+
+      {showEnrichmentBadge && hasWebsite && (
         <div className={cn(compact ? "mt-2" : "mt-2.5")}>
           <LeadContactEnrichmentBadge compact={compact} />
         </div>

@@ -196,6 +196,17 @@ describe("shouldDiscoverContact", () => {
       false
     );
   });
+
+  it("skips when the lead has no website", () => {
+    assert.equal(
+      shouldDiscoverContact(sampleLead({ website: null })),
+      false
+    );
+    assert.equal(
+      shouldDiscoverContact(sampleLead({ website: "   " })),
+      false
+    );
+  });
 });
 
 describe("buildContactDiscoveryUpdate", () => {

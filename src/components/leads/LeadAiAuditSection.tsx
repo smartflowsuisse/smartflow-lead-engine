@@ -8,10 +8,12 @@ import {
 import type { LeadAnalysis } from "@/lib/types";
 import { formatAnalysisScore } from "@/lib/scoring";
 import { isKnownScore } from "@/lib/analysis/score-values";
+import { ANALYSIS_REQUIRES_WEBSITE_MESSAGE } from "@/lib/leads/website-display";
 import { cn } from "@/lib/utils";
 
 interface LeadAiAuditSectionProps {
   analysis?: LeadAnalysis | null;
+  hasWebsite?: boolean;
 }
 
 function AuditMetric({
@@ -53,7 +55,10 @@ function AuditMetric({
   );
 }
 
-export function LeadAiAuditSection({ analysis }: LeadAiAuditSectionProps) {
+export function LeadAiAuditSection({
+  analysis,
+  hasWebsite = true,
+}: LeadAiAuditSectionProps) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5">
@@ -63,7 +68,11 @@ export function LeadAiAuditSection({ analysis }: LeadAiAuditSectionProps) {
         </p>
       </div>
 
-      {!analysis ? (
+      {!hasWebsite ? (
+        <div className="rounded-lg border border-dashed border-amber-200 bg-amber-50/50 px-4 py-8 text-center text-sm text-amber-800">
+          {ANALYSIS_REQUIRES_WEBSITE_MESSAGE}
+        </div>
+      ) : !analysis ? (
         <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
           Run AI analysis below to populate the audit scores.
         </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
+import { hasLeadWebsite } from "@/lib/leads/contact-enrichment";
 import { buildLeadOpportunitySummary } from "@/lib/leads/opportunity-summary";
 import { getTasksByLeadId, summarizeLeadTasks } from "@/lib/tasks";
 import { getActivitiesByLeadId } from "@/lib/activities";
@@ -67,8 +68,14 @@ export default async function LeadDetailPage({ params }: PageProps) {
           hasAnalysis={Boolean(lead.analysis)}
         />
         <LeadDetailsOverview lead={lead} />
-        <LeadAiAuditSection analysis={lead.analysis} />
-        <LeadOpportunitySummary summary={opportunitySummary} />
+        <LeadAiAuditSection
+          analysis={lead.analysis}
+          hasWebsite={hasLeadWebsite(lead)}
+        />
+        <LeadOpportunitySummary
+          summary={opportunitySummary}
+          hasWebsite={hasLeadWebsite(lead)}
+        />
         <LeadNotesPanel
           leadId={lead.id}
           initialNotes={lead.notes}

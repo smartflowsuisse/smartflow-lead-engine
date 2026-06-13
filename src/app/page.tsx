@@ -7,7 +7,7 @@ import {
   Sparkles,
   ArrowRight,
 } from "lucide-react";
-import { getDashboardStats } from "@/lib/leads";
+import { getDashboardStats, getAnalyzedLeadIdSet } from "@/lib/leads";
 import { StatCard } from "@/components/ui/StatCard";
 import { LeadCard } from "@/components/leads/LeadCard";
 import { LEAD_STATUSES } from "@/lib/types";
@@ -15,6 +15,7 @@ import { statusColor, cn } from "@/lib/utils";
 
 export default function DashboardPage() {
   const stats = getDashboardStats();
+  const analyzedLeadIds = getAnalyzedLeadIdSet();
 
   return (
     <div className="p-8">
@@ -147,7 +148,11 @@ export default function DashboardPage() {
         {stats.recentLeads.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {stats.recentLeads.map((lead) => (
-              <LeadCard key={lead.id} lead={lead} />
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                hasAnalysis={analyzedLeadIds.has(lead.id)}
+              />
             ))}
           </div>
         ) : (

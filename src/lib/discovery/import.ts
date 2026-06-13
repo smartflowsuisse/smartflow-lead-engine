@@ -1,6 +1,7 @@
 import { createLead, findDuplicateLead } from "../leads";
 import { enrichLeadWithDiscoveredContact } from "../contact/enrich-lead-contact";
 import { queueLeadWebsiteAnalysisAfterDiscoveryImport } from "../analysis/queue-lead-analysis";
+import { normalizeOptionalWebsite } from "../leads/website-display";
 import type { CreateLeadInput, Lead } from "../types";
 import { getCandidateKey } from "./dedup";
 import type { DiscoveryCandidate } from "./types";
@@ -47,12 +48,39 @@ export function getImportStatusForCandidates(
   return status;
 }
 
+export function parseDiscoveryImportCandidate(
+  body: unknown
+): DiscoveryCandidate | null {
+  if (!body || typeof body !== "object") return null;
+
+  const candidate = body as Partial<DiscoveryCandidate>;
+  if (!candidate.company || typeof candidate.company !== "string") return null;
+  if (!candidate.city || typeof candidate.city !== "string") return null;
+  if (!candidate.industry || typeof candidate.industry !== "string") return null;
+
+  const website =
+    candidate.website === undefined || candidate.website === null
+      ? ""
+      : typeof candidate.website === "string"
+        ? candidate.website.trim()
+        : null;
+
+  if (website === null) return null;
+
+  return {
+    company: candidate.company.trim(),
+    website,
+    city: candidate.city.trim(),
+    industry: candidate.industry.trim(),
+  };
+}
+
 export function buildDiscoveryLeadInput(
   candidate: DiscoveryCandidate
 ): CreateLeadInput {
   return {
     company: candidate.company.trim(),
-    website: candidate.website?.trim() || undefined,
+    website: normalizeOptionalWebsite(candidate.website),
     city: candidate.city?.trim() || undefined,
     industry: candidate.industry?.trim() || undefined,
     status: "New",

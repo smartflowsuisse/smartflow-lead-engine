@@ -6,6 +6,7 @@ import {
   persistLeadScore,
 } from "../leads";
 import { enrichLeadWithDiscoveredContact } from "../contact/enrich-lead-contact";
+import { normalizeOptionalWebsite } from "../leads/website-display";
 import type { Lead } from "../types";
 import type { CsvLeadRow, ImportExecuteResult } from "./types";
 
@@ -57,7 +58,7 @@ export async function executeImport(
 
       const lead = createLead({
         company: item.data.company.trim(),
-        website: item.data.website?.trim() || undefined,
+        website: normalizeOptionalWebsite(item.data.website),
         email: item.data.email?.trim() || undefined,
         phone: item.data.phone?.trim() || undefined,
         city: item.data.city?.trim() || undefined,

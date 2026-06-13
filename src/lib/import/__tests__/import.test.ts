@@ -48,6 +48,17 @@ describe("mapParsedCsvToRows", () => {
       notes: "Priority lead",
     });
   });
+
+  it("allows rows without a website column value", () => {
+    const parsed = parseCsv(
+      "company,email,phone,city,industry\nBau Partner AG,info@bau.ch,+41 44 111 22 33,Zürich,Construction"
+    );
+    const rows = mapParsedCsvToRows(parsed);
+    assert.equal(rows[0].errors.length, 0);
+    assert.equal(rows[0].data.company, "Bau Partner AG");
+    assert.equal(rows[0].data.website, undefined);
+    assert.equal(rows[0].data.phone, "+41 44 111 22 33");
+  });
 });
 
 describe("buildImportPreview", () => {

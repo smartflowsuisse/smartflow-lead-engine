@@ -190,7 +190,7 @@ export function DiscoveryResults({ result, onNotification }: DiscoveryResultsPro
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       ) : (
-                        <span className="text-slate-400">Not listed</span>
+                        <span className="font-medium text-amber-700">Missing</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
