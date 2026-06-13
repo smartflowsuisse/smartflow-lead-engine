@@ -15,6 +15,7 @@ import { LeadContactSection } from "@/components/leads/LeadContactSection";
 import { LeadReadinessChecklist } from "@/components/leads/LeadReadinessChecklist";
 import { LeadProfileHeader } from "@/components/leads/LeadProfileSections";
 import { LeadDetailsOverview } from "@/components/leads/LeadDetailsOverview";
+import { LeadNextBestActionSection } from "@/components/leads/LeadNextBestActionSection";
 import { LeadDetailsActions } from "@/components/leads/LeadDetailsActions";
 import { LeadAiAuditSection } from "@/components/leads/LeadAiAuditSection";
 import { LeadOpportunitySummary } from "@/components/leads/LeadOpportunitySummary";
@@ -68,6 +69,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
           hasAnalysis={Boolean(lead.analysis)}
         />
         <LeadDetailsOverview lead={lead} />
+        <LeadNextBestActionSection lead={lead} />
         <LeadAiAuditSection
           analysis={lead.analysis}
           hasWebsite={hasLeadWebsite(lead)}
