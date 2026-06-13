@@ -29,6 +29,7 @@ import type { LeadScoreBreakdown as LeadScoreBreakdownType } from "@/lib/scoring
 import { getScoreLabel, formatAnalysisScore } from "@/lib/scoring";
 import { LeadScoreBreakdown } from "@/components/leads/LeadScoreBreakdown";
 import { isKnownScore } from "@/lib/analysis/score-values";
+import { ANALYSIS_REQUIRES_WEBSITE_MESSAGE } from "@/lib/leads/website-display";
 
 interface AnalysisPanelProps {
   leadId: number;
@@ -222,7 +223,7 @@ export function AnalysisPanel({
 
       {!website && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          Add a website URL to enable AI analysis.
+          {ANALYSIS_REQUIRES_WEBSITE_MESSAGE}
         </div>
       )}
 

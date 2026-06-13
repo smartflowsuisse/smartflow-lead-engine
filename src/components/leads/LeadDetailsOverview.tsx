@@ -6,15 +6,20 @@ import {
   MapPin,
   Phone,
 } from "lucide-react";
-import type { Lead } from "@/lib/types";
+import type { LeadWithAnalysis } from "@/lib/types";
 import { LeadStatusSelect } from "@/components/leads/LeadStatusSelect";
 import { LeadQualificationIndicators } from "@/components/leads/LeadQualificationIndicators";
 import { cn, scoreColor } from "@/lib/utils";
 import { getScoreLabel } from "@/lib/scoring";
 import { formatLeadQualification } from "@/lib/leads/export-csv";
+import {
+  formatLeadAnalysisStatus,
+  formatLeadWebsiteLabel,
+} from "@/lib/leads/website-display";
+import { hasLeadWebsite } from "@/lib/leads/contact-enrichment";
 
 interface LeadDetailsOverviewProps {
-  lead: Lead;
+  lead: LeadWithAnalysis;
 }
 
 function externalHref(value: string): string {
@@ -23,7 +28,8 @@ function externalHref(value: string): string {
 
 export function LeadDetailsOverview({ lead }: LeadDetailsOverviewProps) {
   const hasScore = lead.lead_score > 0;
-  const websiteHref = lead.website ? externalHref(lead.website) : null;
+  const hasWebsite = hasLeadWebsite(lead);
+  const websiteHref = hasWebsite ? externalHref(lead.website!) : null;
   const contactPageHref = lead.contact_page_url
     ? externalHref(lead.contact_page_url)
     : null;
@@ -48,7 +54,9 @@ export function LeadDetailsOverview({ lead }: LeadDetailsOverviewProps) {
               {lead.website}
             </a>
           ) : (
-            "—"
+            <span className="font-medium text-amber-700">
+              {formatLeadWebsiteLabel(lead.website)}
+            </span>
           )}
         </DetailItem>
 
@@ -91,6 +99,20 @@ export function LeadDetailsOverview({ lead }: LeadDetailsOverviewProps) {
 
         <DetailItem icon={<Building2 className="h-4 w-4" />} label="Status">
           <LeadStatusSelect leadId={lead.id} currentStatus={lead.status} />
+        </DetailItem>
+
+        <DetailItem icon={<Building2 className="h-4 w-4" />} label="Analysis">
+          <span
+            className={
+              lead.analysis
+                ? "text-slate-900"
+                : hasWebsite
+                  ? "text-slate-600"
+                  : "font-medium text-amber-700"
+            }
+          >
+            {formatLeadAnalysisStatus(lead.website, Boolean(lead.analysis))}
+          </span>
         </DetailItem>
 
         <DetailItem icon={<Mail className="h-4 w-4" />} label="Email">

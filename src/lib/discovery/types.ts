@@ -2,6 +2,7 @@ export type DiscoveryProviderName = "mock" | "osm";
 
 export interface DiscoveryCandidate {
   company: string;
+  /** Empty string when OSM has no website tag. */
   website: string;
   city: string;
   industry: string;

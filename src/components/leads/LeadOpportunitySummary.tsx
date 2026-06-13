@@ -1,8 +1,10 @@
 import { Banknote, Bot, CircleAlert } from "lucide-react";
 import type { LeadOpportunitySummary as LeadOpportunitySummaryType } from "@/lib/leads/opportunity-summary";
+import { ANALYSIS_REQUIRES_WEBSITE_MESSAGE } from "@/lib/leads/website-display";
 
 interface LeadOpportunitySummaryProps {
   summary: LeadOpportunitySummaryType | null;
+  hasWebsite?: boolean;
 }
 
 function formatChf(value: number): string {
@@ -13,7 +15,10 @@ function formatChf(value: number): string {
   }).format(value);
 }
 
-export function LeadOpportunitySummary({ summary }: LeadOpportunitySummaryProps) {
+export function LeadOpportunitySummary({
+  summary,
+  hasWebsite = true,
+}: LeadOpportunitySummaryProps) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5">
@@ -23,7 +28,11 @@ export function LeadOpportunitySummary({ summary }: LeadOpportunitySummaryProps)
         </p>
       </div>
 
-      {!summary ? (
+      {!hasWebsite ? (
+        <div className="rounded-lg border border-dashed border-amber-200 bg-amber-50/50 px-4 py-8 text-center text-sm text-amber-800">
+          {ANALYSIS_REQUIRES_WEBSITE_MESSAGE}
+        </div>
+      ) : !summary ? (
         <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
           Run AI analysis to generate problems, service recommendations, and value
           estimates.
