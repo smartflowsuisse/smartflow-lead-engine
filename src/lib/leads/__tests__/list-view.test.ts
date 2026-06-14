@@ -7,7 +7,6 @@ import {
   filterLeadsByScore,
   isHighPriorityLead,
   parseLeadContactFilter,
-  parseLeadScoreFilter,
   sortLeads,
 } from "../list-view";
 
