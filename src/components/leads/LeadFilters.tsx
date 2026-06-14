@@ -124,6 +124,9 @@ export function LeadFilters({
           <option value="score_low">Lowest score first</option>
         </select>
       </div>
+      <p className="text-xs text-slate-500">
+        Use filters to focus the list before outreach. High score leads should be reviewed first, then check email, phone, or contact page availability.
+      </p>
     </form>
   );
 }
