@@ -129,9 +129,21 @@ export function CsvImportPanel() {
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900">Upload CSV</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Supported columns: company, website, email, phone, city, industry, notes
-        </p>
+            <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+              <p className="font-medium text-slate-900">CSV format guide</p>
+              <p className="mt-1">
+                Required column: <code className="rounded bg-white px-1 py-0.5">company</code>.
+                Optional columns: <code className="rounded bg-white px-1 py-0.5">website</code>,{" "}
+                <code className="rounded bg-white px-1 py-0.5">email</code>,{" "}
+                <code className="rounded bg-white px-1 py-0.5">phone</code>,{" "}
+                <code className="rounded bg-white px-1 py-0.5">city</code>,{" "}
+                <code className="rounded bg-white px-1 py-0.5">industry</code>,{" "}
+                <code className="rounded bg-white px-1 py-0.5">notes</code>.
+              </p>
+              <p className="mt-2 text-xs text-slate-500">
+                Preview the file before importing. Duplicate and invalid rows are shown before confirmation.
+              </p>
+            </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
