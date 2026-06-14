@@ -20,6 +20,10 @@ export default function OutreachPage() {
           Actionable leads with score 45+ and at least one contact channel.
           Sorted by score, highest first.
         </p>
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          Start with high-priority leads. Open the lead, copy the email when available,
+          generate a message, then mark the lead as contacted.
+        </div>
       </div>
 
       <OutreachQueueSummaryBar summary={summary} />
