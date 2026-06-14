@@ -23,6 +23,7 @@ import {
 import { createLeadActivity } from "./activities";
 import { parseOutreachLanguage } from "./outreach/languages";
 import { normalizeLeadStatus } from "./leads/lead-status";
+import { resolveSyncedLeadStatuses } from "./leads/status-sync";
 import {
   calculateLeadScore,
   leadAnalysisToWebsiteResult,
@@ -126,6 +127,7 @@ export function getOutreachQueueLeads(): Lead[] {
     .prepare(
       `SELECT * FROM leads
        WHERE lead_score >= 45
+         AND status NOT IN ('Won', 'Lost')
          AND (
            (email IS NOT NULL AND trim(email) != '')
            OR (phone IS NOT NULL AND trim(phone) != '')
@@ -226,6 +228,13 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
   const existing = getLeadById(id);
   if (!existing) return null;
 
+  const synced = resolveSyncedLeadStatuses({
+    existingStatus: existing.status,
+    existingOutreachStatus: existing.outreach_status,
+    nextStatus: input.status,
+    nextOutreachStatus: input.outreach_status,
+  });
+
   db.prepare(
     `UPDATE leads SET
       company = @company,
@@ -252,8 +261,8 @@ export function updateLead(id: number, input: UpdateLeadInput): Lead | null {
     city: input.city !== undefined ? input.city : existing.city,
     industry: input.industry !== undefined ? input.industry : existing.industry,
     lead_score: input.lead_score ?? existing.lead_score,
-    status: input.status ?? existing.status,
-    outreach_status: input.outreach_status ?? existing.outreach_status,
+    status: synced.status,
+    outreach_status: synced.outreach_status,
     notes: input.notes !== undefined ? input.notes : existing.notes,
     contact_page_url:
       input.contact_page_url !== undefined
@@ -352,7 +361,7 @@ export function saveLeadAnalysis(
     ).run({ leadId, leadScore: analysis.leadScore });
   } else {
     db.prepare(
-      `UPDATE leads SET lead_score = @leadScore, status = 'Analyzed', updated_at = datetime('now') WHERE id = @leadId`
+      `UPDATE leads SET lead_score = @leadScore, status = 'Analyzed', outreach_status = 'New', updated_at = datetime('now') WHERE id = @leadId`
     ).run({ leadId, leadScore: analysis.leadScore });
   }
 
@@ -381,6 +390,7 @@ export function markLeadAsContacted(
   db.prepare(
     `UPDATE leads SET
       status = 'Contacted',
+      outreach_status = 'Contacted',
       contacted_at = datetime('now'),
       contacted_language = @language,
       updated_at = datetime('now')
