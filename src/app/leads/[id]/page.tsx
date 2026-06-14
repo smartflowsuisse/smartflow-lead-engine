@@ -61,6 +61,11 @@ export default async function LeadDetailPage({ params }: PageProps) {
         taskSummary={taskSummary}
       />
 
+        <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          Review the lead score, contact data, website analysis, and next best action before outreach.
+          Update the CRM status and add tasks after each follow-up.
+        </div>
+
       <div className="mb-6 space-y-6">
         <LeadDetailsActions
           leadId={lead.id}
