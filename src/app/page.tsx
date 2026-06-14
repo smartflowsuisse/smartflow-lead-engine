@@ -24,6 +24,10 @@ export default function DashboardPage() {
         <p className="mt-1 text-slate-500">
           SmartFlow Suisse — AI-powered lead generation overview
         </p>
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          Use the dashboard to monitor total leads, average score, high-priority opportunities,
+          and conversion progress before reviewing Leads, Outreach, and Pipeline.
+        </div>
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
