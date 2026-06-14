@@ -149,6 +149,10 @@ export function DiscoveryResults({ result, onNotification }: DiscoveryResultsPro
         </span>
       </div>
 
+      <p className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+        Companies already in CRM are marked as <span className="font-semibold text-emerald-700">In CRM</span>. Use <span className="font-semibold text-brand-700">View</span> to open the existing lead.
+      </p>
+
       {candidates.length > 0 ? (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
           <table className="w-full text-left text-sm">
