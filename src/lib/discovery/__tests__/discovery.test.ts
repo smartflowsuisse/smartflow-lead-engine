@@ -7,7 +7,6 @@ import {
   buildNominatimSearchQuery,
   buildOverpassFilterClause,
   isConstructionIndustry,
-  isRealEstateIndustry,
   matchesConstructionBusinessName,
   matchesRealEstateBusinessName,
 } from "../providers/industry-tags";
