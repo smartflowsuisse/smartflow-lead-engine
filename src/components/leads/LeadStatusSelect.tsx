@@ -61,7 +61,7 @@ export function LeadStatusSelect({
           value={status}
           onChange={(e) => void handleChange(e)}
           disabled={loading}
-          aria-label="Sales status"
+          aria-label="CRM status"
           className={cn(
             "cursor-pointer appearance-none rounded-full border py-0.5 pl-2.5 pr-7 text-xs font-medium outline-none transition-opacity focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 disabled:cursor-wait disabled:opacity-60",
             statusColor(status)

@@ -50,6 +50,21 @@ describe("isActionableOutreachLead", () => {
       true
     );
   });
+
+  it("excludes Won and Lost leads", () => {
+    assert.equal(
+      isActionableOutreachLead(sampleLead({ status: "Won" })),
+      false
+    );
+    assert.equal(
+      isActionableOutreachLead(sampleLead({ status: "Lost" })),
+      false
+    );
+    assert.equal(
+      isActionableOutreachLead(sampleLead({ status: "Proposal" })),
+      true
+    );
+  });
 });
 
 describe("filterOutreachQueueLeads", () => {
@@ -75,7 +90,7 @@ describe("computeOutreachQueueSummary", () => {
       sampleLead({ id: 2, outreach_status: "Contacted" }),
       sampleLead({ id: 3, outreach_status: "Replied" }),
       sampleLead({ id: 4, outreach_status: "Meeting" }),
-      sampleLead({ id: 5, outreach_status: "Won" }),
+      sampleLead({ id: 5, outreach_status: "Won", status: "Won" }),
       sampleLead({ id: 6, outreach_status: "New", lead_score: 20 }),
     ]);
 
@@ -83,7 +98,18 @@ describe("computeOutreachQueueSummary", () => {
     assert.equal(summary.contacted, 1);
     assert.equal(summary.replied, 1);
     assert.equal(summary.meetings, 1);
-    assert.equal(summary.won, 1);
-    assert.equal(summary.total, 5);
+    assert.equal(summary.won, 0);
+    assert.equal(summary.total, 4);
+  });
+
+  it("excludes closed CRM leads from totals", () => {
+    const summary = computeOutreachQueueSummary([
+      sampleLead({ id: 1, status: "Lost", outreach_status: "Lost" }),
+      sampleLead({ id: 2, status: "Won", outreach_status: "Won" }),
+      sampleLead({ id: 3, status: "Contacted", outreach_status: "Contacted" }),
+    ]);
+
+    assert.equal(summary.total, 1);
+    assert.equal(summary.contacted, 1);
   });
 });

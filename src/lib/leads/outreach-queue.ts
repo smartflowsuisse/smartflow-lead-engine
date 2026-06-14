@@ -1,4 +1,5 @@
 import type { Lead, OutreachStatus } from "../types";
+import { isClosedCrmStatus } from "./status-sync";
 import { hasLeadEmail, hasLeadPhone } from "./list-view";
 
 export const MIN_OUTREACH_SCORE = 45;
@@ -14,6 +15,7 @@ export interface OutreachQueueSummary {
 
 export function isActionableOutreachLead(lead: Lead): boolean {
   return (
+    !isClosedCrmStatus(lead.status) &&
     lead.lead_score >= MIN_OUTREACH_SCORE &&
     (hasLeadEmail(lead) || hasLeadPhone(lead))
   );

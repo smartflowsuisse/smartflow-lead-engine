@@ -97,7 +97,7 @@ export function LeadDetailsOverview({ lead }: LeadDetailsOverviewProps) {
           </div>
         </DetailItem>
 
-        <DetailItem icon={<Building2 className="h-4 w-4" />} label="Status">
+        <DetailItem icon={<Building2 className="h-4 w-4" />} label="CRM Status">
           <LeadStatusSelect leadId={lead.id} currentStatus={lead.status} />
         </DetailItem>
 
