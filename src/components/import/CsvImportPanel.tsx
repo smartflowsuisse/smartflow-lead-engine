@@ -221,9 +221,20 @@ export function CsvImportPanel() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
-            <p className="text-sm text-slate-600">
+            <div>
+
+              <p className="text-sm text-slate-600">
               {readyRows.length} lead{readyRows.length === 1 ? "" : "s"} ready to import
-            </p>
+
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+
+                Only Ready rows will be imported. Duplicate and invalid rows are skipped.
+
+              </p>
+
+            </div>
             <button
               type="button"
               onClick={() => void confirmImport()}
