@@ -69,7 +69,7 @@ export function parseLeadScoreFilter(value?: string): LeadScoreFilter {
   return "all";
 }
 
-export function hasLeadEmail(lead: Lead): boolean {
+export function hasLeadEmail(lead: Pick<Lead, "email">): boolean {
   return Boolean(lead.email?.trim());
 }
 

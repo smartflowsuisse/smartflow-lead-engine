@@ -42,7 +42,7 @@ export default function DashboardPage() {
         <StatCard
           title="High Priority"
           value={stats.highPriorityLeads}
-          subtitle="Score ≥ 60, not yet won"
+          subtitle="Score ≥ 65, not yet won"
           icon={<Target className="h-5 w-5" />}
         />
         <StatCard

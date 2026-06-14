@@ -3,6 +3,7 @@ import type { Lead } from "@/lib/types";
 import { getScoreLabel } from "@/lib/scoring";
 import { cn, scoreColor } from "@/lib/utils";
 import { OutreachStatusSelect } from "./OutreachStatusSelect";
+import { OutreachQueueActions } from "./OutreachQueueActions";
 
 interface OutreachQueueTableProps {
   leads: Lead[];
@@ -40,6 +41,7 @@ export function OutreachQueueTable({ leads }: OutreachQueueTableProps) {
                 "City",
                 "Industry",
                 "Status",
+                "Actions",
               ].map((header) => (
                 <th
                   key={header}
@@ -89,6 +91,9 @@ export function OutreachQueueTable({ leads }: OutreachQueueTableProps) {
                     leadId={lead.id}
                     currentStatus={lead.outreach_status}
                   />
+                </td>
+                <td className="px-4 py-3">
+                  <OutreachQueueActions leadId={lead.id} email={lead.email} />
                 </td>
               </tr>
             ))}
