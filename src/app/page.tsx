@@ -149,6 +149,46 @@ export default function DashboardPage() {
             View all <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
+        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-slate-900">Demo Workflow</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Follow the product path from discovery to pipeline review.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Link href="/discovery" className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm hover:border-brand-300">
+              <p className="font-medium text-slate-900">1. Discovery</p>
+              <p className="mt-1 text-slate-500">Find potential companies.</p>
+            </Link>
+            <Link href="/leads/import" className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm hover:border-brand-300">
+              <p className="font-medium text-slate-900">2. Import CSV</p>
+              <p className="mt-1 text-slate-500">Review and import lead data.</p>
+            </Link>
+            <Link href="/leads" className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm hover:border-brand-300">
+              <p className="font-medium text-slate-900">3. Leads</p>
+              <p className="mt-1 text-slate-500">Score, filter, and inspect leads.</p>
+            </Link>
+            <Link href="/outreach" className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm hover:border-brand-300">
+              <p className="font-medium text-slate-900">4. Outreach</p>
+              <p className="mt-1 text-slate-500">Contact ready leads first.</p>
+            </Link>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-3 text-sm">
+            <Link href="/pipeline" className="inline-flex items-center gap-1 font-medium text-brand-600 hover:text-brand-700">
+              Continue to Pipeline <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <span className="text-slate-300">•</span>
+            <Link href="/" className="inline-flex items-center gap-1 font-medium text-brand-600 hover:text-brand-700">
+              Review Dashboard <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+
         {stats.recentLeads.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {stats.recentLeads.map((lead) => (
