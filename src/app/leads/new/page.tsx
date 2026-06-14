@@ -10,6 +10,11 @@ export default function NewLeadPage() {
         </p>
       </div>
 
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            Add the company name first, then include website, city, industry, email, phone, and contact page when available.
+            Better contact data improves scoring, outreach readiness, and pipeline follow-up.
+          </div>
+
       <div className="max-w-2xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <LeadForm mode="create" />
       </div>
