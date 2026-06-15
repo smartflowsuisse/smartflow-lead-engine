@@ -75,6 +75,7 @@ const implementationSteps = [
 export function ConstructionTemplatesPanel() {
   const [copied, setCopied] = useState(false);
   const [planCopied, setPlanCopied] = useState(false);
+  const [proposalCopied, setProposalCopied] = useState(false);
   const [language, setLanguage] = useState<AuditLanguage>("en");
 
   const auditMessage = auditMessages[language];
@@ -84,6 +85,25 @@ export function ConstructionTemplatesPanel() {
     "",
     ...implementationSteps.map((step, index) => `${index + 1}. ${step.title}: ${step.description}`),
   ].join("\n");
+
+  const proposalSummary = [
+    "Construction Automation Starter — Proposal Summary",
+    "",
+    "We can help your construction company reduce manual work around invoices, project follow-ups, procurement tracking, and weekly reporting.",
+    "",
+    "Package:",
+    "- Invoice PDF Automation",
+    "- Project Task Workflow",
+    "- Procurement Weekly Report",
+    "- Implementation checklist from workflow audit to monthly support",
+    "",
+    "Offer range:",
+    "CHF 6'000–12'000 + monthly support retainer",
+    "",
+    "Next step:",
+    "Free workflow audit to identify where automation can save time before implementation.",
+  ].join("\n");
+
 
   async function copyAuditMessage() {
     try {
@@ -102,6 +122,17 @@ export function ConstructionTemplatesPanel() {
       window.setTimeout(() => setPlanCopied(false), 2000);
     } catch {
       setPlanCopied(false);
+    }
+  }
+
+
+  async function copyProposalSummary() {
+    try {
+      await navigator.clipboard.writeText(proposalSummary);
+      setProposalCopied(true);
+      window.setTimeout(() => setProposalCopied(false), 2000);
+    } catch {
+  setProposalCopied(false);
     }
   }
 
@@ -232,6 +263,14 @@ export function ConstructionTemplatesPanel() {
             className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
           >
             {planCopied ? "Implementation plan copied" : "Copy implementation plan"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => void copyProposalSummary()}
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+          >
+            {proposalCopied ? "Proposal summary copied" : "Copy proposal summary"}
           </button>
         </div>
 
