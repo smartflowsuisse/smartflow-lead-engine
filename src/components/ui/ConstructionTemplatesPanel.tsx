@@ -294,6 +294,67 @@ export function ConstructionTemplatesPanel() {
             </li>
           ))}
         </ol>
+
+        <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">
+              Client Delivery Pack
+            </h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Use this as the client-facing delivery structure after the first workflow audit.
+            </p>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                Client provides
+              </h4>
+              <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+                <li>Sample invoices and supplier documents</li>
+                <li>Project notes, purchase lists, and weekly reports</li>
+                <li>Current tools: email, accounting, CRM, spreadsheet, or PM system</li>
+                <li>Approval rules and responsible team members</li>
+              </ul>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                SmartFlow delivers
+              </h4>
+              <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+                <li>Configured invoice, task, or procurement workflow</li>
+                <li>AI-assisted document review and structured output</li>
+                <li>Tested automation with real client documents</li>
+                <li>Owner/admin training and monthly support path</li>
+              </ul>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                Delivery timeline
+              </h4>
+              <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+                <li>Day 1: workflow audit and data collection</li>
+                <li>Day 2–3: workflow setup and AI extraction test</li>
+                <li>Day 4: client validation and corrections</li>
+                <li>Day 5: delivery, training, and support setup</li>
+              </ul>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                Monthly support
+              </h4>
+              <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+                <li>Workflow monitoring and small fixes</li>
+                <li>Template updates when client process changes</li>
+                <li>Basic reporting review and improvement suggestions</li>
+                <li>Optional expansion to new workflows</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-5 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
