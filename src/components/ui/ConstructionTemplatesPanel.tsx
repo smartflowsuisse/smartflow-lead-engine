@@ -74,9 +74,16 @@ const implementationSteps = [
 
 export function ConstructionTemplatesPanel() {
   const [copied, setCopied] = useState(false);
+  const [planCopied, setPlanCopied] = useState(false);
   const [language, setLanguage] = useState<AuditLanguage>("en");
 
   const auditMessage = auditMessages[language];
+
+  const implementationPlan = [
+    "Construction Automation Starter — Implementation Plan",
+    "",
+    ...implementationSteps.map((step, index) => `${index + 1}. ${step.title}: ${step.description}`),
+  ].join("\n");
 
   async function copyAuditMessage() {
     try {
@@ -85,6 +92,16 @@ export function ConstructionTemplatesPanel() {
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
+    }
+  }
+
+  async function copyImplementationPlan() {
+    try {
+      await navigator.clipboard.writeText(implementationPlan);
+      setPlanCopied(true);
+      window.setTimeout(() => setPlanCopied(false), 2000);
+    } catch {
+      setPlanCopied(false);
     }
   }
 
@@ -199,13 +216,23 @@ export function ConstructionTemplatesPanel() {
       </div>
 
       <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-slate-900">
-            Implementation Checklist
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">
-            Use this process to turn the demo into a real client implementation.
-          </p>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">
+              Implementation Checklist
+            </h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Use this process to turn the demo into a real client implementation.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => void copyImplementationPlan()}
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+          >
+            {planCopied ? "Implementation plan copied" : "Copy implementation plan"}
+          </button>
         </div>
 
         <ol className="grid gap-3 md:grid-cols-2">
