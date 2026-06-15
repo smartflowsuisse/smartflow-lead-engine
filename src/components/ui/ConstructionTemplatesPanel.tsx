@@ -60,11 +60,13 @@ export function ConstructionTemplatesPanel() {
         </div>
         <div className="rounded-lg border border-brand-100 bg-brand-50 px-4 py-3 text-sm">
           <p className="font-semibold text-brand-700">Offer range</p>
-          <p className="mt-1 text-slate-700">CHF 6&apos;000–12&apos;000 + retainer</p>
+          <p className="mt-1 text-slate-700">
+            CHF 6&apos;000–12&apos;000 + retainer
+          </p>
         </div>
       </div>
 
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mb-5 flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Link
           href="/leads"
           className="inline-flex items-center justify-center rounded-lg border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
@@ -84,6 +86,18 @@ export function ConstructionTemplatesPanel() {
         >
           {copied ? "Audit message copied" : "Copy audit message"}
         </button>
+      </div>
+
+      <div className="mb-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-slate-900">
+            Audit message preview
+          </h3>
+          <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-500">
+            Copy-ready
+          </span>
+        </div>
+        <p className="text-sm leading-6 text-slate-600">{auditMessage}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
