@@ -41,6 +41,37 @@ const templates = [
   },
 ];
 
+const implementationSteps = [
+  {
+    title: "Audit client workflow",
+    description: "Map invoice, project, procurement, and reporting steps before building automation.",
+  },
+  {
+    title: "Collect sample data",
+    description: "Use real invoices, project notes, purchase lists, and weekly reports for testing.",
+  },
+  {
+    title: "Select client tools",
+    description: "Confirm email, accounting, spreadsheet, CRM, Notion, Trello, Bexio, Banana, or Excel setup.",
+  },
+  {
+    title: "Build n8n / Make workflow",
+    description: "Create the first working automation with AI document review and structured outputs.",
+  },
+  {
+    title: "Test with real documents",
+    description: "Check extraction quality, edge cases, missing data, and approval flow before delivery.",
+  },
+  {
+    title: "Train owner / admin",
+    description: "Show the client how to review outputs, approve steps, and request support.",
+  },
+  {
+    title: "Start monthly support",
+    description: "Monitor workflows, fix issues, update templates, and add improvements under retainer.",
+  },
+];
+
 export function ConstructionTemplatesPanel() {
   const [copied, setCopied] = useState(false);
   const [language, setLanguage] = useState<AuditLanguage>("en");
@@ -165,6 +196,38 @@ export function ConstructionTemplatesPanel() {
             </div>
           </article>
         ))}
+      </div>
+
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-slate-900">
+            Implementation Checklist
+          </h3>
+          <p className="mt-1 text-xs text-slate-500">
+            Use this process to turn the demo into a real client implementation.
+          </p>
+        </div>
+
+        <ol className="grid gap-3 md:grid-cols-2">
+          {implementationSteps.map((step, index) => (
+            <li
+              key={step.title}
+              className="rounded-lg border border-slate-200 bg-white p-3"
+            >
+              <div className="mb-2 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-xs font-semibold text-brand-700">
+                  {index + 1}
+                </span>
+                <h4 className="text-sm font-semibold text-slate-900">
+                  {step.title}
+                </h4>
+              </div>
+              <p className="text-xs leading-5 text-slate-600">
+                {step.description}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
 
       <div className="mt-5 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
