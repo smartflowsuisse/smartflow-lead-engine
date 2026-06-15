@@ -3,8 +3,19 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const auditMessage =
-  "Hello, I noticed that many construction companies lose time on invoices, project follow-ups, procurement tracking, and weekly reporting. SmartFlow Suisse has prepared a Construction Automation Starter with ready-to-demo workflows for invoice PDF extraction, project task follow-ups, and procurement reports. We can offer a free workflow audit and show where automation could save time before proposing any implementation.";
+type AuditLanguage = "en" | "fr" | "de";
+
+const auditMessages: Record<AuditLanguage, string> = {
+  en: "Hello, I noticed that many construction companies lose time on invoices, project follow-ups, procurement tracking, and weekly reporting. SmartFlow Suisse has prepared a Construction Automation Starter with ready-to-demo workflows for invoice PDF extraction, project task follow-ups, and procurement reports. We can offer a free workflow audit and show where automation could save time before proposing any implementation.",
+  fr: "Bonjour, j’ai remarqué que de nombreuses entreprises de construction perdent du temps avec les factures, le suivi des projets, les achats et les rapports hebdomadaires. SmartFlow Suisse a préparé un Construction Automation Starter avec des workflows prêts à démontrer pour l’extraction de factures PDF, le suivi des tâches projet et les rapports d’achats. Nous pouvons proposer un audit gratuit de vos workflows afin d’identifier où l’automatisation pourrait vous faire gagner du temps avant toute proposition d’implémentation.",
+  de: "Guten Tag, ich habe gesehen, dass viele Bauunternehmen viel Zeit mit Rechnungen, Projekt-Follow-ups, Beschaffung und wöchentlichen Berichten verlieren. SmartFlow Suisse hat einen Construction Automation Starter mit vorführbereiten Workflows für PDF-Rechnungsextraktion, Projektaufgaben-Follow-ups und Beschaffungir können einen kostenlosen Workflow-Audit anbieten und zeigen, wo Automatisierung Zeit sparen kann, bevor wir eine Umsetzung vorschlagen.",
+};
+
+const languageLabels: Record<AuditLanguage, string> = {
+  en: "EN",
+  fr: "FR",
+  de: "DE",
+};
 
 const templates = [
   {
@@ -32,6 +43,9 @@ const templates = [
 
 export function ConstructionTemplatesPanel() {
   const [copied, setCopied] = useState(false);
+  const [language, setLanguage] = useState<AuditLanguage>("en");
+
+  const auditMessage = auditMessages[language];
 
   async function copyAuditMessage() {
     try {
@@ -66,7 +80,7 @@ export function ConstructionTemplatesPanel() {
         </div>
       </div>
 
-      <div className="mb-5 flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Link
           href="/leads"
           className="inline-flex items-center justify-center rounded-lg border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
@@ -89,15 +103,44 @@ export function ConstructionTemplatesPanel() {
       </div>
 
       <div className="mb-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-slate-900">
-            Audit message preview
-          </h3>
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">
+              Audit message preview
+            </h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Choose the outreach language before copying the message.
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            {(["en", "fr", "de"] as AuditLanguage[]).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setLanguage(option);
+                  setCopied(false);
+                }}
+                className={`rounded-full px-3 py-1 text-xs font-medium ${
+                  language === option
+                    ? "bg-brand-600 text-white"
+                    : "bg-white text-slate-600 hover:bg-slate-100"
+                }`}
+              >
+                {languageLabels[option]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-sm leading-6 text-slate-600">{auditMessage}</p>
+
+        <div className="mt-3 flex justify-end">
           <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-500">
-            Copy-ready
+            {languageLabels[language]} · Copy-ready
           </span>
         </div>
-        <p className="text-sm leading-6 text-slate-600">{auditMessage}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
