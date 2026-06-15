@@ -76,6 +76,7 @@ export function ConstructionTemplatesPanel() {
   const [copied, setCopied] = useState(false);
   const [planCopied, setPlanCopied] = useState(false);
   const [proposalCopied, setProposalCopied] = useState(false);
+  const [intakeCopied, setIntakeCopied] = useState(false);
   const [language, setLanguage] = useState<AuditLanguage>("en");
 
   const auditMessage = auditMessages[language];
@@ -103,6 +104,24 @@ export function ConstructionTemplatesPanel() {
     "Next step:",
     "Free workflow audit to identify where automation can save time before implementation.",
   ].join("\n");
+
+  const clientIntakeChecklist = [
+    "Construction Automation Starter — Client Intake Checklist",
+    "",
+    "Please prepare the following before the workflow audit:",
+    "",
+    "1. Sample invoices and supplier documents",
+    "2. Project notes, task lists, or site follow-up examples",
+    "3. Purchase lists, procurement files, or stock tracking examples",
+    "4. Weekly or monthly reports currently prepared manually",
+    "5. Current tools used by the team: email, accounting, CRM, spreadsheet, Notion, Trello, Bexio, Banana, or other systems",
+    "6. Approval rules: who reviews, approves, pays, or receives alerts",
+    "7. Main pain points: delays, manual work, missing data, errors, or unclear responsibilities",
+    "",
+    "Goal:",
+    "Use these materials to identify where automation can save time before implementation.",
+  ].join("\n");
+
 
 
   async function copyAuditMessage() {
@@ -133,6 +152,17 @@ export function ConstructionTemplatesPanel() {
       window.setTimeout(() => setProposalCopied(false), 2000);
     } catch {
   setProposalCopied(false);
+    }
+  }
+
+
+  async function copyClientIntakeChecklist() {
+    try {
+      await navigator.clipboard.writeText(clientIntakeChecklist);
+      setIntakeCopied(true);
+      window.setTimeout(() => setIntakeCopied(false), 2000);
+    } catch {
+      setIntakeCopied(false);
     }
   }
 
@@ -304,6 +334,14 @@ export function ConstructionTemplatesPanel() {
               Use this as the client-facing delivery structure after the first workflow audit.
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={() => void copyClientIntakeChecklist()}
+            className="mb-4 inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+          >
+            {intakeCopied ? "Client intake checklist copied" : "Copy client intake checklist"}
+          </button>
 
           <div className="grid gap-3 md:grid-cols-2">
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
