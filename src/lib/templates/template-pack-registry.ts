@@ -14,7 +14,16 @@ import {
   retailTemplates,
 } from "./retail-template-pack";
 
-export type TemplatePackId = "construction" | "retail";
+import {
+  fiduciaryAuditMessages,
+  fiduciaryClientIntakeChecklist,
+  fiduciaryImplementationSteps,
+  fiduciaryLanguageLabels,
+  fiduciaryProposalSummary,
+  fiduciaryTemplates,
+} from "./fiduciary-template-pack";
+
+export type TemplatePackId = "construction" | "retail" | "fiduciary";
 
 export type TemplatePack = {
   id: TemplatePackId;
@@ -67,6 +76,20 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     implementationSteps: retailImplementationSteps,
     proposalSummary: retailProposalSummary,
     clientIntakeChecklist: retailClientIntakeChecklist,
+  },
+  fiduciary: {
+    id: "fiduciary",
+    label: "Fiduciary",
+    industry: "Fiduciary and accounting teams",
+    offerName: "Fiduciary Automation Starter",
+    offerRange: "CHF 5'000–11'000 + monthly support retainer",
+    languages: ["en", "fr", "de"],
+    auditMessages: fiduciaryAuditMessages,
+    languageLabels: fiduciaryLanguageLabels,
+    templates: fiduciaryTemplates,
+    implementationSteps: fiduciaryImplementationSteps,
+    proposalSummary: fiduciaryProposalSummary,
+    clientIntakeChecklist: fiduciaryClientIntakeChecklist,
   },
 };
 
