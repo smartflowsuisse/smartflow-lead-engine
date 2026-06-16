@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import {
+  getTemplatePackLeadReviewPath,
+  getTemplatePackOutreachPath,
+} from "@/lib/leads/outreach-actions";
 import { useState } from "react";
 import {
   getTemplatePack,
@@ -253,13 +257,13 @@ export function ConstructionTemplatesPanel() {
 
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
-            href="/leads"
+            href={getTemplatePackLeadReviewPath(selectedPack.id)}
             className="inline-flex items-center justify-center rounded-lg border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
           >
             Review leads
           </Link>
           <Link
-            href="/outreach"
+            href={getTemplatePackOutreachPath(selectedPack.id)}
             className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             Open outreach
