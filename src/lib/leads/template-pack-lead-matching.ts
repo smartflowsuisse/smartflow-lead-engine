@@ -61,13 +61,20 @@ export function isLeadMatchedToTemplatePack(
   );
 }
 
-export function summarizeTemplatePackLeadMatches(
-  leads: TemplatePackMatchableLead[],
+export function filterTemplatePackMatchedLeads<T extends TemplatePackMatchableLead>(
+  leads: T[],
   templatePackId: TemplatePackId,
-): TemplatePackLeadMatchSummary {
-  const matched = leads.filter((lead) =>
+): T[] {
+  return leads.filter((lead) =>
     isLeadMatchedToTemplatePack(lead, templatePackId),
   );
+}
+
+export function summarizeTemplatePackLeadMatches<T extends TemplatePackMatchableLead>(
+  leads: T[],
+  templatePackId: TemplatePackId,
+): TemplatePackLeadMatchSummary {
+  const matched = filterTemplatePackMatchedLeads(leads, templatePackId);
 
   return {
     templatePackId,
