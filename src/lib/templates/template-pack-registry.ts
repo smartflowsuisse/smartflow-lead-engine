@@ -31,6 +31,9 @@ export type TemplatePack = {
   industry: string;
   offerName: string;
   offerRange: string;
+  bestFor: string;
+  typicalPain: string;
+  demoAngle: string;
   languages: readonly string[];
   auditMessages: Record<string, string>;
   languageLabels: Record<string, string>;
@@ -55,6 +58,9 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     industry: "Construction companies",
     offerName: "Construction Automation Starter",
     offerRange: "CHF 6'000–12'000 + monthly support retainer",
+    bestFor: "Construction companies with invoice, project, procurement, and reporting follow-ups.",
+    typicalPain: "Lost time on invoices, missing documents, project follow-ups, purchase tracking, and weekly reports.",
+    demoAngle: "Show how one invoice or project note becomes a clean task, report, or review-ready summary.",
     languages: ["en", "fr", "de"],
     auditMessages: constructionAuditMessages,
     languageLabels: constructionLanguageLabels,
@@ -69,6 +75,9 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     industry: "Retail businesses and stores",
     offerName: "Retail Automation Starter",
     offerRange: "CHF 4'000–10'000 + monthly support retainer",
+    bestFor: "Retail shops, local stores, and product-heavy businesses with recurring catalog or price updates.",
+    typicalPain: "Manual catalog updates, supplier invoices, promotion prices, stock files, and daily reporting.",
+    demoAngle: "Show how a supplier file, invoice, or promotion list becomes clean product or reporting data.",
     languages: ["en", "fr", "de"],
     auditMessages: retailAuditMessages,
     languageLabels: retailLanguageLabels,
@@ -83,6 +92,9 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     industry: "Fiduciary and accounting teams",
     offerName: "Fiduciary Automation Starter",
     offerRange: "CHF 5'000–11'000 + monthly support retainer",
+    bestFor: "Fiduciary and accounting teams managing recurring client documents and monthly reporting.",
+    typicalPain: "Missing client documents, VAT/TVA checks, repeated follow-ups, monthly reporting, and manual review.",
+    demoAngle: "Show how client documents become an intake checklist, review queue, and monthly summary.",
     languages: ["en", "fr", "de"],
     auditMessages: fiduciaryAuditMessages,
     languageLabels: fiduciaryLanguageLabels,
@@ -100,6 +112,9 @@ export const templatePackOptions = Object.values(templatePackRegistry).map(
     industry: pack.industry,
     offerName: pack.offerName,
     offerRange: pack.offerRange,
+    bestFor: pack.bestFor,
+    typicalPain: pack.typicalPain,
+    demoAngle: pack.demoAngle,
   }),
 );
 
