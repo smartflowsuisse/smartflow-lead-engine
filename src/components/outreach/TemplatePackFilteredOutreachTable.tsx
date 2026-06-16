@@ -4,10 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { OutreachQueueTable } from "@/components/outreach/OutreachQueueTable";
-import {
-  filterTemplatePackMatchedLeads,
-  summarizeTemplatePackLeadMatches,
-} from "@/lib/leads/template-pack-lead-matching";
+import { filterTemplatePackMatchedLeads } from "@/lib/leads/template-pack-lead-matching";
 import { isTemplatePackId } from "@/lib/templates/template-pack-context";
 
 interface TemplatePackFilteredOutreachTableProps {
