@@ -38,7 +38,11 @@ export function buildTemplatePackOutreachMessage({
   language = "en",
 }: TemplatePackOutreachMessageInput): string {
   const pack = getTemplatePack(templatePackId);
-  const baseMessage = pack.auditMessages[language] ?? pack.auditMessages.en;
+  const rawBaseMessage = pack.auditMessages[language] ?? pack.auditMessages.en;
+  const baseMessage = rawBaseMessage
+    .replace(/^Hello,\s*/i, "")
+    .replace(/^Bonjour,\s*/i, "")
+    .replace(/^Guten Tag,\s*/i, "");
   const leadName = getLeadDisplayName(lead);
   const contextLine = getLeadContextLine(lead);
 
@@ -76,4 +80,20 @@ export function buildTemplatePackOutreachSubject(
   }
 
   return `Free workflow audit — ${pack.offerName}`;
+}
+
+export function buildTemplatePackOutreachEmail(
+  input: TemplatePackOutreachMessageInput,
+): string {
+  const language = input.language ?? "en";
+  const subject = buildTemplatePackOutreachSubject(
+    input.templatePackId,
+    language,
+  );
+  const message = buildTemplatePackOutreachMessage({
+    ...input,
+    language,
+  });
+
+  return `Subject: ${subject}\n\n${message}`;
 }

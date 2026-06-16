@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import type { TemplatePackOutreachLead } from "@/lib/leads/template-pack-outreach-message";
-import { buildTemplatePackOutreachMessage } from "@/lib/leads/template-pack-outreach-message";
+import { buildTemplatePackOutreachEmail } from "@/lib/leads/template-pack-outreach-message";
 import { isTemplatePackId } from "@/lib/templates/template-pack-context";
 
 interface TemplatePackLeadMessageButtonProps {
@@ -21,29 +21,29 @@ export function TemplatePackLeadMessageButton({
 
   const templatePack = searchParams.get("templatePack");
 
-  const message = useMemo(() => {
+  const email = useMemo(() => {
     if (!isTemplatePackId(templatePack)) {
       return null;
     }
 
-    return buildTemplatePackOutreachMessage({
+    return buildTemplatePackOutreachEmail({
       lead,
       templatePackId: templatePack,
       language: "en",
     });
   }, [lead, templatePack]);
 
-  if (!message) {
+  if (!email) {
     return null;
   }
 
-  async function copyMessage() {
-    if (!message) {
+  async function copyEmail() {
+    if (!email) {
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(email);
       setCopyState("copied");
     } catch {
       setCopyState("error");
@@ -53,14 +53,14 @@ export function TemplatePackLeadMessageButton({
   return (
     <button
       type="button"
-      onClick={copyMessage}
+      onClick={copyEmail}
       className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
     >
       {copyState === "copied"
-        ? "Pack message copied"
+        ? "Pack email copied"
         : copyState === "error"
           ? "Copy failed"
-          : "Copy pack message"}
+          : "Copy pack email"}
     </button>
   );
 }
