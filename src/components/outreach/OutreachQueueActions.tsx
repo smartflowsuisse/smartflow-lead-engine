@@ -1,5 +1,7 @@
 "use client";
 
+import { TemplatePackLeadMessageButton } from "@/components/outreach/TemplatePackLeadMessageButton";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -116,6 +118,7 @@ export function OutreachQueueActions({
           <Mail className="h-3.5 w-3.5" />
           Generate Email
         </Link>
+      <TemplatePackLeadMessageButton lead={{ email: email ?? null }} />
 
         <button
           type="button"
