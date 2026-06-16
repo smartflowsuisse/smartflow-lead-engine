@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  filterTemplatePackMatchedLeads,
   isLeadMatchedToTemplatePack,
   summarizeTemplatePackLeadMatches,
   type TemplatePackMatchableLead,
@@ -82,6 +83,22 @@ describe("template pack lead matching", () => {
     assert.equal(
       isLeadMatchedToTemplatePack(makeLead({ industry: "" }), "construction"),
       false,
+    );
+  });
+
+  it("filters matched leads by template pack", () => {
+    const filtered = filterTemplatePackMatchedLeads(
+      [
+        makeLead({ company: "Builder One", industry: "Construction" }),
+        makeLead({ company: "Shop One", industry: "Retail" }),
+        makeLead({ company: "Builder Two", industry: "Bauunternehmen" }),
+      ],
+      "construction",
+    );
+
+    assert.deepEqual(
+      filtered.map((lead) => lead.company),
+      ["Builder One", "Builder Two"],
     );
   });
 

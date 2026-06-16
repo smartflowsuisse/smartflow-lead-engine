@@ -4,7 +4,16 @@ import { TemplatePackLeadMatchBanner } from "@/components/outreach/TemplatePackL
 import { getOutreachQueueLeads } from "@/lib/leads";
 import { computeOutreachQueueSummary } from "@/lib/leads/outreach-queue";
 import { OutreachQueueSummaryBar } from "@/components/outreach/OutreachQueueSummary";
-import { OutreachQueueTable } from "@/components/outreach/OutreachQueueTable";
+import { TemplatePackFilteredOutreachTable } from "@/components/outreach/TemplatePackFilteredOutreachTable";
+
+
+function OutreachQueueTableFallback() {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">
+      Loading outreach table...
+    </div>
+  );
+}
 
 export default function OutreachPage() {
   const leads = getOutreachQueueLeads();
@@ -34,7 +43,9 @@ export default function OutreachPage() {
         <TemplatePackLeadMatchBanner leads={leads} />
       </Suspense>
       <OutreachQueueSummaryBar summary={summary} />
-      <OutreachQueueTable leads={leads} />
+      <Suspense fallback={<OutreachQueueTableFallback />}>
+        <TemplatePackFilteredOutreachTable leads={leads} />
+      </Suspense>
     </div>
   );
 }
