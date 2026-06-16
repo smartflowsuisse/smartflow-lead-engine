@@ -32,6 +32,14 @@ function getLeadContextLine(lead: TemplatePackOutreachLead): string {
   return details.join(" · ");
 }
 
+function normalizeBaseMessage(message: string): string {
+  return message
+    .replace(/^Hello,\s*/i, "")
+    .replace(/^Bonjour,\s*/i, "")
+    .replace(/^Guten Tag,\s*/i, "")
+    .trim();
+}
+
 export function buildTemplatePackOutreachMessage({
   lead,
   templatePackId,
@@ -39,10 +47,7 @@ export function buildTemplatePackOutreachMessage({
 }: TemplatePackOutreachMessageInput): string {
   const pack = getTemplatePack(templatePackId);
   const rawBaseMessage = pack.auditMessages[language] ?? pack.auditMessages.en;
-  const baseMessage = rawBaseMessage
-    .replace(/^Hello,\s*/i, "")
-    .replace(/^Bonjour,\s*/i, "")
-    .replace(/^Guten Tag,\s*/i, "");
+  const baseMessage = normalizeBaseMessage(rawBaseMessage);
   const leadName = getLeadDisplayName(lead);
   const contextLine = getLeadContextLine(lead);
 
@@ -96,4 +101,28 @@ export function buildTemplatePackOutreachEmail(
   });
 
   return `Subject: ${subject}\n\n${message}`;
+}
+
+export function buildTemplatePackOutreachMailtoHref(
+  input: TemplatePackOutreachMessageInput,
+): string | null {
+  const recipient = input.lead.email?.trim();
+
+  if (!recipient) {
+    return null;
+  }
+
+  const language = input.language ?? "en";
+  const subject = buildTemplatePackOutreachSubject(
+    input.templatePackId,
+    language,
+  );
+  const body = buildTemplatePackOutreachMessage({
+    ...input,
+    language,
+  });
+
+  return `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(
+    subject,
+  )}&body=${encodeURIComponent(body)}`;
 }
