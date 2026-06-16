@@ -7,8 +7,10 @@ import {
 
 import {
   retailAuditMessages,
+  retailClientIntakeChecklist,
   retailImplementationSteps,
   retailLanguageLabels,
+  retailProposalSummary,
   retailTemplates,
 } from "./retail-template-pack";
 
@@ -33,6 +35,8 @@ export type TemplatePack = {
     title: string;
     description: string;
   }[];
+  proposalSummary?: string;
+  clientIntakeChecklist?: string;
 };
 
 export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
@@ -47,6 +51,8 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     languageLabels: constructionLanguageLabels,
     templates: constructionTemplates,
     implementationSteps: constructionImplementationSteps,
+    proposalSummary: undefined,
+    clientIntakeChecklist: undefined,
   },
   retail: {
     id: "retail",
@@ -59,6 +65,8 @@ export const templatePackRegistry: Record<TemplatePackId, TemplatePack> = {
     languageLabels: retailLanguageLabels,
     templates: retailTemplates,
     implementationSteps: retailImplementationSteps,
+    proposalSummary: retailProposalSummary,
+    clientIntakeChecklist: retailClientIntakeChecklist,
   },
 };
 
