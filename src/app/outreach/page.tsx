@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { TemplatePackContextBanner } from "@/components/outreach/TemplatePackContextBanner";
 import { getOutreachQueueLeads } from "@/lib/leads";
 import { computeOutreachQueueSummary } from "@/lib/leads/outreach-queue";
 import { OutreachQueueSummaryBar } from "@/components/outreach/OutreachQueueSummary";
@@ -26,6 +28,9 @@ export default function OutreachPage() {
         </div>
       </div>
 
+      <Suspense fallback={null}>
+        <TemplatePackContextBanner />
+      </Suspense>
       <OutreachQueueSummaryBar summary={summary} />
       <OutreachQueueTable leads={leads} />
     </div>
