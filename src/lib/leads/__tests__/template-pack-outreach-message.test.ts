@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  buildTemplatePackOutreachEmail,
   buildTemplatePackOutreachMessage,
   buildTemplatePackOutreachSubject,
 } from "../template-pack-outreach-message";
@@ -67,5 +68,26 @@ describe("template pack outreach message", () => {
       buildTemplatePackOutreachSubject("fiduciary", "de"),
       "Kostenloser Audit — Fiduciary Automation Starter",
     );
+  });
+
+  it("builds a full copy-ready email with subject and body", () => {
+    const email = buildTemplatePackOutreachEmail({
+      templatePackId: "construction",
+      language: "en",
+      lead: {
+        company: "Construction Perret SA",
+        city: "Satigny",
+        industry: "Construction",
+      },
+    });
+
+    assert.ok(
+      email.startsWith(
+        "Subject: Free workflow audit — Construction Automation Starter",
+      ),
+    );
+    assert.ok(email.includes("Hello Construction Perret SA,"));
+    assert.ok(email.includes("Construction Automation Starter"));
+    assert.ok(email.includes("Context: Satigny · Construction."));
   });
 });
