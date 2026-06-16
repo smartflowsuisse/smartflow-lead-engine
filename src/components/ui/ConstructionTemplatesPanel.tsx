@@ -169,7 +169,7 @@ export function ConstructionTemplatesPanel() {
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
           Template pack
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 grid gap-3 lg:grid-cols-3">
           {templatePackOptions.map((option) => (
             <button
               key={option.id}
@@ -181,13 +181,50 @@ export function ConstructionTemplatesPanel() {
                 setProposalCopied(false);
                 setIntakeCopied(false);
               }}
-              className={`rounded-lg border px-4 py-2 text-sm font-medium ${
+              className={`rounded-lg border p-4 text-left transition ${
                 selectedPackId === option.id
                   ? "border-brand-300 bg-brand-50 text-brand-700"
                   : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
               }`}
             >
-              {option.label}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold">{option.label}</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {option.offerRange}
+                  </p>
+                </div>
+                <span
+                  className={`rounded-full px-2 py-1 text-xs font-medium ${
+                    selectedPackId === option.id
+                      ? "bg-brand-600 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {selectedPackId === option.id ? "Selected" : "Choose"}
+                </span>
+              </div>
+
+              <div className="mt-3 space-y-2 text-xs leading-5">
+                <p>
+                  <span className="font-semibold text-slate-700">
+                    Best for:{" "}
+                  </span>
+                  <span className="text-slate-600">{option.bestFor}</span>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-700">
+                    Pain:{" "}
+                  </span>
+                  <span className="text-slate-600">{option.typicalPain}</span>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-700">
+                    Demo:{" "}
+                  </span>
+                  <span className="text-slate-600">{option.demoAngle}</span>
+                </p>
+              </div>
             </button>
           ))}
         </div>
