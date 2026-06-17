@@ -72,6 +72,34 @@ describe("outreach session helpers", () => {
     }
   });
 
+  it("requires email for outreach session leads", () => {
+    assert.equal(
+      isOutreachSessionLead({
+        id: 10,
+        email: "",
+        phone: "+41 22 000 00 00",
+        website: "https://example.ch",
+        lead_score: 90,
+        status: "New",
+        outreach_status: "New",
+      }),
+      false,
+    );
+
+    assert.equal(
+      isOutreachSessionLead({
+        id: 11,
+        email: "ready@example.ch",
+        phone: "",
+        website: "",
+        lead_score: 45,
+        status: "New",
+        outreach_status: "New",
+      }),
+      true,
+    );
+  });
+
   it("rejects closed and contacted leads", () => {
     assert.equal(
       isOutreachSessionLead({

@@ -15,7 +15,7 @@ const CLOSED_STATUSES = new Set(["Contacted", "Replied", "Meeting", "Proposal", 
 const BLOCKED_OUTREACH_STATUSES = new Set(["Contacted", "Won", "Lost"]);
 
 export function hasOutreachContactChannel(lead: OutreachSessionLead): boolean {
-  return Boolean(lead.email?.trim() || lead.phone?.trim() || lead.website?.trim());
+  return Boolean(lead.email?.trim());
 }
 
 export function isOutreachSessionLead(lead: OutreachSessionLead): boolean {
