@@ -103,12 +103,21 @@ export default function MissingContactsPage() {
                   {formatValue(lead.status)} / {formatValue(lead.outreach_status)}
                 </td>
                 <td className="whitespace-nowrap px-4 py-4">
-                  <Link
-                    href={`/leads/${lead.id}`}
-                    className="inline-flex min-w-20 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-800"
-                  >
-                    Open Lead
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href={`/leads/${lead.id}`}
+                      className="inline-flex min-w-20 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-800"
+                    >
+                      Open Lead
+                    </Link>
+
+                    <Link
+                      href={`/leads/${lead.id}/edit`}
+                      className="inline-flex min-w-20 items-center justify-center whitespace-nowrap rounded-lg bg-slate-950 px-3 py-2 text-xs font-medium text-white"
+                    >
+                      Add Email
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}
