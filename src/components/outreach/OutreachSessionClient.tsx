@@ -357,6 +357,50 @@ export function OutreachSessionClient() {
 
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Lead readiness
+            </p>
+
+            <div className="mt-4 grid gap-3 text-sm">
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">Email</span>
+                <span className={currentLead.email?.trim() ? "font-medium text-emerald-700" : "font-medium text-amber-700"}>
+                  {currentLead.email?.trim() ? "Ready" : "Missing"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">Phone</span>
+                <span className={currentLead.phone?.trim() ? "font-medium text-emerald-700" : "font-medium text-amber-700"}>
+                  {currentLead.phone?.trim() ? "Ready" : "Missing"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">Website</span>
+                <span className={currentLead.website?.trim() ? "font-medium text-emerald-700" : "font-medium text-amber-700"}>
+                  {currentLead.website?.trim() ? "Ready" : "Missing"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">Score</span>
+                <span className="font-medium text-slate-900">{currentLead.lead_score ?? 0}</span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">CRM status</span>
+                <span className="font-medium text-slate-900">{currentLead.status || "Unknown"}</span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                <span className="text-slate-600">Outreach status</span>
+                <span className="font-medium text-slate-900">{currentLead.outreach_status || "Unknown"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
               Email preview
             </p>
             <h3 className="mt-2 text-base font-semibold text-slate-950">
