@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { TemplatePackContextBanner } from "@/components/outreach/TemplatePackContextBanner";
 import { TemplatePackLeadMatchBanner } from "@/components/outreach/TemplatePackLeadMatchBanner";
@@ -37,6 +38,23 @@ export default function OutreachPage() {
           generate a message, then mark the lead as contacted.
         </div>
       </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href="/outreach/session"
+              className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-medium text-white"
+            >
+              Start Session
+            </Link>
+
+            <Link
+              href="/outreach?templatePack=construction"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-800"
+            >
+              Construction Queue
+            </Link>
+          </div>
+
 
       <Suspense fallback={null}>
         <TemplatePackContextBanner />
