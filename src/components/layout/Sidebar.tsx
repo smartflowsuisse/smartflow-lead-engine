@@ -18,6 +18,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: Users },
   { href: "/outreach", label: "Outreach", icon: Send },
+  { href: "/outreach/missing-contacts", label: "Missing Contacts", icon: Send },
   { href: "/pipeline", label: "Pipeline", icon: Kanban },
   { href: "/discovery", label: "Discovery", icon: Radar },
   { href: "/construction-templates", label: "Templates", icon: Zap },
