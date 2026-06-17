@@ -6,15 +6,23 @@ import { LeadForm } from "@/components/leads/LeadForm";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ returnTo?: string }>;
 }
 
-export default async function EditLeadPage({ params }: PageProps) {
+export default async function EditLeadPage({ params, searchParams }: PageProps) {
   const { id } = await params;
   const leadId = parseInt(id, 10);
   if (isNaN(leadId)) notFound();
 
   const lead = getLeadById(leadId);
   if (!lead) notFound();
+
+  const query = await searchParams;
+  const returnTo = query?.returnTo;
+  const safeReturnTo =
+    returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")
+      ? returnTo
+      : null;
 
   return (
     <div className="p-8">
@@ -34,6 +42,7 @@ export default async function EditLeadPage({ params }: PageProps) {
       <div className="max-w-2xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <LeadForm
           mode="edit"
+          returnTo={safeReturnTo}
           leadId={lead.id}
           initialData={{
             company: lead.company,

@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { LEAD_STATUSES } from "@/lib/types";
 
 interface LeadFormProps {
+  returnTo?: string | null;
   initialData?: {
     company?: string;
     website?: string;
@@ -21,11 +22,16 @@ interface LeadFormProps {
 }
 
 export function LeadForm({
-  initialData = {},
+initialData = {},
   leadId,
   mode = "create",
+  returnTo = null,
 }: LeadFormProps) {
   const router = useRouter();
+  const safeReturnTo =
+    returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")
+      ? returnTo
+      : null;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +76,7 @@ export function LeadForm({
       }
 
       const lead = await res.json();
-      router.push(`/leads/${lead.id}`);
+      router.push(safeReturnTo ?? `/leads/${lead.id}`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
