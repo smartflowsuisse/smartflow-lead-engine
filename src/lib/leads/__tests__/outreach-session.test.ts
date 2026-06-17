@@ -57,6 +57,21 @@ describe("outreach session helpers", () => {
     assert.ok(buildMailtoHref(lead)?.startsWith("mailto:cpsa@cpsa.ch?subject="));
   });
 
+  it("rejects CRM statuses already past first outreach", () => {
+    for (const status of ["Contacted", "Replied", "Meeting", "Proposal", "Won", "Lost"]) {
+      assert.equal(
+        isOutreachSessionLead({
+          id: status,
+          email: "lead@example.ch",
+          lead_score: 90,
+          status,
+          outreach_status: "New",
+        }),
+        false,
+      );
+    }
+  });
+
   it("rejects closed and contacted leads", () => {
     assert.equal(
       isOutreachSessionLead({

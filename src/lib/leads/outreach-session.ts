@@ -11,7 +11,7 @@ export interface OutreachSessionLead {
   outreach_status?: string | null;
 }
 
-const CLOSED_STATUSES = new Set(["Won", "Lost"]);
+const CLOSED_STATUSES = new Set(["Contacted", "Replied", "Meeting", "Proposal", "Won", "Lost"]);
 const BLOCKED_OUTREACH_STATUSES = new Set(["Contacted", "Won", "Lost"]);
 
 export function hasOutreachContactChannel(lead: OutreachSessionLead): boolean {
