@@ -67,6 +67,13 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
     }
   };
 
+  const applyQuickTaskPreset = (presetTitle: string, daysFromNow: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    setTitle(presetTitle);
+    setDueDate(date.toISOString().slice(0, 10));
+  };
+
   const toggleCompleted = async (task: LeadTask) => {
     setTogglingId(task.id);
     setError(null);
@@ -149,6 +156,49 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
               ? `${taskSummary.total} completed`
               : `${taskSummary.open} open · ${taskSummary.total} total`}
         </span>
+      </div>
+
+      <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Quick follow-up
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => applyQuickTaskPreset("Follow up in 2 days", 2)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:border-brand-300 hover:text-brand-700"
+          >
+            Follow up in 2 days
+          </button>
+          <button
+            type="button"
+            onClick={() => applyQuickTaskPreset("Ask for discovery call", 1)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:border-brand-300 hover:text-brand-700"
+          >
+            Ask for discovery call
+          </button>
+          <button
+            type="button"
+            onClick={() => applyQuickTaskPreset("Prepare mini audit", 1)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:border-brand-300 hover:text-brand-700"
+          >
+            Prepare mini audit
+          </button>
+          <button
+            type="button"
+            onClick={() => applyQuickTaskPreset("Send proposal", 3)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:border-brand-300 hover:text-brand-700"
+          >
+            Send proposal
+          </button>
+          <button
+            type="button"
+            onClick={() => applyQuickTaskPreset("Check reply next week", 7)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:border-brand-300 hover:text-brand-700"
+          >
+            Check reply next week
+          </button>
+        </div>
       </div>
 
       <form onSubmit={(e) => void createTask(e)} className="mb-4 space-y-3">
