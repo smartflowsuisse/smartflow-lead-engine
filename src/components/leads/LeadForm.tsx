@@ -206,7 +206,7 @@ initialData = {},
             onChange={handleChange}
             rows={3}
             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-            placeholder="Internal notes about this lead..."
+            placeholder="Email source: Website / Contact page / Imprint / Manual check\nChecked:\nNotes:"
           />
         </div>
       </div>

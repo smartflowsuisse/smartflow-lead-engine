@@ -112,7 +112,7 @@ export default function MissingContactsPage() {
                     </Link>
 
                     <Link
-                      href={`/leads/${lead.id}/edit?returnTo=/outreach/session`}
+                      href={`/leads/${lead.id}/edit?returnTo=/outreach/session&noteHint=email-source`}
                       className="inline-flex min-w-20 items-center justify-center whitespace-nowrap rounded-lg bg-slate-950 px-3 py-2 text-xs font-medium text-white"
                     >
                       Add Email
