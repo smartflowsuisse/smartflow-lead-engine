@@ -1,3 +1,4 @@
+import { LEAD_SCORE_THRESHOLDS } from "./scoring-thresholds";
 import { getScoreLabel } from "../scoring";
 import type { Lead, LeadAnalysis } from "../types";
 import {
@@ -66,7 +67,7 @@ export function buildNextBestAction(
 
   if (hasWebsite && !hasAnalysis) {
     return {
-      priority: score >= 65 ? "High" : "Medium",
+      priority: score >= LEAD_SCORE_THRESHOLDS.HIGH_PRIORITY ? "High" : "Medium",
       action: "Run website analysis",
       reason: `Website on file but no AI audit yet (${label}, ${score}/100).`,
     };
@@ -80,7 +81,7 @@ export function buildNextBestAction(
     };
   }
 
-  if (hasPhone && score >= 70) {
+  if (hasPhone && score >= LEAD_SCORE_THRESHOLDS.STRONG_SCORE) {
     return {
       priority: "High",
       action: "Call company",
@@ -90,7 +91,7 @@ export function buildNextBestAction(
 
   if (hasEmail && !hasPhone) {
     return {
-      priority: score >= 65 ? "High" : "Medium",
+      priority: score >= LEAD_SCORE_THRESHOLDS.HIGH_PRIORITY ? "High" : "Medium",
       action: "Send email",
       reason: `Email on file without phone; score ${score}/100 (${label}).`,
     };

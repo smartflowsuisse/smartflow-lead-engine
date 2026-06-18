@@ -4,6 +4,7 @@ import { getScoreLabel } from "@/lib/scoring";
 import { cn, scoreColor } from "@/lib/utils";
 import { OutreachStatusSelect } from "./OutreachStatusSelect";
 import { OutreachQueueActions } from "./OutreachQueueActions";
+import { LEAD_SCORE_THRESHOLDS } from "@/lib/leads/scoring-thresholds";
 
 interface OutreachQueueTableProps {
   leads: Lead[];
@@ -21,7 +22,7 @@ export function OutreachQueueTable({ leads }: OutreachQueueTableProps) {
           No actionable leads in the outreach queue
         </p>
         <p className="mt-2 text-sm text-slate-500">
-          Leads need a score of at least 45 and an email or phone number.
+          {`Leads need a score of at least ${LEAD_SCORE_THRESHOLDS.OUTREACH_READY} and an email or phone number.`}
         </p>
       </div>
     );

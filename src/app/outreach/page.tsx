@@ -6,6 +6,7 @@ import { getOutreachQueueLeads } from "@/lib/leads";
 import { computeOutreachQueueSummary } from "@/lib/leads/outreach-queue";
 import { OutreachQueueSummaryBar } from "@/components/outreach/OutreachQueueSummary";
 import { TemplatePackFilteredOutreachTable } from "@/components/outreach/TemplatePackFilteredOutreachTable";
+import { LEAD_SCORE_THRESHOLDS } from "@/lib/leads/scoring-thresholds";
 
 
 function OutreachQueueTableFallback() {
@@ -30,7 +31,7 @@ export default function OutreachPage() {
           Outreach Queue
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-600">
-          Actionable leads with score 45+ and at least one contact channel.
+          {`Actionable leads with score ${LEAD_SCORE_THRESHOLDS.OUTREACH_READY}+ and at least one contact channel.`}
           Sorted by score, highest first.
         </p>
         <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
