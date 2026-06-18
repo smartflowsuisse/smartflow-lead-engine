@@ -6,7 +6,7 @@ import { LeadForm } from "@/components/leads/LeadForm";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{ returnTo?: string }>;
+  searchParams?: Promise<{ returnTo?: string; noteHint?: string }>;
 }
 
 export default async function EditLeadPage({ params, searchParams }: PageProps) {
@@ -23,6 +23,14 @@ export default async function EditLeadPage({ params, searchParams }: PageProps) 
     returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")
       ? returnTo
       : null;
+  const noteHint = query?.noteHint;
+  const emailSourceNoteTemplate =
+    "Email source: Website / Contact page / Imprint / Manual check\nChecked: \nNotes: ";
+  const existingNotes = lead.notes?.trim() ?? "";
+  const notesInitialValue =
+    noteHint === "email-source" && !existingNotes.includes("Email source:")
+      ? [existingNotes, emailSourceNoteTemplate].filter(Boolean).join("\n\n")
+      : lead.notes ?? "";
 
   return (
     <div className="p-8">
@@ -52,7 +60,7 @@ export default async function EditLeadPage({ params, searchParams }: PageProps) 
             city: lead.city ?? "",
             industry: lead.industry ?? "",
             status: lead.status,
-            notes: lead.notes ?? "",
+            notes: notesInitialValue,
           }}
         />
       </div>
