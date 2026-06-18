@@ -62,6 +62,7 @@ export function buildOutreachInput(
 
 function localizeFrenchOutreachText(value: string): string {
   const cleaned = value.trim();
+  const normalized = cleaned.replace(/[.!?]+$/, "");
 
   const translations: Record<string, string> = {
     "Add a clear H1 heading for page structure and SEO":
@@ -74,10 +75,20 @@ function localizeFrenchOutreachText(value: string): string {
       "Moderniser le site avec une base technique plus rapide et plus maintenable",
     "Lead scoring dashboard with automated outreach prioritization":
       "Mettre en place un tableau de bord pour prioriser automatiquement les prospects",
+    "Add a contact form to capture inbound leads":
+      "Ajouter un formulaire de contact pour capter les demandes entrantes",
+    "Add privacy policy page (required in Switzerland/EU)":
+      "Ajouter une page de politique de confidentialité adaptée au contexte suisse et européen",
+    "Smart contact form with CRM integration and auto-response emails":
+      "Mettre en place un formulaire intelligent connecté au CRM avec réponse automatique par email",
   };
 
   if (translations[cleaned]) {
     return translations[cleaned];
+  }
+
+  if (translations[normalized]) {
+    return translations[normalized];
   }
 
   if (cleaned.includes("AI Website Analysis")) {
