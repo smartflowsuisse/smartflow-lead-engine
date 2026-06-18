@@ -75,6 +75,8 @@ function localizeFrenchOutreachText(value: string): string {
       "Moderniser le site avec une base technique plus rapide et plus maintenable",
     "Lead scoring dashboard with automated outreach prioritization":
       "Mettre en place un tableau de bord pour prioriser automatiquement les prospects",
+    "Add meta description to improve search click-through rate":
+      "Ajouter une méta-description pour améliorer le taux de clic depuis les résultats de recherche",
     "Add a contact form to capture inbound leads":
       "Ajouter un formulaire de contact pour capter les demandes entrantes",
     "Add privacy policy page (required in Switzerland/EU)":
