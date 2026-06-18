@@ -14,6 +14,7 @@ import { LeadActivityHistory } from "@/components/leads/LeadActivityHistory";
 import { LeadContactSection } from "@/components/leads/LeadContactSection";
 import { LeadReadinessChecklist } from "@/components/leads/LeadReadinessChecklist";
 import { LeadClientWorkflowPanel } from "@/components/leads/LeadClientWorkflowPanel";
+import { LeadReplyIntakePanel } from "@/components/leads/LeadReplyIntakePanel";
 import { LeadProfileHeader } from "@/components/leads/LeadProfileSections";
 import { LeadDetailsOverview } from "@/components/leads/LeadDetailsOverview";
 import { LeadNextBestActionSection } from "@/components/leads/LeadNextBestActionSection";
@@ -102,6 +103,10 @@ export default async function LeadDetailPage({ params }: PageProps) {
             status={lead.status}
             outreachStatus={lead.outreach_status}
             leadScore={lead.lead_score}
+          />
+          <LeadReplyIntakePanel
+            status={lead.status}
+            contactedAt={lead.contacted_at}
           />
           <LeadTasksPanel leadId={lead.id} initialTasks={tasks} />
           <LeadActivityHistory activities={activities} />
