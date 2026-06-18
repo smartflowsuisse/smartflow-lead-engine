@@ -1,8 +1,9 @@
 import type { Lead, OutreachStatus } from "../types";
 import { isClosedCrmStatus } from "./status-sync";
 import { hasLeadEmail, hasLeadPhone } from "./list-view";
+import { LEAD_SCORE_THRESHOLDS } from "./scoring-thresholds";
 
-export const MIN_OUTREACH_SCORE = 45;
+export const MIN_OUTREACH_SCORE = LEAD_SCORE_THRESHOLDS.OUTREACH_READY;
 
 export interface OutreachQueueSummary {
   readyForOutreach: number;

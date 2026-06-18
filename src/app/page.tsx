@@ -12,6 +12,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import { LeadCard } from "@/components/leads/LeadCard";
 import { LEAD_STATUSES } from "@/lib/types";
 import { statusColor, cn } from "@/lib/utils";
+import { LEAD_SCORE_THRESHOLDS } from "@/lib/leads/scoring-thresholds";
 
 export default function DashboardPage() {
   const stats = getDashboardStats();
@@ -46,7 +47,7 @@ export default function DashboardPage() {
         <StatCard
           title="High Priority"
           value={stats.highPriorityLeads}
-          subtitle="Score ≥ 65, not yet won"
+          subtitle={`Score ≥ ${LEAD_SCORE_THRESHOLDS.HIGH_PRIORITY}, not yet won`}
           icon={<Target className="h-5 w-5" />}
         />
         <StatCard

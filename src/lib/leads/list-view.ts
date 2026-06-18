@@ -1,4 +1,5 @@
 import type { Lead, LeadStatus } from "../types";
+import { LEAD_SCORE_THRESHOLDS } from "./scoring-thresholds";
 
 export const LEAD_CONTACT_FILTERS = [
   "all",
@@ -83,7 +84,7 @@ export function hasLeadContactPage(lead: Lead): boolean {
 
 export function isHighPriorityLead(lead: Lead): boolean {
   return (
-    lead.lead_score >= 65 && !POST_PRIORITY_STATUSES.includes(lead.status)
+    lead.lead_score >= LEAD_SCORE_THRESHOLDS.HIGH_PRIORITY && !POST_PRIORITY_STATUSES.includes(lead.status)
   );
 }
 
@@ -115,13 +116,13 @@ export function filterLeadsByScore(
 ): Lead[] {
   switch (scoreFilter) {
     case "score_0_20":
-      return leads.filter((lead) => lead.lead_score >= 0 && lead.lead_score <= 20);
+      return leads.filter((lead) => lead.lead_score >= LEAD_SCORE_THRESHOLDS.LOW_RANGE_MIN && lead.lead_score <= LEAD_SCORE_THRESHOLDS.LOW_RANGE_MAX);
     case "score_21_40":
-      return leads.filter((lead) => lead.lead_score >= 21 && lead.lead_score <= 40);
+      return leads.filter((lead) => lead.lead_score >= LEAD_SCORE_THRESHOLDS.MEDIUM_RANGE_MIN && lead.lead_score <= LEAD_SCORE_THRESHOLDS.MEDIUM_RANGE_MAX);
     case "score_41_60":
-      return leads.filter((lead) => lead.lead_score >= 41 && lead.lead_score <= 60);
+      return leads.filter((lead) => lead.lead_score >= LEAD_SCORE_THRESHOLDS.GOOD_RANGE_MIN && lead.lead_score <= LEAD_SCORE_THRESHOLDS.GOOD_RANGE_MAX);
     case "score_61_plus":
-      return leads.filter((lead) => lead.lead_score >= 61);
+      return leads.filter((lead) => lead.lead_score >= LEAD_SCORE_THRESHOLDS.EXCELLENT_RANGE_MIN);
     default:
       return leads;
   }

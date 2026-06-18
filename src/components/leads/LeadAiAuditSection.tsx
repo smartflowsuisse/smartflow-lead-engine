@@ -10,6 +10,7 @@ import { formatAnalysisScore } from "@/lib/scoring";
 import { isKnownScore } from "@/lib/analysis/score-values";
 import { ANALYSIS_REQUIRES_WEBSITE_MESSAGE } from "@/lib/leads/website-display";
 import { cn } from "@/lib/utils";
+import { LEAD_SCORE_THRESHOLDS } from "@/lib/leads/scoring-thresholds";
 
 interface LeadAiAuditSectionProps {
   analysis?: LeadAnalysis | null;
@@ -43,7 +44,7 @@ function AuditMetric({
           <div
             className={cn(
               "h-full rounded-full",
-              score >= 70 ? "bg-emerald-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"
+              score >= LEAD_SCORE_THRESHOLDS.STRONG_SCORE ? "bg-emerald-500" : score >= LEAD_SCORE_THRESHOLDS.MEDIUM_SCORE ? "bg-amber-500" : "bg-red-500"
             )}
             style={{ width: `${score}%` }}
           />
