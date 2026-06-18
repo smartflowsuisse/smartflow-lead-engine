@@ -59,6 +59,51 @@ export function buildOutreachInput(
   };
 }
 
+
+function localizeFrenchOutreachText(value: string): string {
+  const cleaned = value.trim();
+
+  const translations: Record<string, string> = {
+    "Add a clear H1 heading for page structure and SEO":
+      "Ajouter un titre H1 clair pour améliorer la structure de la page et le SEO",
+    "Add Impressum/legal notice (required for Swiss businesses)":
+      "Ajouter une page Impressum ou mentions légales afin de renforcer la confiance en Suisse",
+    "AI chatbot for 24/7 lead qualification and appointment booking":
+      "Mettre en place un assistant IA pour qualifier les demandes et faciliter la prise de rendez-vous",
+    "Website modernization with performance-optimized tech stack":
+      "Moderniser le site avec une base technique plus rapide et plus maintenable",
+    "Lead scoring dashboard with automated outreach prioritization":
+      "Mettre en place un tableau de bord pour prioriser automatiquement les prospects",
+  };
+
+  if (translations[cleaned]) {
+    return translations[cleaned];
+  }
+
+  if (cleaned.includes("AI Website Analysis")) {
+    return "le site dispose de bases solides, avec plusieurs opportunités concrètes d'amélioration sur la structure, la confiance et la conversion.";
+  }
+
+  if (cleaned.includes("HTTPS enabled")) {
+    return "le site dispose de bases techniques correctes, mais certaines améliorations peuvent renforcer la confiance et la conversion.";
+  }
+
+  return cleaned;
+}
+
+function localizeFrenchScoreLabel(label: string | null): string {
+  if (!label) return "non qualifié";
+
+  const translations: Record<string, string> = {
+    "High Priority": "haute priorité",
+    "Qualified": "qualifié",
+    "Nurture": "à développer",
+  };
+
+  return translations[label] ?? label;
+}
+
+
 function formatBullets(items: string[], fallback: string): string {
   if (items.length === 0) return fallback;
   return items.map((item) => `• ${item}`).join("\n");
@@ -118,7 +163,7 @@ function scoreLine(input: OutreachDraftInput, language: OutreachLanguage): strin
   }
 
   if (language === "fr") {
-    return `Score d'opportunité : ${input.leadScore}/100 (${label})`;
+    return `Score d'opportunité : ${input.leadScore}/100 (${localizeFrenchScoreLabel(label)})`;
   }
   if (language === "de") {
     return `Opportunity Score: ${input.leadScore}/100 (${label})`;
@@ -158,22 +203,22 @@ function subjectLine(input: OutreachDraftInput, language: OutreachLanguage): str
 
 function buildFrenchDraft(input: OutreachDraftInput): string {
   const target = locationPhrase(input, "fr");
-  const observation = primaryObservation(input);
+  const observation = localizeFrenchOutreachText(primaryObservation(input));
   const websiteRef = input.website
     ? `En parcourant ${input.website}, nous avons noté : ${observation}.`
     : `D'après les informations disponibles, ${observation}.`;
 
   const quickWins = formatBullets(
-    input.quickWins.slice(0, 3),
+    input.quickWins.map(localizeFrenchOutreachText).slice(0, 3),
     "• Analyse complète du site pour identifier des gains rapides"
   );
   const opportunities = formatBullets(
-    input.automationOpportunities.slice(0, 3),
+    input.automationOpportunities.map(localizeFrenchOutreachText).slice(0, 3),
     "• Formulaires intelligents avec intégration CRM\n• Séquences de relance automatisées\n• Qualification de leads assistée par l'IA"
   );
 
   const summary = input.analysisSummary
-    ? `Résumé d'analyse : ${input.analysisSummary}`
+    ? `Résumé d'analyse : ${localizeFrenchOutreachText(input.analysisSummary)}`
     : "Résumé d'analyse : pas encore disponible — nous pouvons réaliser une revue complète lors d'un premier échange.";
 
   return [
@@ -186,7 +231,7 @@ function buildFrenchDraft(input: OutreachDraftInput): string {
     "",
     summary,
     "",
-    "Quick wins identifiés :",
+    "Améliorations rapides identifiées :",
     quickWins,
     "",
     "Opportunités SmartFlow :",
