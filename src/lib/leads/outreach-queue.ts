@@ -17,6 +17,7 @@ export interface OutreachQueueSummary {
 export function isActionableOutreachLead(lead: Lead): boolean {
   return (
     !isClosedCrmStatus(lead.status) &&
+    lead.status !== "Contacted" &&
     lead.lead_score >= MIN_OUTREACH_SCORE &&
     (hasLeadEmail(lead) || hasLeadPhone(lead))
   );

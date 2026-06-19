@@ -109,7 +109,7 @@ describe("computeOutreachQueueSummary", () => {
       sampleLead({ id: 3, status: "Contacted", outreach_status: "Contacted" }),
     ]);
 
-    assert.equal(summary.total, 1);
-    assert.equal(summary.contacted, 1);
+    assert.equal(summary.total, 0);
+    assert.equal(summary.contacted, 0);
   });
 });
