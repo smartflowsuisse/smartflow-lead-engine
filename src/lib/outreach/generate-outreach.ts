@@ -93,6 +93,13 @@ function localizeFrenchOutreachText(value: string): string {
     return translations[normalized];
   }
 
+  const altTextMatch = cleaned.match(/^Add alt text to (\\d+) images? for accessibility and SEO$/);
+  if (altTextMatch) {
+    const count = Number(altTextMatch[1]);
+    const imageLabel = count > 1 ? "images" : "image";
+    return `Ajouter un texte alternatif à ${count} ${imageLabel} pour améliorer l’accessibilité et le SEO`;
+  }
+
   if (cleaned.includes("AI Website Analysis")) {
     return "le site dispose de bases solides, avec plusieurs opportunités concrètes d'amélioration sur la structure, la confiance et la conversion.";
   }
