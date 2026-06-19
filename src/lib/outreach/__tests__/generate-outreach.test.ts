@@ -272,6 +272,25 @@ describe("generateOutreachDraft", () => {
     assert.match(draft.body, /SmartFlow Suisse accompagne les PME suisses/);
   });
 
+  it("localizes French alt text quick win", () => {
+    const draft = generateOutreachDraft(
+      buildOutreachInput(baseLead, {
+        ...baseAnalysis,
+        quick_wins: JSON.stringify(["Add alt text to 1 images for accessibility and SEO"]),
+      }),
+      "fr"
+    );
+
+    assert.match(
+      draft.body,
+      /Ajouter un texte alternatif à 1 image pour améliorer l’accessibilité et le SEO/
+    );
+    assert.doesNotMatch(
+      draft.body,
+      /Add alt text to 1 images for accessibility and SEO/
+    );
+  });
+
   it("generates German draft with Guten Tag greeting", () => {
     const draft = generateOutreachDraft(
       buildOutreachInput(baseLead, baseAnalysis),
