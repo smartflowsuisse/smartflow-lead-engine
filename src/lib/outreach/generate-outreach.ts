@@ -93,7 +93,7 @@ function localizeFrenchOutreachText(value: string): string {
     return translations[normalized];
   }
 
-  const altTextMatch = cleaned.match(/^Add alt text to (\\d+) images? for accessibility and SEO$/);
+  const altTextMatch = cleaned.match(/^Add alt text to (\d+) images? for accessibility and SEO$/);
   if (altTextMatch) {
     const count = Number(altTextMatch[1]);
     const imageLabel = count > 1 ? "images" : "image";
