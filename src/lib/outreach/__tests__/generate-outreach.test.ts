@@ -142,7 +142,7 @@ describe("buildOutreachMailtoLink", () => {
     const { subject, body } = parseMailtoQuery(link);
     assert.equal(subject, draft.subject);
     assert.equal(body, draft.body);
-    assert.match(body ?? "", /entreprises suisses/);
+    assert.match(body ?? "", /PME suisses/);
     assert.match(body ?? "", /^Bonjour,/);
   });
 
@@ -269,7 +269,7 @@ describe("generateOutreachDraft", () => {
       draft.body,
       /Je m'appelle Andrii Moroz, fondateur de SmartFlow Suisse/
     );
-    assert.match(draft.body, /SmartFlow Suisse aide les entreprises suisses/);
+    assert.match(draft.body, /SmartFlow Suisse accompagne les PME suisses/);
   });
 
   it("generates German draft with Guten Tag greeting", () => {

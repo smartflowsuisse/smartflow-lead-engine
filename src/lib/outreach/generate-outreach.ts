@@ -232,27 +232,27 @@ function buildFrenchDraft(input: OutreachDraftInput): string {
 
   const summary = input.analysisSummary
     ? `Résumé d'analyse : ${localizeFrenchOutreachText(input.analysisSummary)}`
-    : "Résumé d'analyse : pas encore disponible — nous pouvons réaliser une revue complète lors d'un premier échange.";
+    : "Résumé d'analyse : pas encore disponible — nous pouvons faire une première revue rapide si cela vous intéresse.";
 
   return [
     "Bonjour,",
     "",
-    `Je m'appelle Andrii Moroz, fondateur de SmartFlow Suisse. J'ai regardé ${target} et souhaitais partager une observation concrète sur votre présence en ligne.`,
+    `Je m'appelle Andrii Moroz, fondateur de SmartFlow Suisse. En regardant ${target}, j'ai relevé quelques points concrets qui pourraient améliorer votre présence en ligne.`,
     "",
     websiteRef,
     scoreLine(input, "fr"),
     "",
     summary,
     "",
-    "Améliorations rapides identifiées :",
+    "Points d'amélioration possibles :",
     quickWins,
     "",
-    "Opportunités SmartFlow :",
+    "Pistes possibles :",
     opportunities,
     "",
-    "SmartFlow Suisse aide les entreprises suisses à transformer leur site en un canal de leads plus efficace — avec des formulaires intelligents, des relances automatisées et une meilleure qualification des prospects.",
+    "SmartFlow Suisse accompagne les PME suisses dans l'amélioration de leur site, de leur suivi des demandes et de leurs processus de contact.",
     "",
-    "Seriez-vous disponible pour un appel de 15 minutes cette semaine afin d'explorer ce qui serait le plus pertinent pour votre équipe ?",
+    "Seriez-vous ouvert à un court échange de 15 minutes cette semaine pour voir si ces pistes peuvent être utiles pour votre entreprise ?",
     "",
     OUTREACH_SIGNATURE,
   ].join("\n");
