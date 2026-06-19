@@ -58,7 +58,7 @@ export function MissingContactActions({
         </Link>
 
         <Link
-          href={`/leads/${leadId}/edit?returnTo=/outreach/session&noteHint=email-source`}
+          href={`/leads/${leadId}/edit?returnTo=/outreach/missing-contacts&noteHint=email-source`}
           className={primaryButtonClass}
         >
           Add Email
