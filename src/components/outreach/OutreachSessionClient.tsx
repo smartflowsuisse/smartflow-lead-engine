@@ -300,7 +300,7 @@ export function OutreachSessionClient() {
                 type="button"
                 onClick={removeCurrentLeadFromSession}
               >
-                Skip Lead
+                Skip Lead (session only)
               </button>
 
               <button
@@ -317,7 +317,7 @@ export function OutreachSessionClient() {
                     void markCurrentLeadAsContacted();
                   }}
               >
-                {contactState === "loading" ? "Saving..." : "Mark as Contacted"}
+                {contactState === "loading" ? "Saving..." : "Mark as Contacted (after manual send)"}
               </button>
 
               {mailtoHref ? (
@@ -325,7 +325,7 @@ export function OutreachSessionClient() {
                   className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-800"
                   href={mailtoHref}
                 >
-                  Open Email Draft
+                  Open Email Draft (manual send)
                 </a>
               ) : null}
 
