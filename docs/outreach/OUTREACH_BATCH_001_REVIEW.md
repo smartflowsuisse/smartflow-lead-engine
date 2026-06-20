@@ -23,10 +23,10 @@ Rules:
 - Outreach status: New
 
 Manual review:
-- Website opens: TODO
-- Company relevant: TODO
-- Quick win found: TODO
-- Suggested offer: TODO
+- Website opens: YES
+- Company relevant: YES — construction / real estate projects in Suisse romande
+- Quick win found: YES — mobile performance is weak; Lighthouse mobile shows Performance 53, while  strong at 92
+- Suggested offer: small website audit + mobile performance/contact-path quick win
 - Email approved: TODO
 - Sent manually: TODO
 
