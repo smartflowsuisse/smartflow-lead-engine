@@ -34,7 +34,7 @@ Prepared materials:
 - Batch review: docs/outreach/OUTREACH_BATCH_001_REVIEW.md
 
 Manual sending:
-- nt: NO
+- Sent: NO
 - Sent date: TODO
 - Sent from: TODO
 - Sent to: info@ag-construction.ch
