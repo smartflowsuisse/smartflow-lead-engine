@@ -32,7 +32,7 @@ Le site d’AG Construction SA présente clairement l’entreprise, les réalisa
 
 6. Quick win recommandé
    - Optimiser les images principales pour mobile.
-   - Ajouter ou renforcer un contact path visible sur mobile.
+   - Ajouter ou renforcer un parcours de contact visible sur mobile.
    - Garder l’identité visuelle actuelle.
 
 ## Proposition simple
