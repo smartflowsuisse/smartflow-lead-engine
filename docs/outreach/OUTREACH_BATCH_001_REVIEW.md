@@ -37,7 +37,7 @@ Manual review:
 - City: Genève
 - Industry: Construction
 - Email: contact@swissroc.com
-- Website: TODO
+- Website: https://swissroc.ch/fr/services/construction/
 - Lead score: 72
 - CRM status: Analyzed
 - Outreach status: New
@@ -57,7 +57,7 @@ Manual review:
 - City: Crissier
 - Industry: Construction
 - Email: communication@implenia.com
-- Website: TODO
+- Website: https://implenia.com/en/
 - Lead score: 68
 - CRM status: Analyzed
 - Outreach status: New
@@ -77,7 +77,7 @@ Manual review:
 - City: Zürich
 - Industry: Bauunternehmen
 - Email: info@kkag.ch
-- Website: TODO
+- Website: https://kkag.ch
 - Lead score: 45
 - CRM status: New
 - Outreach status: New
