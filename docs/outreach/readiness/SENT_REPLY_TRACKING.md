@@ -51,11 +51,12 @@ Reply tracking:
   - other.
 
 Next action:
-- TODO
+- HOLD — do not send yet. Continue readiness preparation before any controlled manual test.
 
 Notes:
-- One controlled manual test only.
+- One controlled manual test only if explicitly approved.
 - No mass outreach.
+- AG Construction remains the prepared test candidate, but the email has not been sent.
 
 ---
 
