@@ -23,6 +23,11 @@ export default async function EditLeadPage({ params, searchParams }: PageProps) 
     returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")
       ? returnTo
       : null;
+  const backHref = safeReturnTo ?? `/leads/${lead.id}`;
+  const backLabel =
+    safeReturnTo === "/outreach/missing-contacts"
+      ? "Back to Missing Contacts"
+      : "Back to lead";
   const noteHint = query?.noteHint;
   const emailSourceNoteTemplate =
     "Email source: Website / Contact page / Imprint / Manual check\nChecked: \nNotes: ";
@@ -35,11 +40,11 @@ export default async function EditLeadPage({ params, searchParams }: PageProps) 
   return (
     <div className="p-8">
       <Link
-        href={`/leads/${lead.id}`}
+        href={backHref}
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to lead
+            {backLabel}
       </Link>
 
       <div className="mb-8">
