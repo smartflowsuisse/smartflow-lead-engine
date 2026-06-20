@@ -307,7 +307,15 @@ export function OutreachSessionClient() {
                 className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800 disabled:opacity-50"
                 type="button"
                 disabled={contactState === "loading"}
-                onClick={() => void markCurrentLeadAsContacted()}
+                onClick={() => {
+                    const confirmed = window.confirm(
+                      "Mark this lead as contacted only after you manually sent the email. Continue?"
+                    );
+
+                    if (!confirmed) return;
+
+                    void markCurrentLeadAsContacted();
+                  }}
               >
                 {contactState === "loading" ? "Saving..." : "Mark as Contacted"}
               </button>
