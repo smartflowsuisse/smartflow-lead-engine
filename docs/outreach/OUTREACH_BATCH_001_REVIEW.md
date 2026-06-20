@@ -27,8 +27,10 @@ Manual review:
 - Company relevant: YES — construction / real estate projects in Suisse romande
 - Quick win found: YES — mobile performance is weak; Lighthouse mobile shows Performance 53, while  strong at 92
 - Suggested offer: small website audit + mobile performance/contact-path quick win
-- Email approved: TODO
-- Sent manually: TODO
+- Email approved: DRAFT READY — not sent
+- Mini-audit prepared: YES — docs/outreach/audits/AG_CONSTRUCTION_MINI_AUDIT_FR.md
+- Email draft: YES — docs/outreach/emails/AG_CONSTRUCTION_EMAIL_DRAFT_FR.md
+- Sent manually: NO
 
 ---
 
