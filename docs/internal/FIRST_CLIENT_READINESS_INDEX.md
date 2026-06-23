@@ -303,6 +303,7 @@ Current internal readiness documents:
 6. `ONE_PAGE_CLIENT_AUDIT_STRUCTURE.md` — one-page workflow audit structure.
 7. `FIRST_CLIENT_MINI_PROPOSAL_STRUCTURE.md` — short mini proposal structure.
 8. `MAKE_DEMO_WORKFLOW.md` — safe Make demo workflow.
+9. `FIRST_DEMO_CLIENT_SCENARIO.md` - realistic fake/demo client scenario for practicing the full first-client workflow.
 
 Recommended order:
 
