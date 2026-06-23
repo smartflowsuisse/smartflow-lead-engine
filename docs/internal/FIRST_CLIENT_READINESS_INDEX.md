@@ -288,3 +288,48 @@ Recommended next internal work:
 Do not return to public SaaS work now.
 
 The internal priority is first-client readiness.
+
+---
+
+## Readiness documents map
+
+Current internal readiness documents:
+
+1. `FIRST_CLIENT_READINESS_INDEX.md` — central readiness index.
+2. `CLIENT_DEMO_CHECKLIST.md` — safe client demo checklist.
+3. `DEMO_SCRIPT_DRAFT.md` — internal demo script.
+4. `FRENCH_DISCOVERY_EMAIL_TEMPLATES.md` — French discovery and follow-up email drafts.
+5. `FIRST_CLIENT_REPLY_HANDLING.md` — inbound reply handling guide.
+6. `ONE_PAGE_CLIENT_AUDIT_STRUCTURE.md` — one-page workflow audit structure.
+7. `FIRST_CLIENT_MINI_PROPOSAL_STRUCTURE.md` — short mini proposal structure.
+8. `MAKE_DEMO_WORKFLOW.md` — safe Make demo workflow.
+
+Recommended order:
+
+1. Before outreach: readiness index, French templates, demo checklist.
+2. After a reply: reply handling guide, French templates.
+3. Before demo: client demo checklist, demo script, Make demo workflow.
+4. After workflow review: one-page audit, mini proposal.
+5. Before sending anything externally: manual human review.
+
+Safety rules:
+
+- No automatic external email sending.
+- No mass outreach.
+- Human approval required.
+- No sensitive data exposure.
+- No unverified recipient addresses.
+- No overpromising.
+- No fixed savings without analysis.
+- No production changes without QA.
+- Client-facing wording must be reviewed manually before sending.
+
+Current next internal work:
+
+1. prepare one realistic fake/demo client scenario;
+2. test the Make demo manually with safe demo data;
+3. prepare a short French one-page client-facing summary;
+4. prepare CRM fields for reply category and next action;
+5. practice one full flow without sending real emails.
+
+The internal priority remains first-client readiness.
