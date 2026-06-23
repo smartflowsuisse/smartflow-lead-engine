@@ -34,17 +34,17 @@ The summary should help explain:
 
 Bonjour,
 
-Suite à notre première analyse, nous avons préparé un court résumé des points qui pourraient améliorer le suivi des demandes clients de votre entreprise.
+Suite à une première analyse de votre parcours de demande client, nous avons préparé un court résumé avec quelques pistes d’amélioration simples.
 
-Ce document n’est pas un audit technique complet. Il sert à identifier quelques pistes simples et concrètes avant une discussion plus détaillée.
+Ce document n’est pas un audit technique complet. Il sert à identifier des points concrets à discuter avant toute proposition détaillée.
 
 ### Situation observée
 
-Votre entreprise reçoit probablement des demandes par plusieurs canaux, par exemple téléphone, formulaire de contact ou email.
+Votre entreprise peut recevoir des demandes par plusieurs canaux: téléphone, formulaire de contact, email ou recommandation.
 
-Quand ces demandes ne sont pas centralisées, il peut devenir difficile de suivre clairement :
+Lorsque ces demandes ne sont pas centralisées, le suivi peut devenir moins clair:
 
-- qui a répondu;
+- qui a déjà répondu;
 - quelle demande est prioritaire;
 - quelle action doit être faite ensuite;
 - quelle relance est nécessaire;
@@ -52,32 +52,32 @@ Quand ces demandes ne sont pas centralisées, il peut devenir difficile de suivr
 
 ### Risque principal
 
-Le risque principal n’est pas seulement de perdre du temps.
+Le risque principal n’est pas seulement une perte de temps.
 
-Le vrai risque est de perdre une demande intéressante parce que le suivi n’est pas assez visible ou structuré.
+Le risque le plus important est qu’une demande intéressante reste sans suivi clair ou soit traitée trop tard.
 
 ### Améliorations possibles
 
-Nous voyons trois améliorations simples à étudier:
+Trois améliorations simples peuvent être étudiées:
 
 1. structurer le formulaire de demande;
-2. centraliser les nouvelles demandes dans un tableau CRM simple;
-3. préparer une réponse assistée par IA, toujours validée manuellement avant envoi.
+2. centraliser les nouvelles demandes dans un CRM simple;
+3. préparer un brouillon de réponse assisté par IA, toujours relu et validé manuellement avant envoi.
 
 ### Proposition SmartFlow Suisse
 
-SmartFlow Suisse peut vous aider à mettre en place un système léger de suivi des demandes clients.
+SmartFlow Suisse peut vous aider à mettre en place un système léger pour mieux suivre les demandes clients.
 
 L’objectif est de rendre le processus plus clair, plus fiable et plus facile à gérer au quotidien.
 
-Exemple de système possible:
+Un premier système pourrait inclure:
 
-- formulaire de demande structuré;
-- tableau CRM simple;
-- résumé interne de chaque demande;
-- brouillon de réponse préparé avec IA;
-- validation humaine avant tout envoi;
-- rappel de suivi si aucune action n’a été faite.
+- un formulaire de demande mieux structuré;
+- un tableau CRM simple;
+- un résumé interne de chaque demande;
+- un brouillon de réponse préparé avec l’aide de l’IA;
+- une validation humaine avant tout envoi;
+- un rappel de suivi si aucune action n’a été faite.
 
 ### Limites importantes
 
