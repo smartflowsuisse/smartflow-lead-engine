@@ -305,6 +305,7 @@ Current internal readiness documents:
 8. `MAKE_DEMO_WORKFLOW.md` — safe Make demo workflow.
 9. `FIRST_DEMO_CLIENT_SCENARIO.md` - realistic fake/demo client scenario for practicing the full first-client workflow.
 10. `FIRST_DEMO_FLOW_RUN_LOG.md` - internal log for practicing the full fake/demo first-client flow.
+11. `FRENCH_ONE_PAGE_CLIENT_SUMMARY_TEMPLATE.md` - French one-page client-facing summary draft template.
 
 Recommended order:
 
