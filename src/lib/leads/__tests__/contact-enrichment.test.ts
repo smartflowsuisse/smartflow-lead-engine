@@ -3,6 +3,8 @@ import { describe, it } from "node:test";
 import type { Lead } from "../../types";
 import {
   getLeadReadinessChecklist,
+  hasLeadContactPath,
+  hasStructuredNoteSection,
   needsContactEnrichment,
 } from "../contact-enrichment";
 
@@ -46,25 +48,70 @@ describe("needsContactEnrichment", () => {
   });
 });
 
+describe("hasLeadContactPath", () => {
+  it("accepts email, phone, or contact page", () => {
+    assert.equal(hasLeadContactPath(sampleLead()), false);
+    assert.equal(
+      hasLeadContactPath(sampleLead({ email: "info@acme.ch" })),
+      true
+    );
+  });
+});
+
+describe("hasStructuredNoteSection", () => {
+  it("detects filled structured note sections", () => {
+    assert.equal(
+      hasStructuredNoteSection(
+        "Recommended offer: SmartFlow digital growth package",
+        "Recommended offer"
+      ),
+      true
+    );
+    assert.equal(
+      hasStructuredNoteSection("Recommended offer:", "Recommended offer"),
+      false
+    );
+  });
+});
+
 describe("getLeadReadinessChecklist", () => {
-  it("lists website, contact, and analysis readiness", () => {
-    const checklist = getLeadReadinessChecklist(
-      sampleLead({
+  it("tracks mini-audit readiness from lead data", () => {
+    const checklist = getLeadReadinessChecklist({
+      lead: sampleLead({
         email: "info@acme.ch",
         phone: "+41 21 555 66 77",
       }),
-      false
-    );
+      hasAnalysis: false,
+    });
 
     assert.deepEqual(
       checklist.map((item) => [item.label, item.present]),
       [
-        ["Website", true],
-        ["Email", true],
-        ["Phone", true],
-        ["Contact page", false],
-        ["Analysis", false],
+        ["Website reviewed", false],
+        ["Contact path confirmed", true],
+        ["Business problem identified", false],
+        ["Recommended offer selected", false],
+        ["Next manual action defined", false],
+        ["Mini-audit ready", false],
       ]
     );
+  });
+
+  it("marks mini-audit ready when all checks pass", () => {
+    const checklist = getLeadReadinessChecklist({
+      lead: sampleLead({
+        email: "info@acme.ch",
+        notes: "Next manual action: Call tomorrow",
+      }),
+      hasAnalysis: true,
+      opportunitySummary: {
+        problems: ["Mobile experience needs improvement"],
+        recommendedService: "Mobile-first website optimization",
+        estimatedValueChf: 8500,
+      },
+      openTaskCount: 1,
+    });
+
+    assert.equal(checklist.at(-1)?.present, true);
   });
 });

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLeadById } from "@/lib/leads";
-import { hasLeadWebsite } from "@/lib/leads/contact-enrichment";
+import { hasLeadWebsite, hasLeadContactPath, hasStructuredNoteSection } from "@/lib/leads/contact-enrichment";
 import { buildLeadOpportunitySummary } from "@/lib/leads/opportunity-summary";
 import { getTasksByLeadId, summarizeLeadTasks } from "@/lib/tasks";
 import { getActivitiesByLeadId } from "@/lib/activities";
@@ -98,11 +98,24 @@ export default async function LeadDetailPage({ params }: PageProps) {
           <LeadReadinessChecklist
             lead={lead}
             hasAnalysis={Boolean(lead.analysis)}
+            opportunitySummary={opportunitySummary}
+            openTaskCount={taskSummary.open}
           />
           <LeadClientWorkflowPanel
             status={lead.status}
             outreachStatus={lead.outreach_status}
             leadScore={lead.lead_score}
+            hasAnalysis={Boolean(lead.analysis)}
+            hasContactPath={hasLeadContactPath(lead)}
+            hasBusinessProblem={Boolean(opportunitySummary?.problems.length)}
+            hasRecommendedOffer={Boolean(
+              opportunitySummary?.recommendedService?.trim() ||
+                hasStructuredNoteSection(lead.notes, "Recommended offer")
+            )}
+            hasNextAction={
+              taskSummary.open > 0 ||
+              hasStructuredNoteSection(lead.notes, "Next manual action")
+            }
           />
           <LeadReplyIntakePanel
             status={lead.status}
