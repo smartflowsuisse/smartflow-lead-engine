@@ -148,7 +148,12 @@ export function LeadTasksPanel({ leadId, initialTasks }: LeadTasksPanelProps) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-2">
-        <h3 className="font-semibold text-slate-900">Follow-up Tasks</h3>
+        <div>
+          <h3 className="font-semibold text-slate-900">Follow-up Tasks</h3>
+          <p className="mt-1 text-xs text-slate-500">
+            Define the next manual action before outreach or proposal.
+          </p>
+        </div>
         <span className="text-xs font-medium text-slate-500">
           {taskSummary.total === 0
             ? "0 tasks"

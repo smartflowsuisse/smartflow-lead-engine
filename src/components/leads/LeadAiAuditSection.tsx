@@ -65,7 +65,8 @@ export function LeadAiAuditSection({
       <div className="mb-5">
         <h2 className="text-lg font-semibold text-slate-900">AI Audit</h2>
         <p className="mt-1 text-sm text-slate-500">
-          Website quality signals from the latest SmartFlow analysis
+          Website quality signals from the latest SmartFlow analysis. Use these
+          scores to confirm website review and identify business problems.
         </p>
       </div>
 

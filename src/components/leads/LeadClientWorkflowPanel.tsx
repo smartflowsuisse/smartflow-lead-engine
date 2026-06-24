@@ -2,6 +2,11 @@ interface LeadClientWorkflowPanelProps {
   status?: string | null;
   outreachStatus?: string | null;
   leadScore?: number | null;
+  hasAnalysis?: boolean;
+  hasContactPath?: boolean;
+  hasBusinessProblem?: boolean;
+  hasRecommendedOffer?: boolean;
+  hasNextAction?: boolean;
 }
 
 function WorkflowRow({
@@ -34,17 +39,14 @@ export function LeadClientWorkflowPanel({
   status,
   outreachStatus,
   leadScore,
+  hasAnalysis = false,
+  hasContactPath = false,
+  hasBusinessProblem = false,
+  hasRecommendedOffer = false,
+  hasNextAction = false,
 }: LeadClientWorkflowPanelProps) {
   const normalizedStatus = status?.toLowerCase() ?? "";
   const normalizedOutreach = outreachStatus?.toLowerCase() ?? "";
-
-  const hasAnalysis =
-    normalizedStatus === "analyzed" ||
-    normalizedStatus === "contacted" ||
-    normalizedStatus === "replied" ||
-    normalizedStatus === "meeting" ||
-    normalizedStatus === "proposal" ||
-    normalizedStatus === "won";
 
   const hasContacted =
     normalizedStatus === "contacted" || normalizedOutreach === "contacted";
@@ -55,10 +57,12 @@ export function LeadClientWorkflowPanel({
     normalizedStatus === "proposal" ||
     normalizedStatus === "won";
 
-  const hasProposal =
-    normalizedStatus === "proposal" || normalizedStatus === "won";
-
-  const hasWon = normalizedStatus === "won";
+  const hasFollowUp =
+    normalizedStatus === "replied" ||
+    normalizedStatus === "meeting" ||
+    normalizedStatus === "proposal" ||
+    normalizedStatus === "won" ||
+    normalizedStatus === "contacted";
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -67,11 +71,11 @@ export function LeadClientWorkflowPanel({
           Internal workflow
         </p>
         <h2 className="text-lg font-semibold text-slate-950">
-          Client readiness path
+          Mini-audit preparation path
         </h2>
         <p className="text-sm leading-6 text-slate-600">
-          Internal checklist for moving a lead from analysis to first client
-          conversation. This block is read-only and does not change CRM data.
+          Practical steps for preparing a first SmartFlow Suisse client
+          mini-audit. Read-only — does not change CRM data.
         </p>
       </div>
 
@@ -98,29 +102,34 @@ export function LeadClientWorkflowPanel({
 
       <ol className="mt-5 space-y-4">
         <WorkflowRow
-          label="1. Analyze"
-          description="Website reviewed, score available, main opportunity identified."
-          active={hasAnalysis}
+          label="1. Review website and contact path"
+          description="Confirm the site, CTA, and how you can reach this company."
+          active={hasAnalysis && hasContactPath}
         />
         <WorkflowRow
-          label="2. Manual outreach"
-          description="Email sent manually. Mark Contacted only after real sending."
-          active={hasContacted}
+          label="2. Identify business problem"
+          description="Capture the main gap, follow-up weakness, or automation opportunity."
+          active={hasBusinessProblem}
         />
         <WorkflowRow
-          label="3. Reply / intake"
-          description="If the company replies, collect basic needs, urgency and decision context."
-          active={hasReply}
+          label="3. Prepare mini-audit"
+          description="Summarize findings in internal notes before client-facing material."
+          active={hasBusinessProblem && hasRecommendedOffer}
         />
         <WorkflowRow
-          label="4. Mini audit / proposal"
-          description="Prepare a short audit and choose the right offer before sending a proposal."
-          active={hasProposal}
+          label="4. Select SmartFlow offer"
+          description="Choose the service package that matches the identified problem."
+          active={hasRecommendedOffer}
         />
         <WorkflowRow
-          label="5. Project / onboarding"
-          description="After agreement, collect assets, confirm timeline and start delivery checklist."
-          active={hasWon}
+          label="5. Send only after manual review"
+          description="Use the email draft as a helper — send manually and mark Contacted after."
+          active={hasContacted && hasNextAction}
+        />
+        <WorkflowRow
+          label="6. Follow up manually"
+          description="Track replies, calls, and next steps in tasks and CRM status."
+          active={hasFollowUp && hasReply}
         />
       </ol>
     </section>

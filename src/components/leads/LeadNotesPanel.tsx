@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { Check, Loader2, Save } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 
+const INTERNAL_NOTES_TEMPLATE = `Website audit:
+- First impression:
+- CTA / contact path:
+- Follow-up gap:
+- Automation opportunity:
+- Recommended offer:
+- Next manual action:
+- Notes:`;
+
 interface LeadNotesPanelProps {
   leadId: number;
   initialNotes: string | null;
@@ -72,7 +81,8 @@ export function LeadNotesPanel({
         <div>
           <h3 className="font-semibold text-slate-900">Internal Notes</h3>
           <p className="mt-1 text-xs text-slate-500">
-            Last updated {formatDateTime(lastUpdated)}
+            Structured notes for mini-audit prep. Last updated{" "}
+            {formatDateTime(lastUpdated)}
           </p>
         </div>
         <button
@@ -98,8 +108,8 @@ export function LeadNotesPanel({
           setNotes(e.target.value);
           setSaved(false);
         }}
-        rows={5}
-        placeholder="Add internal notes about this lead..."
+        rows={8}
+        placeholder={INTERNAL_NOTES_TEMPLATE}
         className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
       />
 
