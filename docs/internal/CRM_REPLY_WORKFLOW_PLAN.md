@@ -194,15 +194,14 @@ Risk: higher. Should only be done after real usage shows notes + tasks are not e
 
 ---
 
-## 9. Recommended next PR
+## 9. Completed implementation note
 
-Recommended next PR:
-
-Improve `LeadReplyIntakePanel` copy to clarify that:
+Completed in PR #99: `LeadReplyIntakePanel` copy was clarified to reinforce that:
 
 - reply processing is manual;
-- next actions should be created as lead tasks;
-- CRM status should be updated only after human review;
-- automatic sending is not enabled.
+- next actions should be chosen only after human review;
+- follow-up, onboarding, and next manual actions should be created as lead tasks;
+- automatic external email sending remains disabled;
+- CRM status changes should not be made automatically from email content.
 
-This would be a low-risk UI/documentation improvement.
+No database, API, migration, automation, production deployment, or email sending changes were made.
