@@ -83,27 +83,27 @@ export function LeadReplyIntakePanel({
       <ol className="mt-5 space-y-4">
         <IntakeStep
           label="1. Outreach sent"
-          description="Manual outreach was sent and confirmed by a human. Automatic sending is not enabled."
+          description="Manual outreach was sent and confirmed by a human. Automatic sending remains disabled."
           active={hasContacted}
         />
         <IntakeStep
           label="2. Reply received"
-          description="Reply handling is manual. Add a short summary in notes before moving forward."
+          description="Reply handling is manual. Add a short reply summary in notes before choosing the next action."
           active={hasReply}
         />
         <IntakeStep
           label="3. Discovery call"
-          description="If a call is planned or completed, capture business problem, urgency, tools, and decision context."
+          description="If a call is planned or completed, capture the business problem, urgency, tools, and decision context before updating CRM status."
           active={hasMeeting}
         />
         <IntakeStep
           label="4. Proposal decision"
-          description="Choose the right next step after human review: audit, quick win, proposal, follow-up task, or no fit."
+          description="Choose the next step only after human review: audit, quick win, proposal, lead task, follow-up, or no fit."
           active={hasProposal}
         />
         <IntakeStep
           label="5. Client accepted"
-          description="Move to Won only after real agreement. Create lead tasks for onboarding and follow-up."
+          description="Move to Won only after real agreement. Create lead tasks for onboarding, follow-up, and any next manual action."
           active={hasWon}
         />
       </ol>
