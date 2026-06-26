@@ -162,7 +162,18 @@ Purpose:
 
 - work locally and safely;
 - avoid production mistakes;
-- preserve the internal-only Lead Engine workflow.
+- preserve the internal-only Lead Engine workflow;
+- verify the current Drive / Make / Gmail operating setup before first-client work.
+
+Current setup covered:
+
+- SmartFlow Google Drive working structure;
+- old Vitalik Drive structure handling;
+- verified Make demo scenarios;
+- Gmail labels;
+- Gmail draft templates;
+- Gmail signature;
+- operating safety rules.
 
 ### 12. Russian internal guide
 
