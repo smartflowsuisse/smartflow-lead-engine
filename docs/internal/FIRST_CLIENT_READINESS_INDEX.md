@@ -152,7 +152,20 @@ Purpose:
 - decide what to do when a client answers;
 - avoid rushed, unclear, or risky responses.
 
-### 11. Local operating guide
+### 11. First client pack
+
+Use:
+
+- `FIRST_CLIENT_PACK_DRAFT.md`
+
+Purpose:
+
+- open one practical pack before first-client work;
+- choose the correct reply, summary, mini-audit, or mini-proposal material;
+- follow the current Gmail labels, draft templates, and safety rules;
+- avoid improvisation, automatic sending, mass outreach, and unsupported promises.
+
+### 12. Local operating guide
 
 Use:
 
@@ -175,7 +188,7 @@ Current setup covered:
 - Gmail signature;
 - operating safety rules.
 
-### 12. Russian internal guide
+### 13. Russian internal guide
 
 Use:
 
