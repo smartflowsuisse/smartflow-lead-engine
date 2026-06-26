@@ -206,3 +206,106 @@ Smoke test passed for:
 - Missing Contacts;
 - Pipeline;
 - Templates.
+
+---
+
+## 11. Current operating setup — 2026-06-26
+
+This section records the current operational setup for SmartFlow Suisse before first-client work.
+
+### Google Drive setup
+
+Primary working account:
+
+- SmartFlow / ANZHELIKA MOROZ;
+- smartflowsuisse@gmail.com.
+
+Primary working Drive location:
+
+- SmartFlow Suisse — Client Readiness.
+
+Current Drive structure:
+
+- SmartFlow Suisse — Client Readiness;
+- SmartFlow CRM Demo;
+- SmartFlow Demo Request Form;
+- SmartFlow Demo Request Form (Responses / Ответы).
+
+Old Vitalik structure:
+
+- kept as an archive/source of previous client-readiness materials;
+- linked from SmartFlow Drive through:
+  - SmartFlow Suisse — Client Readiness / 00 Imported from Vitalik;
+- do not delete the old Vitalik-owned folder unless ownership or full copy is confirmed;
+- do not duplicate old files in bulk;
+- if an old document is needed, open it through the shortcut and create a clean working copy in the SmartFlow account.up
+
+Current verified scenarios:
+
+- SmartFlow Demo — Form to CRM AI Summary;
+- SmartFlow Demo — Sheet AI Summary.
+
+Current safety status:
+
+- scenarios remain inactive;
+- no schedule is enabled;
+- no Gmail sending module is used;
+- no automatic external email sending exists;
+- manual test history shows successful executions.
+
+Verified CRM demo flow:
+
+- Google Sheets — Watch New Rows;
+- OpenAI — Generate a completion;
+- Google Sheets — Add a Row.
+
+Verified source:
+
+- SmartFlow Demo Request Form (Ответы);
+- sheet: Ответы на форму (1).
+
+Verified target:
+
+- SmartFlow CRM Demo;
+- sheet: CRM Demo.
+
+### Gmail setup
+
+Primary Gmail account:
+
+- smartflowsuisse@gmail.com.
+
+Operational labels created:
+
+- 01 New Leads;
+- 02 Client Replies;
+- 03 Proposals;
+- 04 Follow-up;
+- 05 Make Demo;
+- 06 Technical / Accounts.
+
+Draft email templates prepared:
+
+- TEMPLATE — New lead reply FR;
+- TEMPLATE — Follow-up FR;
+- TEMPLATE — Mini-audit delivery FR;
+- TEMPLATE — Proposal delivery FR.
+
+Gmail signature configured and verified:
+
+SmartFlow Suisse
+AI, Automatisation & Web pour PME suisses
+
+smartflowsuisse@gmail.com
+smartflowsuisse.com
+
+### Safety rules
+
+- Do not send automatic emails to external recipients.
+- Do not enable Make schedules without review.
+- Do not mass-email leads.
+- Do not delete old Drive folders before ownership/copy is confirmed.
+- Do not push production changes without tests and QA.
+- Keep client-facing emails manual and reviewed.
+- Use Gmail drafts as templates only; adapt every message before sending.
+- Keep SmartFlow account as the main working account for new client materials.
