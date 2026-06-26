@@ -165,7 +165,23 @@ Purpose:
 - follow the current Gmail labels, draft templates, and safety rules;
 - avoid improvisation, automatic sending, mass outreach, and unsupported promises.
 
-### 12. Local operating guide
+### 12. First client manual scenario
+
+Use:
+
+- `FIRST_CLIENT_MANUAL_SCENARIO.md`
+
+Purpose:
+
+- handle one real first-client reply manually;
+- classify the reply before answering;
+- verify client context before drafting;
+- prepare mini-audit notes, one-page summary, or limited mini-proposal;
+- prepare and review Gmail draft manually;
+- send manually only after approval;
+- update Gmail labels and CRM / Lead Engine status manually.
+
+### 13. Local operating guide
 
 Use:
 
@@ -188,7 +204,7 @@ Current setup covered:
 - Gmail signature;
 - operating safety rules.
 
-### 13. Russian internal guide
+### 14. Russian internal guide
 
 Use:
 
