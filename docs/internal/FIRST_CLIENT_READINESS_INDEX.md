@@ -174,6 +174,7 @@ Use:
 - `FIRST_CLIENT_DEMO_SHEET_DRAFT.md` — internal one-page demo sheet draft for first client conversations, with manual review and safety rules.
 - `FIRST_CLIENT_CALL_SHEET.md` — internal call sheet for first client conversations and demos, with French 60-second explanation, demo flow, questions, limits, next steps, and safety rules.
 - `FIRST_PAID_PILOT_OFFER.md` - first paid pilot offer structure with pricing, scope, French explanation, call questions, and safety rules.
+- `FIRST_PAID_PILOT_TARGET_LIST.md` - first paid pilot target list with priority companies, selection logic, manual approach notes, and safety rules.
 
 Purpose:
 
