@@ -93,7 +93,7 @@ export function LeadReplyIntakePanel({
         />
         <IntakeStep
           label="3. Discovery call"
-          description="If a call is planned or completed, capture the business problem, urgency, tools, and decision context before updating CRM status."
+          description="If a call is planned or completed, capture the business problem, urgency, tools, and decision context before updating CRM status. Use the first client call sheet before a demo call."
           active={hasMeeting}
         />
         <IntakeStep
