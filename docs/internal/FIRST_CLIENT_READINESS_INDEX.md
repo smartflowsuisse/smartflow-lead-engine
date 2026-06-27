@@ -176,6 +176,7 @@ Use:
 - `FIRST_PAID_PILOT_OFFER.md` - first paid pilot offer structure with pricing, scope, French explanation, call questions, and safety rules.
 - `FIRST_PAID_PILOT_TARGET_LIST.md` - first paid pilot target list with priority companies, selection logic, manual approach notes, and safety rules.
 - `DMC_DESSIMOZ_APPROACH_PREP.md` - internal manual approach preparation for DMC Dessimoz, with contact-path review, risk notes, French draft, and safety rules.
+- `DMC_CONTACT_FORM_MESSAGE_DRAFT.md` - internal draft for DMC contact form message, with shorter French version, form fields, approval checklist, and safety rules.
 
 Purpose:
 
