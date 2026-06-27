@@ -173,6 +173,7 @@ Use:
 - `DEMO_CLIENT_FIRST_PACK.md` — concrete demo-client first pack with usage guide, pre-demo checklist, manual workflow, draft guidance, and safety rules.
 - `FIRST_CLIENT_DEMO_SHEET_DRAFT.md` — internal one-page demo sheet draft for first client conversations, with manual review and safety rules.
 - `FIRST_CLIENT_CALL_SHEET.md` — internal call sheet for first client conversations and demos, with French 60-second explanation, demo flow, questions, limits, next steps, and safety rules.
+- `FIRST_PAID_PILOT_OFFER.md` - first paid pilot offer structure with pricing, scope, French explanation, call questions, and safety rules.
 
 Purpose:
 
