@@ -170,6 +170,7 @@ Purpose:
 Use:
 
 - `FIRST_CLIENT_MANUAL_SCENARIO.md`
+- `DEMO_CLIENT_FIRST_PACK.md` — concrete demo-client first pack for preparing and running the first controlled demo client workflow.
 
 Purpose:
 
