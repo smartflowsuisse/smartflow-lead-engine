@@ -23,6 +23,24 @@ Use this pack in this order:
 8. Keep the workflow demo-only until the client scope is confirmed.
 
 This pack is for controlled demo-client preparation, not production automation.
+
+## Pre-demo checklist
+
+Before using this pack with a first demo client, confirm:
+
+- [ ] Demo client profile is complete.
+- [ ] Demo source file is identified.
+- [ ] Demo CRM file is identified.
+- [ ] Make scenario is set to manual run only.
+- [ ] Make schedule is not enabled.
+- [ ] AI summary output is reviewed manually.
+- [ ] CRM row is reviewed manually.
+- [ ] No external email is sent automatically.
+- [ ] No production change is required.
+- [ ] No database or API change is required.
+- [ ] Client-facing wording is reviewed manually before use.
+
+If any item is not confirmed, stop and review before continuing.
 ## Demo client profile
 
 Company:
