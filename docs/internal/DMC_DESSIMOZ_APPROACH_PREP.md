@@ -36,6 +36,32 @@ The available contact paths are:
 
 No direct email should be used unless it is manually confirmed from the website or contact page.
 
+## Manual contact page verification
+
+Verified manually from the DMC contact page:
+
+- Contact page URL: https://dessimoz.ch/wp/contact/
+- Email: not visible / not confirmed
+- Contact form: visible
+- Form fields: Prénom, Nom, Téléphone, Email, Message
+- File upload: visible
+- Submit button: visible
+- Main phone: +41 (0)27 346 7368
+- Meyrin branch phone: +41 (0)22 782 0540
+
+Conclusion:
+
+The safest confirmed contact paths are:
+
+1. Contact page review
+2. Phone verification
+3. Contact form only after manual approval
+
+Do not use a direct email unless it is manually confirmed later.
+
+Do not submit the contact form before the final message is reviewed and approved.
+
+
 ## Activity history risk
 
 The lead already has several generated outreach activities.
