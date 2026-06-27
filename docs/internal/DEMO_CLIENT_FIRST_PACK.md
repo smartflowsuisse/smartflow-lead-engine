@@ -8,6 +8,21 @@ It is based on the current SmartFlow readiness materials and must be used only f
 
 This is an internal operating document, not a client-facing document.
 
+
+## How to use this pack
+
+Use this pack in this order:
+
+1. Review the demo client profile.
+2. Confirm the demo source and CRM files.
+3. Run the Make scenario manually only.
+4. Check the generated AI summary and CRM row.
+5. Prepare the client-facing explanation manually.
+6. Do not send any external email automatically.
+7. Do not enable Make scheduling without review.
+8. Keep the workflow demo-only until the client scope is confirmed.
+
+This pack is for controlled demo-client preparation, not production automation.
 ## Demo client profile
 
 Company:
