@@ -175,6 +175,7 @@ Use:
 - `FIRST_CLIENT_CALL_SHEET.md` — internal call sheet for first client conversations and demos, with French 60-second explanation, demo flow, questions, limits, next steps, and safety rules.
 - `FIRST_PAID_PILOT_OFFER.md` - first paid pilot offer structure with pricing, scope, French explanation, call questions, and safety rules.
 - `FIRST_PAID_PILOT_TARGET_LIST.md` - first paid pilot target list with priority companies, selection logic, manual approach notes, and safety rules.
+- `DMC_DESSIMOZ_APPROACH_PREP.md` - internal manual approach preparation for DMC Dessimoz, with contact-path review, risk notes, French draft, and safety rules.
 
 Purpose:
 
