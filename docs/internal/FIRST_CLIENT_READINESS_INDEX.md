@@ -171,6 +171,7 @@ Use:
 
 - `FIRST_CLIENT_MANUAL_SCENARIO.md`
 - `DEMO_CLIENT_FIRST_PACK.md` — concrete demo-client first pack with usage guide, pre-demo checklist, manual workflow, draft guidance, and safety rules.
+- `FIRST_CLIENT_DEMO_SHEET_DRAFT.md` — internal one-page demo sheet draft for first client conversations, with manual review and safety rules.
 
 Purpose:
 
