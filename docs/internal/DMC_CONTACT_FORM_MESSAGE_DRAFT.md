@@ -105,6 +105,36 @@ Before submitting anything:
 - confirm no automatic tool is submitting the form;
 - submit only manually if approved.
 
+## Manual submission attempt log
+
+A manual contact form submission attempt was made from the DMC contact page.
+
+Observed result:
+
+- The Envoyer button showed loading/spinning.
+- No visible success message was confirmed.
+- No visible error message was confirmed.
+- After page refresh, the form fields were cleared.
+- The Téléphone field was left empty during the attempt.
+- Delivery status is unconfirmed.
+
+Decision:
+
+- Do not submit the same form again immediately.
+- Do not mark the lead as Contacted based only on this unconfirmed attempt.
+- Do not duplicate the message today.
+- If a second attempt is approved later, include a confirmed SmartFlow phone number if the phone field appears required.
+- Preferred next step: wait 24-48 hours or use phone verification to confirm the right contact path.
+
+Safety:
+
+- Manual attempt only.
+- No automation was used.
+- No mass outreach.
+- No automatic email sending.
+- No Make schedule change.
+- No database or API change.
+
 ## Safety rules
 
 - Internal use only.
