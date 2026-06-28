@@ -299,3 +299,51 @@ Recommended next document after manual test:
 
 - `MAKE_DEMO_FAKE_CLIENT_RUN_LOG.md`
 
+
+---
+
+## AI priority wording rule
+
+This rule prevents the AI summary from confusing manual review with lead priority.
+
+Problem observed:
+
+- In the manual Make demo test for `Demo Menuiserie Genève 8`, the AI summary returned `Priorité: Manuel`.
+- This was not ideal because the CRM priority field was `Medium`.
+- Manual review is a safety requirement and next action, not the lead priority value.
+
+Required prompt rule:
+
+When generating the internal summary:
+
+- use the CRM/source priority value when available;
+- if no explicit priority is provided, use `Medium` for the demo workflow;
+- do not write `Manuel` as the priority;
+- keep manual review under `Prochaine action`, not under `Priorité`.
+
+Expected output example:
+
+```text
+Résumé interne:
+- Entreprise: Demo Menuiserie Genève 8
+- Contact: Jean Demo Test 8
+- Besoin: Kitchen renovation
+- Priorité: Medium
+- Prochaine action: Revue manuelle uniquement
+```
+
+Safe Make prompt addition:
+
+```text
+Priority rule:
+Use the CRM/source priority value when available. If no explicit priority is provided, write "Medium". Do not write "Manuel" as the priority. Manual review belongs in "Prochaine action", not in "Priorité".
+```
+
+Safety rules:
+
+- this is a documentation-only prompt rule;
+- do not enable Make scheduling from this change;
+- do not add Gmail sending;
+- do not send external email;
+- do not use real client data;
+- test only with `Run once`.
