@@ -574,3 +574,33 @@ Safety rules reinforced:
 - no mass outreach;
 - no automatic external email sending;
 - Make scenario must be run manually with Run once only.
+
+## 23. Make demo fake client run log
+
+Use:
+
+- `MAKE_DEMO_FAKE_CLIENT_RUN_LOG.md`
+
+Purpose:
+
+- record the result of a controlled manual Make demo run using a fake client scenario;
+- verify that the Make demo workflow supports the first-client operating process safely;
+- capture test status, fake data used, Make scenario behavior, Google account ownership, AI summary quality, CRM/tracking output, QA result, issues, handover readiness, and scope/payment conclusion.
+
+When to use:
+
+- only after a manual fake-client Make test;
+- only with fake data;
+- only with Run once;
+- only when no external email sending is active.
+
+Safety rules reinforced:
+
+- no real client data;
+- no passwords;
+- no production code changes;
+- no production website changes;
+- no Gmail sending module active;
+- no mass outreach;
+- no automatic external email sending;
+- Make scenario must be run manually with Run once only.
