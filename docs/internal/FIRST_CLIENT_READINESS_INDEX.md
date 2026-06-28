@@ -495,3 +495,22 @@ Safety rules reinforced:
 - every post-delivery request must be classified before action;
 - new scope requires review, written scope, price, timeline, and approval;
 - unsafe requests must be paused and reviewed before action.
+
+## 20. Client scope and payment rules
+
+Use:
+
+- `CLIENT_SCOPE_PAYMENT_RULES.md`
+
+Purpose:
+
+- define how SmartFlow Suisse protects scope, pricing, payment, delivery expectations, and change requests before starting client work;
+- separate free first discussion, paid diagnostic, first paid pilot, larger implementation, support, and change requests;
+- reduce unclear work, unpaid implementation, oversized fixed-price promises, and uncontrolled client expectations.
+
+Safety rules reinforced:
+
+- no paid client work should start without clear scope, deliverables, exclusions, price or billing method, payment terms, timeline, approval, and risk review;
+- if scope is unclear, sell diagnostic first instead of implementation;
+- new scope requires review, price, timeline, and approval before work;
+- no delivery without QA and handover.

@@ -345,16 +345,30 @@ Support is not unlimited implementation. Every post-delivery request must be cla
 
 ---
 
+## Scope and payment rules
+
+Use:
+
+- `docs/internal/CLIENT_SCOPE_PAYMENT_RULES.md`
+
+Purpose:
+
+- define scope, deliverables, exclusions, payment terms, approval rules, and change request handling before paid work starts;
+- protect SmartFlow from unpaid implementation, unclear client expectations, and oversized fixed-price promises;
+- separate free discussion, paid diagnostic, first paid pilot, larger implementation, and support.
+
+Important rule:
+
+No paid client work should start without clear scope, payment terms, approval, and risk review.
+
+---
+
 ## Current missing practical tools
 
 The following tools are still needed before the first client:
 
-1. `CLIENT_INTAKE_TEMPLATE.md`
-2. `CLIENT_QA_CHECKLIST.md`
-3. `CLIENT_HANDOVER_PACK.md`
-4. `CLIENT_SUPPORT_RULES.md`
-5. simple invoice / devis / scope structure
-6. password/access management process
+1. simple invoice / devis template
+2. password/access management process
 
 ---
 
