@@ -211,7 +211,24 @@ Current setup covered:
 - Gmail signature;
 - operating safety rules.
 
-### 14. Russian internal guide
+### 14. Data protection and audit charter
+
+Use:
+
+- `SMARTFLOW_DATA_PROTECTION_AND_AUDIT_CHARTER.md`
+
+Purpose:
+
+- define SmartFlow Suisse internal data protection rules;
+- keep audits limited to public website data before client permission;
+- prevent unnecessary personal data collection;
+- require explicit permission for CRM, email, analytics, Drive, Make, and client systems;
+- require password manager usage for credentials;
+- keep AI and automation workflows safe;
+- preserve manual review before external email sending;
+- prevent mass outreach and automatic email automation.
+
+### 15. Russian internal guide
 
 Use:
 
