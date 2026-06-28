@@ -74,6 +74,32 @@ Safe rule:
 
 ---
 
+## Required before client work
+
+Before any real client work, confirm:
+
+1. `docs/internal/CLIENT_INTAKE_TEMPLATE.md` is ready and used.
+2. `docs/internal/CLIENT_AUDIT_CHECKLIST_DRAFT.md` is ready and used.
+3. `docs/internal/SMARTFLOW_DATA_PROTECTION_AND_AUDIT_CHARTER.md` has been reviewed.
+4. The audit is limited to public website data unless the client gives separate explicit permission.
+5. No CRM, email inbox, analytics, Google Drive, Make/Zapier, private account, customer data, or confidential document is accessed without separate explicit permission.
+6. Client credentials are handled only through a password manager or another agreed secure method.
+7. Demo/fake data is used for tests whenever possible.
+8. External email sending remains manual and human-reviewed.
+9. Mass outreach and automatic external email sending remain excluded.
+10. Scope, payment rules, QA, and handover requirements are checked before delivery.
+
+Relevant documents:
+
+- `docs/internal/CLIENT_INTAKE_TEMPLATE.md`
+- `docs/internal/CLIENT_AUDIT_CHECKLIST_DRAFT.md`
+- `docs/internal/SMARTFLOW_DATA_PROTECTION_AND_AUDIT_CHARTER.md`
+- `docs/internal/CLIENT_SCOPE_PAYMENT_RULES.md`
+- `docs/internal/CLIENT_QA_CHECKLIST.md`
+- `docs/internal/CLIENT_HANDOVER_PACK.md`
+
+---
+
 ## 2. Discovery call
 
 Use this before making a proposal.
@@ -407,4 +433,3 @@ SmartFlow Suisse should not yet claim full operational agency readiness until th
 4. Create `CLIENT_SUPPORT_RULES.md`.
 5. Add all four to the readiness index.
 6. Run one fake client cycle using the operating kit.
-
