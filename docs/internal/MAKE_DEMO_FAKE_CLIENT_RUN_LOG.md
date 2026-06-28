@@ -453,3 +453,48 @@ No production system was changed.
 The Make scenario was executed manually with Run once only.
 
 CRM output was created successfully for Demo Menuiserie Genève 8.
+
+---
+
+## Prompt improvement verification — Demo Menuiserie Genève 9
+
+Status:
+
+- Passed.
+
+Purpose:
+
+- Verify that the updated Make OpenAI prompt no longer returns `Priorité: Manuel`.
+- Confirm that manual review stays under `Prochaine action`.
+- Confirm that lead priority is shown as `Medium`.
+
+Fake client data used:
+
+- Company: Demo Menuiserie Genève 9
+- Contact: Claire Demo Test 9
+- Email: claire.demo9@example.com
+- Phone: +41 22 000 00 09
+- Source: Website form
+- Request typthroom renovation
+- Message: Fake priority prompt test. Bathroom renovation request in Geneva. Manual review only. No email sent.
+- Language: FR
+
+Observed CRM output:
+
+- CRM row for `Demo Menuiserie Genève 9` was created.
+- AI summary returned `Priorité: Medium`.
+- AI summary returned `Prochaine action: Revue manuelle uniquement`.
+- The previous wording issue `Priorité: Manuel` was not reproduced.
+
+Safety confirmation:
+
+- Make scenario was run manually with `Run once`.
+- Scenario scheduling remained off.
+- Nmail sending module was used.
+- No automatic external email was sent.
+- No real client data was used.
+- No production system was changed.
+
+Decision:
+
+- The Make prompt priority wording fix is accepted for the internal demo workflow.
