@@ -418,3 +418,23 @@ Safety rules reinforced:
 - no client access stored in plain documents;
 - no large fixed-price project without defined scope;
 - human review remains mandatory for client-facing output.
+
+## 16. Client intake template
+
+Use:
+
+- `CLIENT_INTAKE_TEMPLATE.md`
+
+Purpose:
+
+- collect minimum client information before audit, diagnostic, or implementation;
+- document client basics, current workflow, tools, examples, first problem, access needs, scope notes, timeline, and offer fit;
+- reduce unclear scope, missing access, wrong assumptions, and unsafe implementation;
+- support a controlled first paid diagnostic or first pilot.
+
+Safety rules reinforced:
+
+- do not start implementation before intake is completed or manually reviewed;
+- do not request unnecessary sensitive data;
+- do not store client passwords in plain documents, chats, or spreadsheets;
+- define access level, reason, owner, and risk before requesting access.

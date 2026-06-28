@@ -127,11 +127,19 @@ Required intake data:
 - decision maker;
 - expected timeline.
 
-Recommended next document to create or formalize:
+Use:
 
-- `CLIENT_INTAKE_TEMPLATE.md`
+- `docs/internal/CLIENT_INTAKE_TEMPLATE.md`
 
-Until that exists, intake can be captured inside the client project folder.
+Purpose:
+
+- collect minimum client information before audit or implementation;
+- clarify current workflow, tools, access needs, first problem, and first pilot idea;
+- prevent unclear scope, unsafe access handling, and wrong assumptions.
+
+Important rule:
+
+Do not start implementation before intake is completed or manually reviewed.
 
 ---
 
