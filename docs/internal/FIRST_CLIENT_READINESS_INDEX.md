@@ -457,3 +457,22 @@ Safety rules reinforced:
 - no automatic external email sending without explicit approval and separate safety review;
 - no production or client-system change without checking scope, access, and rollback risk;
 - AI output must be reviewed before client-facing use.
+
+## 18. Client handover pack
+
+Use:
+
+- `CLIENT_HANDOVER_PACK.md`
+
+Purpose:
+
+- provide clear delivery notes for client workflows, pilots, audits, CRM structures, Make scenarios, AI-assisted processes, or website/form improvements;
+- document what was delivered, what problem it solves, how the workflow works, which tools are used, access/ownership, how to use, how to test, known limitations, what not to change, what to do if something breaks, support rules, and next step;
+- reduce confusion after delivery and avoid repeated explanations from zero.
+
+Safety rules reinforced:
+
+- do not deliver client work without clear handover notes;
+- do not include passwords, API keys, or private credentials in handover documents;
+- clearly document limitations and manual review requirements;
+- clarify what is included and not included after delivery.

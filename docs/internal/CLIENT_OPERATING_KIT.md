@@ -292,9 +292,19 @@ Relevant documents:
 - `docs/internal/FIRST_CLIENT_PACK_DRAFT.md`
 - `docs/internal/DEMO_CLIENT_FIRST_PACK.md`
 
-Recommended next document to create or formalize:
+Use:
 
-- `CLIENT_HANDOVER_PACK.md`
+- `docs/internal/CLIENT_HANDOVER_PACK.md`
+
+Purpose:
+
+- prepare clear client delivery notes;
+- explain what was delivered, how it works, how to test it, what not to change, known limitations, support rules, and next steps;
+- avoid unclear handover after a pilot or implementation.
+
+Important rule:
+
+Do not deliver client work without clear handover notes.
 
 ---
 
