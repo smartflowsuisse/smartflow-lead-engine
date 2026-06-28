@@ -542,3 +542,35 @@ Safety rules reinforced:
 - no production changes;
 - no automatic external email sending;
 - no implementation before intake, audit, QA, and scope/payment review.
+
+## 22. Make demo fake client run
+
+Use:
+
+- `MAKE_DEMO_FAKE_CLIENT_RUN.md`
+
+Purpose:
+
+- define a safe fake-client Make demo run for SmartFlow Suisse first-client readiness;
+- connect the Client Operating Kit with a practical demo workflow;
+- test the path from fake request to CRM/tracking, AI-assisted internal summary, manual review, QA, and handover.
+
+Fake scenario:
+
+- Demo Menuiserie Genève;
+- fake renovation request in French;
+- simple lead tracking;
+- AI-assisted internal summary;
+- manual follow-up workflow.
+
+Safety rules reinforced:
+
+- internal test plan only;
+- no live automation enabled from this document;
+- no real client data;
+- no passwords;
+- no production changes;
+- no Gmail sending module;
+- no mass outreach;
+- no automatic external email sending;
+- Make scenario must be run manually with Run once only.
