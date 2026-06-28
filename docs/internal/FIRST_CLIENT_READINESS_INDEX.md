@@ -514,3 +514,31 @@ Safety rules reinforced:
 - if scope is unclear, sell diagnostic first instead of implementation;
 - new scope requires review, price, timeline, and approval before work;
 - no delivery without QA and handover.
+
+## 21. Client operating kit fake run
+
+Use:
+
+- `CLIENT_OPERATING_KIT_FAKE_RUN.md`
+
+Purpose:
+
+- test the Client Operating Kit with a fake client scenario before using it with a real first client;
+- verify the practical flow from first contact to discovery, intake, audit, offer, pilot, QA, handover, support, and scope/payment decision;
+- identify what is ready and what still needs practical strengthening.
+
+Fake scenario:
+
+- Demo Menuiserie Genève;
+- small carpentry / renovation company in Suisse romande;
+- receives requests by email, phone, and website form;
+- needs simple lead tracking, AI-assisted internal summary, and manul follow-up workflow.
+
+Safety rules reinforced:
+
+- fake client only;
+- no real client data;
+- no passwords;
+- no production changes;
+- no automatic external email sending;
+- no implementation before intake, audit, QA, and scope/payment review.
