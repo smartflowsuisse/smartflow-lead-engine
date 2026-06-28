@@ -383,3 +383,134 @@ Current next internal work:
 5. practice one full flow without sending real emails.
 
 The internal priority remains first-client readiness.
+
+## 15. Client operating kit
+
+Use:
+
+- `CLIENT_OPERATING_KIT.md`
+
+Purpose:
+
+- provide the main operating map for the first real SmartFlow Suisse client;
+- connect existing readiness documents into one practical workflow;
+- guide the client process from first contact to discovery, intake, audit, offer, pilot, QA, delivery, and support;
+- avoid improvisation when a client appears;
+- keep first-client work safe, manual, and controlled.
+
+Current operating flow covered:
+
+- first contact;
+- discovery call;
+- client intake;
+- audit;
+- first offer;
+- pilot setup;
+- QA check;
+- delivery;
+- support and next step.
+
+Safety rules reinforced:
+
+- no mass outreach;
+- no automatic external email sending;
+- no implementation before audit;
+- no client access stored in plain documents;
+- no large fixed-price project without defined scope;
+- human review remains mandatory for client-facing output.
+
+## 16. Client intake template
+
+Use:
+
+- `CLIENT_INTAKE_TEMPLATE.md`
+
+Purpose:
+
+- collect minimum client information before audit, diagnostic, or implementation;
+- document client basics, current workflow, tools, examples, first problem, access needs, scope notes, timeline, and offer fit;
+- reduce unclear scope, missing access, wrong assumptions, and unsafe implementation;
+- support a controlled first paid diagnostic or first pilot.
+
+Safety rules reinforced:
+
+- do not start implementation before intake is completed or manually reviewed;
+- do not request unnecessary sensitive data;
+- do not store client passwords in plain documents, chats, or spreadsheets;
+- define access level, reason, owner, and risk before requesting access.
+
+## 17. Client QA checklist
+
+Use:
+
+- `CLIENT_QA_CHECKLIST.md`
+
+Purpose:
+
+- provide a manual verification checklist before showing, testing, enabling, or delivering any client workflow;
+- verify scope, access, input, processing, output, email safety, AI output, data safety, client testing, and delivery readiness;
+- prevent unsafe delivery, wrong data routing, broken automations, incorrect AI output, or accidental external sending.
+
+Safety rules reinforced:
+
+- no client workflow is ready without manual QA;
+- no automatic external email sending without explicit approval and separate safety review;
+- no production or client-system change without checking scope, access, and rollback risk;
+- AI output must be reviewed before client-facing use.
+
+## 18. Client handover pack
+
+Use:
+
+- `CLIENT_HANDOVER_PACK.md`
+
+Purpose:
+
+- provide clear delivery notes for client workflows, pilots, audits, CRM structures, Make scenarios, AI-assisted processes, or website/form improvements;
+- document what was delivered, what problem it solves, how the workflow works, which tools are used, access/ownership, how to use, how to test, known limitations, what not to change, what to do if something breaks, support rules, and next step;
+- reduce confusion after delivery and avoid repeated explanations from zero.
+
+Safety rules reinforced:
+
+- do not deliver client work without clear handover notes;
+- do not include passwords, API keys, or private credentials in handover documents;
+- clearly document limitations and manual review requirements;
+- clarify what is included and not included after delivery.
+
+## 19. Client support rules
+
+Use:
+
+- `CLIENT_SUPPORT_RULES.md`
+
+Purpose:
+
+- define how SmartFlow Suisse handles support after a pilot, workflow delivery, audit, CRM setup, Make scenario, AI-assisted process, website/form improvement, or first implementation;
+- separate included support, minor paid adjustment, new scope, urgent issue, and unsafe requests;
+- protect client trust while preventing small projects from becoming unlimited unpaid work.
+
+Safety rules reinforced:
+
+- support is not unlimited implementation;
+- every post-delivery request must be classified before action;
+- new scope requires review, written scope, price, timeline, and approval;
+- unsafe requests must be paused and reviewed before action.
+
+## 20. Client scope and payment rules
+
+Use:
+
+- `CLIENT_SCOPE_PAYMENT_RULES.md`
+
+Purpose:
+
+- define how SmartFlow Suisse protects scope, pricing, payment, delivery expectations, and change requests before starting client work;
+- separate free first discussion, paid diagnostic, first paid pilot, larger implementation, support, and change requests;
+- reduce unclear work, unpaid implementation, oversized fixed-price promises, and uncontrolled client expectations.
+
+Safety rules reinforced:
+
+- no paid client work should start without clear scope, deliverables, exclusions, price or billing method, payment terms, timeline, approval, and risk review;
+- if scope is unclear, sell diagnostic first instead of implementation;
+- new scope requires review, price, timeline, and approval before work;
+- no delivery without QA and handover.
