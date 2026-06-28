@@ -282,3 +282,23 @@ Recommended offer:
 
 Next action:
 
+---
+
+## Data protection and audit permission
+
+Before any real client audit, confirm:
+
+- SmartFlow Suisse may review the client's public website, visible forms, public pages, and related lead flow.
+- No internal systems will be accessed without separate explicit permission.
+- No CRM, email inbox, analytics, Google Drive, Make/Zapier, private accounts, customer data, or confidential documents will be accessed without separate explicit permission.
+- SmartFlow Suisse will use only the minimum data required for the audit.
+- Demo/fake data should be used for tests whenever possible.
+- Client credentials must be shared only through a secure password manager or another agreed secure method.
+
+Client confirmation text:
+
+> I confirm that SmartFlow Suisse may review our public website, visible forms, public pages and related lead flow for the purpose of preparing an audit, proposal or automation recommendation. No internal systems, private accounts, customer data, CRM, email inbox, analytics or confidential documents will be accessed without separate explicit permission.
+
+French version:
+
+> Je confirme que SmartFlow Suisse peut analyser notre site web public, les formulaires visibles, les pages publiques et le parcours de génération de leads afin de préparer un audit, une proposition ou une recommandation d’automatisation. Aucun système interne, compte privé, donnée client, CRM, boîte email, outil analytics ou document confidentiel ne sera consulté sans autorisation explicite séparée.

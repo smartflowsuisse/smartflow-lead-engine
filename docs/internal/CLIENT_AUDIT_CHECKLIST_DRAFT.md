@@ -298,3 +298,27 @@ Need to create:
 3. Discovery call questions.
 4. Make demo checklist.
 5. Google Sheets CRM demo structure.
+
+---
+
+## Data protection check
+
+Before and during every audit, verify:
+
+- only public website data is reviewed before client permission;
+- no unnecessary personal data is copied or stored;
+- no employee names, direct emails, phone numbers, customer data, CRM rows, form submissions, or private documents are collected unless needed and approved;
+- no closed website areas, private accounts, CRM, analytics, email inbox, Drive, Make/Zapier, or internal systems are accessed without separate explicit permission;
+- demo/fake data is used for testing whenever possible;
+- client credentials are never stored in chats, notes, Google Docs, Google Sheets, screenshots, or plain text files;
+- credentials are handled through a password manager or another agreed secure method;
+- AI tools are not used with sensitive or unnecessary personal data;
+- external email sending remains manual and reviewed by a human;
+- mass outreach and automatic external email sending remain excluded.
+
+Audit output should include a short safety note:
+
+- what was reviewed;
+- what was not accessed;
+- whether personal data was avoided;
+- whether additional client permission is needed before implementation.
