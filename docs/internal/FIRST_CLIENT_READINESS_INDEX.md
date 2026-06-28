@@ -383,3 +383,38 @@ Current next internal work:
 5. practice one full flow without sending real emails.
 
 The internal priority remains first-client readiness.
+
+## 15. Client operating kit
+
+Use:
+
+- `CLIENT_OPERATING_KIT.md`
+
+Purpose:
+
+- provide the main operating map for the first real SmartFlow Suisse client;
+- connect existing readiness documents into one practical workflow;
+- guide the client process from first contact to discovery, intake, audit, offer, pilot, QA, delivery, and support;
+- avoid improvisation when a client appears;
+- keep first-client work safe, manual, and controlled.
+
+Current operating flow covered:
+
+- first contact;
+- discovery call;
+- client intake;
+- audit;
+- first offer;
+- pilot setup;
+- QA check;
+- delivery;
+- support and next step.
+
+Safety rules reinforced:
+
+- no mass outreach;
+- no automatic external email sending;
+- no implementation before audit;
+- no client access stored in plain documents;
+- no large fixed-price project without defined scope;
+- human review remains mandatory for client-facing output.
