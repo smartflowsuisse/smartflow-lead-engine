@@ -438,3 +438,22 @@ Safety rules reinforced:
 - do not request unnecessary sensitive data;
 - do not store client passwords in plain documents, chats, or spreadsheets;
 - define access level, reason, owner, and risk before requesting access.
+
+## 17. Client QA checklist
+
+Use:
+
+- `CLIENT_QA_CHECKLIST.md`
+
+Purpose:
+
+- provide a manual verification checklist before showing, testing, enabling, or delivering any client workflow;
+- verify scope, access, input, processing, output, email safety, AI output, data safety, client testing, and delivery readiness;
+- prevent unsafe delivery, wrong data routing, broken automations, incorrect AI output, or accidental external sending.
+
+Safety rules reinforced:
+
+- no client workflow is ready without manual QA;
+- no automatic external email sending without explicit approval and separate safety review;
+- no production or client-system change without checking scope, access, and rollback risk;
+- AI output must be reviewed before client-facing use.

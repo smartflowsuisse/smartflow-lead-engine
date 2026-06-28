@@ -260,9 +260,17 @@ Relevant documents:
 - `docs/internal/DEMO_CLIENT_FIRST_PACK.md`
 - `docs/internal/FIRST_DEMO_FLOW_RUN_LOG.md`
 
-Recommended next document to create or formalize:
+Use:
 
-- `CLIENT_QA_CHECKLIST.md`
+- `docs/internal/CLIENT_QA_CHECKLIST.md`
+
+Purpose:
+
+- verify scope, access, input, processing, output, email safety, AI output, data safety, client test, and delivery readiness before showing or delivering client work.
+
+Important rule:
+
+No client workflow should be considered ready without a manual QA check.
 
 ---
 
