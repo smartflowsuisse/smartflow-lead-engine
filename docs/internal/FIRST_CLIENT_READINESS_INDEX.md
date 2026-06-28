@@ -476,3 +476,22 @@ Safety rules reinforced:
 - do not include passwords, API keys, or private credentials in handover documents;
 - clearly document limitations and manual review requirements;
 - clarify what is included and not included after delivery.
+
+## 19. Client support rules
+
+Use:
+
+- `CLIENT_SUPPORT_RULES.md`
+
+Purpose:
+
+- define how SmartFlow Suisse handles support after a pilot, workflow delivery, audit, CRM setup, Make scenario, AI-assisted process, website/form improvement, or first implementation;
+- separate included support, minor paid adjustment, new scope, urgent issue, and unsafe requests;
+- protect client trust while preventing small projects from becoming unlimited unpaid work.
+
+Safety rules reinforced:
+
+- support is not unlimited implementation;
+- every post-delivery request must be classified before action;
+- new scope requires review, written scope, price, timeline, and approval;
+- unsafe requests must be paused and reviewed before action.

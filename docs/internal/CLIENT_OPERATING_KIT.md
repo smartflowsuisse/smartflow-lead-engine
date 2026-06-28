@@ -329,9 +329,19 @@ Support should not include by default:
 - automatic email sending;
 - emergency support without agreement.
 
-Recommended next document to create or formalize:
+Use:
 
-- `CLIENT_SUPPORT_RULES.md`
+- `docs/internal/CLIENT_SUPPORT_RULES.md`
+
+Purpose:
+
+- define what is included after delivery;
+- separate included support, minor paid adjustments, new scope, urgent issues, and unsafe requests;
+- prevent small pilots from turning into unlimited unpaid work.
+
+Important rule:
+
+Support is not unlimited implementation. Every post-delivery request must be classified before action.
 
 ---
 
