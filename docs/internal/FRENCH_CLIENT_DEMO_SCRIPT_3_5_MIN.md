@@ -1,4 +1,34 @@
-# French Client Demo Script — 3–5 Minutes
+# French Client Demo Script
+
+## Current demo status — 2026-06-28
+
+This is the clean French client demo script for the current primary Make demo scenario:
+
+SmartFlow Demo — Form to CRM AI Summary
+
+Demo position:
+
+- internal demo asset;
+- manual Run once only;
+- no automatic email sending;
+- no Gmail send module;
+- no real client data;
+- no Make schedule;
+- no production changes;
+- human review required before any follow-up.
+
+Core demo story:
+
+1. Une demande arrive via un formulaire.
+2. La demande est ajoutée dans un mini CRM Google Sheets.
+3. L’IA prépare un résumé interne.
+4. L’humain vérifie le résultat.
+5. Le suivi est préparé manuellement.
+6. Aucun email n’est envoyé automatiquement.
+
+---
+
+ — 3–5 Minutes
 
 Internal document for SmartFlow Suisse.
 
