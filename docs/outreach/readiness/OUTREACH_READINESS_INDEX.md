@@ -1,5 +1,25 @@
 # Outreach Readiness Index — SmartFlow Suisse
 
+
+## First-client execution roadmap
+
+Use:
+
+- `FIRST_CLIENT_EXECUTION_ROADMAP.md`
+
+Purpose:
+
+- define the strict execution order before the first paid client;
+- prevent unnecessary development, repeated Make/Sheets checks, and unfocused improvements;
+- keep the team focused on mini-audit, one-page offer, reply handling, demo readiness, controlled outreach, and first paid pilot;
+- define what must not be done before the roadmap requires it.
+
+Priority:
+
+This is the main operating document for SmartFlow Suisse before the first paid client.
+
+---
+
 Purpose: central internal index before sending any real outreach email.
 
 Status: internal only.
