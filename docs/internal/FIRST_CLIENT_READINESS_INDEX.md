@@ -592,6 +592,49 @@ Safety rules reinforced:
 - no automatic external email sending;
 - Make scenario must be run manually with Run once only.
 
+
+## Make Demo Readiness Updates — 2026-06-28
+
+New Make demo readiness documents:
+
+1. `MAKE_DEMO_PRIORITY_FIX_SUMMARY_2026_06_28.md`
+   - records the priority fix;
+   - confirms `Priorité: Medium`;
+   - confirms manual review belongs in next action;
+   - reconfirms no schedule, no Gmail sending, no real client data.
+
+2. `MAKE_DEMO_SCENARIO_STATUS_2026_06_28.md`
+   - defines the current primary Make scenario;
+   - primary: `SmartFlow Demo — Form to CRM AI Summary`;
+   - reserve/old: `SmartFlow Demo — Sheet AI Summary`;
+   - keeps the reserve scenario unchanged until separate review.
+
+3. `FRENCH_CLIENT_DEMO_SCRIPT_3_5_MIN.md`
+   - now clarified as the clean French client demo script for the primary scenario;
+   - explains the client-facing demo story;
+   - confirms that no email is sent automatically and human review remains required.
+
+4. `DEMO_DATA_CLEANUP_PLAN_2026_06_28.md`
+   - defines safe demo data cleanup before client-facing walkthroughs;
+   - recommends preserving historical test data;
+   - recommends preparing a clean demo copy or duplicate sheet;
+   - forbids cleaning live Google Sheets before confirming the target sheet and backup.
+
+Safety summary:
+
+- documentation only;
+- no code changes;
+- no production changes;
+- no Vercel changes;
+- no API changes;
+- no database changes;
+- no Google Sheets changes;
+- no Make schedule changes;
+- no Gmail send module;
+- no automatic email sending;
+- no real client data.
+
+
 ## 23. Make demo fake client run log
 
 Use:
