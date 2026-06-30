@@ -182,3 +182,59 @@ If no reply:
 2. One polite follow-up maximum.
 3. Do not start aggressive sequence.
 
+
+---
+
+## Implenia Suisse SA — Manual Send Log
+
+Company:
+- Implenia Suisse SA
+
+Prepared documents:
+- `IMPLENIA_ONE_PAGE_PUBLIC_MINI_AUDIT_2026_06_30.md`
+- `IMPLENIA_MANUAL_EMAIL_DRAFT_FR_2026_06_30.md`
+
+Manual send:
+- Sent: YES
+- Sent manually: YES
+- Sent date: 2026-06-30
+- Sent time: 17:04
+- Sent from: SmartFlow Suisse
+- Sent to: info@implenia.com
+- Language: FR
+- Subject: Petite idée pour structurer certaines demandes entrantes
+
+Message type:
+- First manual outreach email
+- Short French version
+- Public-only contact-path angle
+- Manual-first Lead & Follow-up Pilot angle
+
+Reply tracking:
+- Reply received: NO
+- Reply date: TODO
+- Reply type: TODO
+
+Next action:
+- Wait.
+- Do not send another message immediately.
+- If no reply, only one polite follow-up maximum after a reasonable delay.
+- Do not start aggressive sequence.
+
+Safety:
+- No automatic sending used.
+- No mass outreach.
+- No Gmail/email automation.
+- No Make/Google Sheets changes.
+- No production/Vercel/API/database changes.
+- No CRM update before confirmed manual send.
+- Contacted may be recorded only as a result of this confirmed manual send.
+- Do not mark Replied before a real reply exists.
+- Do not mark Paid Pilot before explicit agreement exists.
+
+Notes:
+- Manual email was sent after review.
+- Recipient used: public general contact address.
+- No attachment sent.
+- No guarantee or unsupported internal claim included.
+
