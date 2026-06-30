@@ -76,6 +76,16 @@ Current status:
 Path:
 docs/outreach/readiness/CLIENT_RESPONSE_READINESS_KIT.md
 
+
+### Implenia Reply Monitoring Checklist
+
+`docs/outreach/readiness/IMPLENIA_REPLY_MONITORING_CHECKLIST_2026_06_30.md`
+
+Implenia-specific monitoring checklist after the manual first-contact email.
+
+Use this only to decide what to do if a real reply arrives.
+
+Current rule: wait for reply. Do not send a second email today. Do not start an aggressive sequence.
 Purpose:
 General rules and response preparation before any sending.
 
