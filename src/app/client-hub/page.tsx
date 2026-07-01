@@ -4,6 +4,7 @@ import { ClientHubHeader } from "./components/client-hub-header";
 import { FollowUpPanel } from "./components/follow-up-panel";
 import { ClientHubMetrics } from "./components/client-hub-metrics";
 import { ClientInbox } from "./components/client-inbox";
+import { ConvertActionPanel } from "./components/convert-action-panel";
 import { ConvertReadinessChecklist } from "./components/convert-readiness-checklist";
 import { ConvertToClientDraft } from "./components/convert-to-client-draft";
 import { ClientList } from "./components/client-list";
@@ -13,6 +14,7 @@ import {
   approvalItems,
   clients,
   convertToClientDraft,
+  convertActionPreview,
   convertReadinessItems,
   convertToClientEligibility,
   followUpItems,
@@ -43,6 +45,7 @@ export default function ClientHubPage() {
             eligibility={convertToClientEligibility}
           />
           <ConvertReadinessChecklist items={convertReadinessItems} />
+          <ConvertActionPanel action={convertActionPreview} />
           <FollowUpPanel items={followUpItems} />
           <ActivityLog items={activityLogItems} />
         </section>

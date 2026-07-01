@@ -159,3 +159,18 @@ export const convertReadinessItems = [
     detail: "No Gmail, Make, OpenAI, calendar, notification or email action is triggered.",
   },
 ];
+
+export const convertActionPreview = {
+  title: "Convert won lead to Client Hub draft",
+  mode: "Mock action only",
+  approvalStatus: "Human approval required",
+  resultPreview: "Client draft would be reviewed before any real client record is created.",
+  blockedActions: [
+    "No database write",
+    "No lead status update",
+    "No Gmail draft",
+    "No Make scenario",
+    "No OpenAI call",
+    "No external notification",
+  ],
+};
