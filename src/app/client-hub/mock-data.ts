@@ -108,3 +108,15 @@ export const followUpItems = [
     nextAction: "Review clarification request before sending any reply.",
   },
 ];
+
+import { createClientDraftFromLead } from "@/lib/leads/convert-to-client";
+
+export const convertToClientDraft = createClientDraftFromLead({
+  id: "lead-demo-won-001",
+  company: "Demo Won Lead Geneve",
+  contactName: "Sophie Demo",
+  email: "sophie@example.com",
+  phone: "+41000000001",
+  language: "FR",
+  status: "Won",
+});
