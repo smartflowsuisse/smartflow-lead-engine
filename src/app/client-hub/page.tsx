@@ -2,6 +2,7 @@ import { ActivityLog } from "./components/activity-log";
 import { ApprovalQueue } from "./components/approval-queue";
 import { ClientHubHeader } from "./components/client-hub-header";
 import { FollowUpPanel } from "./components/follow-up-panel";
+import { PostApprovalPreview } from "./components/post-approval-preview";
 import { ClientHubMetrics } from "./components/client-hub-metrics";
 import { ClientInbox } from "./components/client-inbox";
 import { ConvertActionPanel } from "./components/convert-action-panel";
@@ -18,6 +19,7 @@ import {
   convertReadinessItems,
   convertToClientEligibility,
   followUpItems,
+  postApprovalResultPreview,
   requests,
 } from "./mock-data";
 
@@ -46,6 +48,7 @@ export default function ClientHubPage() {
           />
           <ConvertReadinessChecklist items={convertReadinessItems} />
           <ConvertActionPanel action={convertActionPreview} />
+          <PostApprovalPreview preview={postApprovalResultPreview} />
           <FollowUpPanel items={followUpItems} />
           <ActivityLog items={activityLogItems} />
         </section>

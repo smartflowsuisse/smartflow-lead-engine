@@ -181,3 +181,23 @@ export const convertActionPreview = {
     "No external notification",
   ],
 };
+
+export const postApprovalResultPreview = {
+  title: "Post-approval result preview",
+  status: "Preview only",
+  approvedBy: "Human reviewer",
+  result: "Client Hub draft would be ready for controlled creation after approval.",
+  createdRecords: [
+    "Client draft review completed",
+    "Source lead remains unchanged",
+    "Audit log entry would be prepared",
+  ],
+  blockedActions: [
+    "No real client created",
+    "No lead status updated",
+    "No database write",
+    "No Gmail action",
+    "No Make scenario",
+    "No OpenAI call",
+  ],
+};
