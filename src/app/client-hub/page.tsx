@@ -1,10 +1,11 @@
+import { ActivityLog } from "./components/activity-log";
 import { ApprovalQueue } from "./components/approval-queue";
 import { ClientHubHeader } from "./components/client-hub-header";
 import { ClientHubMetrics } from "./components/client-hub-metrics";
 import { ClientInbox } from "./components/client-inbox";
 import { ClientList } from "./components/client-list";
 import { RequestDetail } from "./components/request-detail";
-import { approvalItems, clients, requests } from "./mock-data";
+import { activityLogItems, approvalItems, clients, requests } from "./mock-data";
 
 export default function ClientHubPage() {
   const selectedRequest = requests[0];
@@ -25,6 +26,7 @@ export default function ClientHubPage() {
           <ClientInbox requests={requests} />
           <ApprovalQueue approvalItems={approvalItems} />
           <RequestDetail selectedRequest={selectedRequest} />
+          <ActivityLog items={activityLogItems} />
         </section>
       </div>
     </main>
