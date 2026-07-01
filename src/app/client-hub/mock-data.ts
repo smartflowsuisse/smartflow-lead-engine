@@ -56,3 +56,34 @@ export const approvalItems = [
     status: "Review before action",
   },
 ];
+
+export const activityLogItems = [
+  {
+    id: "activity-001",
+    time: "09:10",
+    actor: "System",
+    action: "Request received from website form",
+    entity: "req-001",
+  },
+  {
+    id: "activity-002",
+    time: "09:11",
+    actor: "Mock AI",
+    action: "Generated request summary",
+    entity: "req-001",
+  },
+  {
+    id: "activity-003",
+    time: "09:12",
+    actor: "Mock AI",
+    action: "Suggested manual follow-up task",
+    entity: "req-001",
+  },
+  {
+    id: "activity-004",
+    time: "09:13",
+    actor: "Approval Queue",
+    action: "Suggested reply marked as waiting for human review",
+    entity: "approval-001",
+  },
+];
