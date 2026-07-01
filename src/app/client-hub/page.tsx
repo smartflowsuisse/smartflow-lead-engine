@@ -4,12 +4,14 @@ import { ClientHubHeader } from "./components/client-hub-header";
 import { FollowUpPanel } from "./components/follow-up-panel";
 import { ClientHubMetrics } from "./components/client-hub-metrics";
 import { ClientInbox } from "./components/client-inbox";
+import { ConvertToClientDraft } from "./components/convert-to-client-draft";
 import { ClientList } from "./components/client-list";
 import { RequestDetail } from "./components/request-detail";
 import {
   activityLogItems,
   approvalItems,
   clients,
+  convertToClientDraft,
   followUpItems,
   requests,
 } from "./mock-data";
@@ -33,6 +35,7 @@ export default function ClientHubPage() {
           <ClientInbox requests={requests} />
           <ApprovalQueue approvalItems={approvalItems} />
           <RequestDetail selectedRequest={selectedRequest} />
+          <ConvertToClientDraft draft={convertToClientDraft} />
           <FollowUpPanel items={followUpItems} />
           <ActivityLog items={activityLogItems} />
         </section>
