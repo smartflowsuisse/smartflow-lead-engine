@@ -132,3 +132,30 @@ export const convertToClientEligibility = {
 export const convertToClientDraft = createClientDraftFromLead(
   convertToClientSourceLead,
 );
+
+export const convertReadinessItems = [
+  {
+    id: "readiness-001",
+    label: "Lead status is Won",
+    status: "Ready",
+    detail: "The source lead has a Won status and passes the helper eligibility check.",
+  },
+  {
+    id: "readiness-002",
+    label: "Client draft can be prepared",
+    status: "Ready",
+    detail: "The Client Hub draft is generated from lead data without writing to a database.",
+  },
+  {
+    id: "readiness-003",
+    label: "Human review required",
+    status: "Required",
+    detail: "A human must review the draft before any real client record is created.",
+  },
+  {
+    id: "readiness-004",
+    label: "External actions blocked",
+    status: "Blocked",
+    detail: "No Gmail, Make, OpenAI, calendar, notification or email action is triggered.",
+  },
+];
