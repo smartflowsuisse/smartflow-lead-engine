@@ -1,4 +1,8 @@
 type ConvertToClientDraftProps = {
+  eligibility: {
+    isEligible: boolean;
+    reason: string;
+  };
   draft: {
     id: string;
     sourceLeadId: string;
@@ -11,7 +15,10 @@ type ConvertToClientDraftProps = {
   };
 };
 
-export function ConvertToClientDraft({ draft }: ConvertToClientDraftProps) {
+export function ConvertToClientDraft({
+  draft,
+  eligibility,
+}: ConvertToClientDraftProps) {
   return (
     <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 lg:col-span-3">
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
@@ -27,6 +34,25 @@ export function ConvertToClientDraft({ draft }: ConvertToClientDraftProps) {
         <p className="max-w-xl text-sm leading-6 text-slate-400">
           This panel shows the expected result of converting a won Lead Engine
           lead into a Client Hub client draft. It is display-only.
+        </p>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950 p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm text-slate-400">Eligibility</p>
+            <p className="mt-2 text-lg font-semibold text-slate-100">
+              {eligibility.isEligible ? "Eligible for draft conversion" : "Not eligible"}
+            </p>
+          </div>
+
+          <span className="rounded-full border border-red-900 bg-red-950 px-3 py-1 text-xs text-red-300">
+            Human review still required
+          </span>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-slate-400">
+          {eligibility.reason}
         </p>
       </div>
 

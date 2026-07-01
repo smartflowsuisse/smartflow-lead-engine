@@ -12,6 +12,7 @@ import {
   approvalItems,
   clients,
   convertToClientDraft,
+  convertToClientEligibility,
   followUpItems,
   requests,
 } from "./mock-data";
@@ -35,7 +36,10 @@ export default function ClientHubPage() {
           <ClientInbox requests={requests} />
           <ApprovalQueue approvalItems={approvalItems} />
           <RequestDetail selectedRequest={selectedRequest} />
-          <ConvertToClientDraft draft={convertToClientDraft} />
+          <ConvertToClientDraft
+            draft={convertToClientDraft}
+            eligibility={convertToClientEligibility}
+          />
           <FollowUpPanel items={followUpItems} />
           <ActivityLog items={activityLogItems} />
         </section>
