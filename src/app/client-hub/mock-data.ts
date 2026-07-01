@@ -109,9 +109,12 @@ export const followUpItems = [
   },
 ];
 
-import { createClientDraftFromLead } from "@/lib/leads/convert-to-client";
+import {
+  canConvertLeadToClient,
+  createClientDraftFromLead,
+} from "@/lib/leads/convert-to-client";
 
-export const convertToClientDraft = createClientDraftFromLead({
+export const convertToClientSourceLead = {
   id: "lead-demo-won-001",
   company: "Demo Won Lead Geneve",
   contactName: "Sophie Demo",
@@ -119,4 +122,13 @@ export const convertToClientDraft = createClientDraftFromLead({
   phone: "+41000000001",
   language: "FR",
   status: "Won",
-});
+};
+
+export const convertToClientEligibility = {
+  isEligible: canConvertLeadToClient(convertToClientSourceLead),
+  reason: "Lead status is Won and can be prepared as a Client Hub draft.",
+};
+
+export const convertToClientDraft = createClientDraftFromLead(
+  convertToClientSourceLead,
+);
