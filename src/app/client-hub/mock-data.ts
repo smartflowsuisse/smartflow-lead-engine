@@ -87,3 +87,24 @@ export const activityLogItems = [
     entity: "approval-001",
   },
 ];
+
+export const followUpItems = [
+  {
+    id: "follow-up-001",
+    client: "Demo Construction Geneve",
+    request: "New renovation request",
+    dueDate: "Tomorrow",
+    owner: "Manual review",
+    status: "Scheduled mock",
+    nextAction: "Prepare a manual follow-up after human approval.",
+  },
+  {
+    id: "follow-up-002",
+    client: "Demo Services Lausanne",
+    request: "Follow-up on service offer",
+    dueDate: "In 3 days",
+    owner: "Manual review",
+    status: "Draft only",
+    nextAction: "Review clarification request before sending any reply.",
+  },
+];
