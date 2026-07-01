@@ -1,8 +1,11 @@
+import { buildConvertToClientInternalAction } from "@/lib/leads/convert-to-client-internal-action";
+
 import { ActivityLog } from "./components/activity-log";
 import { ApprovalQueue } from "./components/approval-queue";
 import { ClientHubHeader } from "./components/client-hub-header";
 import { FollowUpPanel } from "./components/follow-up-panel";
 import { PostApprovalPreview } from "./components/post-approval-preview";
+import { InternalConvertResultPreview } from "./components/internal-convert-result-preview";
 import { ClientHubMetrics } from "./components/client-hub-metrics";
 import { ClientInbox } from "./components/client-inbox";
 import { ConvertActionPanel } from "./components/convert-action-panel";
@@ -15,6 +18,7 @@ import {
   approvalItems,
   clients,
   convertToClientDraft,
+  convertToClientSourceLead,
   convertActionPreview,
   convertReadinessItems,
   convertToClientEligibility,
@@ -25,6 +29,13 @@ import {
 
 export default function ClientHubPage() {
   const selectedRequest = requests[0];
+
+  const internalConvertResult = buildConvertToClientInternalAction({
+    lead: convertToClientSourceLead,
+    existingClients: clients,
+    actor: "Human reviewer",
+    timestamp: "2026-07-01T10:28:00.000Z",
+  });
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-8 text-slate-100">
@@ -48,6 +59,7 @@ export default function ClientHubPage() {
           />
           <ConvertReadinessChecklist items={convertReadinessItems} />
           <ConvertActionPanel action={convertActionPreview} />
+          <InternalConvertResultPreview result={internalConvertResult} />
           <PostApprovalPreview preview={postApprovalResultPreview} />
           <FollowUpPanel items={followUpItems} />
           <ActivityLog items={activityLogItems} />
