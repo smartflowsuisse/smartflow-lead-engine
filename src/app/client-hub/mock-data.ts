@@ -86,6 +86,13 @@ export const activityLogItems = [
     action: "Suggested reply marked as waiting for human review",
     entity: "approval-001",
   },
+  {
+    id: "activity-005",
+    time: "09:14",
+    actor: "Convert Preview",
+    action: "Convert to Client preview prepared for human review",
+    entity: "lead-demo-won-001",
+  },
 ];
 
 export const followUpItems = [
