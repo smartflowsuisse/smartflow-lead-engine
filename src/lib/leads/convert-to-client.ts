@@ -1,33 +1,20 @@
-export type ConvertToClientLeadInput = {
-  id: string;
-  company: string;
-  contactName?: string;
-  email?: string;
-  phone?: string;
-  language?: string;
-  status: string;
-};
+import {
+  CONVERT_TO_CLIENT_ALLOWED_STATUSES,
+  type ConvertToClientContractClientDraft,
+  type ConvertToClientContractLeadInput,
+} from "./convert-to-client-contract";
 
-export type ClientHubClientDraft = {
-  id: string;
-  sourceLeadId: string;
-  company: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  language: string;
-  status: "Draft";
-};
-
-const WON_STATUSES = new Set(["won", "closed-won", "client-won"]);
-
-export function canConvertLeadToClient(lead: ConvertToClientLeadInput): boolean {
-  return WON_STATUSES.has(lead.status.trim().toLowerCase());
+export function canConvertLeadToClient(
+  lead: ConvertToClientContractLeadInput,
+): boolean {
+  return CONVERT_TO_CLIENT_ALLOWED_STATUSES.includes(
+    lead.status as (typeof CONVERT_TO_CLIENT_ALLOWED_STATUSES)[number],
+  );
 }
 
 export function createClientDraftFromLead(
-  lead: ConvertToClientLeadInput,
-): ClientHubClientDraft {
+  lead: ConvertToClientContractLeadInput,
+): ConvertToClientContractClientDraft {
   if (!canConvertLeadToClient(lead)) {
     throw new Error("Lead is not eligible for client conversion");
   }
