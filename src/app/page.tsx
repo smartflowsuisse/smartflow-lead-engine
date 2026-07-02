@@ -13,6 +13,7 @@ import { LeadCard } from "@/components/leads/LeadCard";
 import { LEAD_STATUSES } from "@/lib/types";
 import { statusColor, cn } from "@/lib/utils";
 import { LEAD_SCORE_THRESHOLDS } from "@/lib/leads/scoring-thresholds";
+import { LeadFollowUpSystemSection } from "@/components/site/LeadFollowUpSystemSection";
 
 export default function DashboardPage() {
   const stats = getDashboardStats();
@@ -211,6 +212,8 @@ export default function DashboardPage() {
             </Link>
           </div>
         </section>
+
+        <LeadFollowUpSystemSection />
 
         {stats.recentLeads.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
